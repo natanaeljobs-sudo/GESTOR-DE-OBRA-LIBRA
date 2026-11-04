@@ -1,0 +1,6 @@
+{
+  "summary": "Plano detalhado para redesenhar a Central de Permissões conforme a referência visual fornecida pelo usuário, implementando tabela limpa de usuários com busca/filtros e modal popup com matriz de checkboxes (Ver, Criar, Editar, Excluir) por módulo.",
+  "updatedAt": "2026-11-04T12:41:19.693457517Z",
+  "requestFeedback": true,
+  "userFacing": true
+}

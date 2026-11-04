@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="spikeBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f273f" />
+      <stop offset="100%" stop-color="#111c2d" />
+    </linearGradient>
+    <linearGradient id="spikePrimaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#46caeb" />
+      <stop offset="100%" stop-color="#0085db" />
+    </linearGradient>
+    <linearGradient id="spikeAccentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8c076" />
+      <stop offset="100%" stop-color="#fb977d" />
+    </linearGradient>
+  </defs>
+  <!-- Background with Spike rounded corners -->
+  <rect width="512" height="512" rx="112" fill="url(#spikeBgGrad)" />
+  
+  <!-- Architectural grid lines subtle -->
+  <path d="M64 256h384M256 64v384M128 64v384M384 64v384M64 128h384M64 384h384" stroke="#333f55" stroke-width="2" stroke-opacity="0.5" stroke-dasharray="6 6" />
+
+  <!-- Construction geometry & Spike Diamond Blueprint Shape -->
+  <g transform="translate(64, 64)">
+    <path d="M64 280h256l-32-150H96z" fill="url(#spikePrimaryGrad)" opacity="0.95" />
+    
+    <!-- Foundation pillars / sapata -->
+    <rect x="64" y="280" width="36" height="38" rx="6" fill="#707a82" />
+    <rect x="136" y="280" width="36" height="38" rx="6" fill="#707a82" />
+    <rect x="208" y="280" width="36" height="38" rx="6" fill="#707a82" />
+    <rect x="284" y="280" width="36" height="38" rx="6" fill="#707a82" />
+    <rect x="48" y="318" width="288" height="18" rx="6" fill="#333f55" />
+
+    <!-- Helmet / Crane Beam in Spike Warning/Accent -->
+    <path d="M192 68l110 48-18 28-98-42z" fill="url(#spikeAccentGrad)" />
+    <circle cx="192" cy="68" r="14" fill="#f8c076" />
+    
+    <!-- Bracing lines -->
+    <line x1="96" y1="130" x2="288" y2="280" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.85" />
+    <line x1="288" y1="130" x2="96" y2="280" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.85" />
+
+    <!-- Measure ruler markings -->
+    <line x1="64" y1="276" x2="320" y2="276" stroke="#4bd08b" stroke-width="4" />
+    <line x1="64" y1="270" x2="64" y2="280" stroke="#4bd08b" stroke-width="4" />
+    <line x1="128" y1="270" x2="128" y2="280" stroke="#4bd08b" stroke-width="4" />
+    <line x1="192" y1="270" x2="192" y2="280" stroke="#4bd08b" stroke-width="4" />
+    <line x1="256" y1="270" x2="256" y2="280" stroke="#4bd08b" stroke-width="4" />
+    <line x1="320" y1="270" x2="320" y2="280" stroke="#4bd08b" stroke-width="4" />
+  </g>
+</svg>

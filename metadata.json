@@ -1,0 +1,6 @@
+{
+  "name": "Gestão de Obra Juscelino Mola",
+  "description": "Aplicativo PWA para gestão completa de obras: financeiro, despesas com itens, diárias e recibos de mão de obra, produção de trilhos e comparação de orçamentos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

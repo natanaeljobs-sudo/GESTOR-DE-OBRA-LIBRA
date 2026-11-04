@@ -1,0 +1,136 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-spike-primary: #0085db;
+  --color-spike-primary-hover: #0071ba;
+  --color-spike-light-primary: rgba(0, 133, 219, 0.08);
+  --color-spike-dark-primary: #0f273f;
+  --color-spike-secondary: #707a82;
+  --color-spike-light-secondary: rgba(112, 122, 130, 0.1);
+  --color-spike-dark-secondary: #1a2535;
+  --color-spike-success: #4bd08b;
+  --color-spike-light-success: rgba(75, 208, 139, 0.12);
+  --color-spike-warning: #f8c076;
+  --color-spike-light-warning: rgba(248, 192, 118, 0.14);
+  --color-spike-error: #fb977d;
+  --color-spike-light-error: rgba(251, 151, 125, 0.14);
+  --color-spike-info: #46caeb;
+  --color-spike-light-info: rgba(70, 202, 235, 0.12);
+  --color-spike-indigo: #8763da;
+  --color-spike-dark: #111c2d;
+  --color-spike-border: #e6ecf1;
+  --color-spike-dark-border: #333f55;
+  --color-spike-body: #f0f5f9;
+  --color-spike-dark-body: #15263a;
+  --color-spike-card-dark: #111c2d;
+  --color-spike-muted: #707a82;
+  --color-spike-dark-muted: #7c8fac;
+  --radius-spike: 18px;
+}
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #f0f5f9;
+    color: #111c2d;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html.dark body {
+    background-color: #15263a;
+    color: #ffffff;
+  }
+}
+
+/* Spike Custom Card and Badge utility styles */
+.spike-card {
+  position: relative;
+  width: 100%;
+  border-radius: 18px;
+  background-color: #ffffff;
+  border: 1px solid #e6ecf1;
+  box-shadow: 0px 2px 6px rgba(37, 83, 185, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+html.dark .spike-card {
+  background-color: #111c2d;
+  border-color: #333f55;
+  box-shadow: none;
+}
+
+.spike-badge-primary {
+  background-color: rgba(0, 133, 219, 0.1);
+  color: #0085db;
+  border: 1px solid rgba(0, 133, 219, 0.2);
+}
+
+.spike-badge-success {
+  background-color: rgba(75, 208, 139, 0.15);
+  color: #10bd9d;
+  border: 1px solid rgba(75, 208, 139, 0.25);
+}
+html.dark .spike-badge-success {
+  color: #4bd08b;
+}
+
+.spike-badge-warning {
+  background-color: rgba(248, 192, 118, 0.18);
+  color: #d9941a;
+  border: 1px solid rgba(248, 192, 118, 0.3);
+}
+html.dark .spike-badge-warning {
+  color: #f8c076;
+}
+
+.spike-badge-danger {
+  background-color: rgba(251, 151, 125, 0.18);
+  color: #d5745b;
+  border: 1px solid rgba(251, 151, 125, 0.3);
+}
+html.dark .spike-badge-danger {
+  color: #fb977d;
+}
+
+.spike-badge-indigo {
+  background-color: rgba(135, 99, 218, 0.14);
+  color: #8763da;
+  border: 1px solid rgba(135, 99, 218, 0.25);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(112, 122, 130, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(112, 122, 130, 0.45);
+}
+
+/* Print styling for payment receipts */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
