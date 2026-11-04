@@ -64,6 +64,8 @@ interface AppContextType {
   activeObra: Obra;
   setActiveObraId: (id: string) => void;
   addObra: (obra: Obra) => void;
+  updateObra: (obra: Obra) => void;
+  deleteObra: (id: string) => void;
 
   // Etapas
   etapas: Etapa[];
@@ -410,6 +412,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setActiveObraId(novaObra.id);
   };
 
+  const updateObra = (obra: Obra) => {
+    setObras(prev => prev.map(o => (o.id === obra.id ? obra : o)));
+  };
+
+  const deleteObra = (id: string) => {
+    if (obras.length <= 1) return;
+    setObras(prev => prev.filter(o => o.id !== id));
+    if (activeObraId === id) {
+      const remaining = obras.filter(o => o.id !== id);
+      if (remaining.length > 0) setActiveObraId(remaining[0].id);
+    }
+  };
+
   const updateEtapaStatus = (id: string, status: Etapa['status']) => {
     setEtapas(prev => prev.map(e => (e.id === id ? { ...e, status } : e)));
   };
@@ -743,6 +758,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         activeObra,
         setActiveObraId,
         addObra,
+        updateObra,
+        deleteObra,
         etapas,
         updateEtapaStatus,
         usuarios,

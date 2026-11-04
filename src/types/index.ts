@@ -6,7 +6,9 @@ export interface Obra {
   orcamentoTotal: number;
   tetoMaoDeObra: number; // R$ 32.000,00 na Obra Juscelino Mola
   etapaAtualId: string;
-  status: 'em_andamento' | 'planejamento' | 'concluida';
+  status: 'em_andamento' | 'planejamento' | 'concluida' | 'andamento' | 'cancelada';
+  valorVenda?: number;
+  etapaAtual?: string;
   observacoes?: string;
 }
 

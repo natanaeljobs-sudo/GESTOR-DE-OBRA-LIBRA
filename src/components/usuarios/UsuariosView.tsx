@@ -41,6 +41,8 @@ export const UsuariosView: React.FC = () => {
     obras,
     activeObra,
     addObra,
+    updateObra,
+    deleteObra,
     masterEmail,
     updateMasterEmail,
     solicitacoesAcesso,
@@ -74,24 +76,30 @@ export const UsuariosView: React.FC = () => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [perfil, setPerfil] = useState<PerfilUsuario>('admin');
+  const [userSavedSuccess, setUserSavedSuccess] = useState(false);
 
-  // New Obra form
+  // Obra form & edit/delete states
+  const [editingObra, setEditingObra] = useState<Obra | null>(null);
+  const [obraToDelete, setObraToDelete] = useState<Obra | null>(null);
   const [obraNome, setObraNome] = useState('');
   const [obraEndereco, setObraEndereco] = useState('');
   const [obraOrcamento, setObraOrcamento] = useState<number>(150000);
   const [obraTetoMaoDeObra, setObraTetoMaoDeObra] = useState<number>(38000);
+  const [obraValorVenda, setObraValorVenda] = useState<number | ''>('');
+  const [obraStatus, setObraStatus] = useState<'em_andamento' | 'planejamento' | 'concluida' | 'cancelada'>('em_andamento');
+  const [obraEtapaAtual, setObraEtapaAtual] = useState('Fundação');
 
   const modulosList: { key: keyof Usuario['permissoes']; label: string; description: string }[] = [
-    { key: 'dashboard', label: 'Dashboard', description: 'Visão executiva, gráficos e indicadores de custo' },
-    { key: 'despesas', label: 'Despesas & Notas', description: 'Lançamentos, conferência de notas e comprovantes' },
-    { key: 'materiais', label: 'Catálogo de Materiais', description: 'Cadastro e consulta de insumos e preços de referência' },
-    { key: 'maoDeObra', label: 'Mão de Obra & Diárias', description: 'Registro de diárias, trabalhadores e faltas' },
-    { key: 'recibos', label: 'Gerador de Recibos', description: 'Emissão e impressão de recibos com valor por extenso' },
-    { key: 'orcamentos', label: 'Orçamentos & Cotações', description: 'Comparador de cotações e conversão em despesa' },
-    { key: 'producao', label: 'Produção de Trilhos', description: 'Registro de fabricação de vigotas, trilhos e placas' },
-    { key: 'cartoes', label: 'Cartões & Faturas', description: 'Gestão de limites, contas correntes e parcelamentos' },
-    { key: 'usuarios', label: 'Usuários & Permissões', description: 'Administração de contas, papéis e acessos' },
-    { key: 'relatorios', label: 'Relatórios', description: 'Exportação gerencial, extratos e demonstrativos' },
+    { key: 'dashboard', label: 'Dashboard', description: '' },
+    { key: 'despesas', label: 'Despesas', description: '' },
+    { key: 'materiais', label: 'Materiais', description: '' },
+    { key: 'maoDeObra', label: 'Diárias', description: '' },
+    { key: 'recibos', label: 'Recibos', description: '' },
+    { key: 'orcamentos', label: 'Orçamentos', description: '' },
+    { key: 'producao', label: 'Produção', description: '' },
+    { key: 'cartoes', label: 'Cartões', description: '' },
+    { key: 'usuarios', label: 'Permissões', description: '' },
+    { key: 'relatorios', label: 'Relatórios', description: '' },
   ];
 
   // Filtering users
@@ -301,30 +309,72 @@ export const UsuariosView: React.FC = () => {
     };
 
     addUsuario(newUser);
-    setIsUserModalOpen(false);
-    setNome('');
-    setEmail('');
+    setUserSavedSuccess(true);
+    setTimeout(() => {
+      setUserSavedSuccess(false);
+      setIsUserModalOpen(false);
+      setNome('');
+      setEmail('');
+    }, 1200);
+  };
+
+  const handleOpenEditObra = (obra: Obra) => {
+    setEditingObra(obra);
+    setObraNome(obra.nome);
+    setObraEndereco(obra.endereco);
+    setObraOrcamento(obra.orcamentoTotal);
+    setObraTetoMaoDeObra(obra.tetoMaoDeObra);
+    setObraValorVenda(obra.valorVenda ?? '');
+    setObraStatus(obra.status === 'andamento' ? 'em_andamento' : obra.status);
+    setObraEtapaAtual(obra.etapaAtual || 'Fundação');
+    setIsObraModalOpen(true);
+  };
+
+  const handleConfirmDeleteObra = () => {
+    if (!obraToDelete) return;
+    deleteObra(obraToDelete.id);
+    setObraToDelete(null);
   };
 
   const handleSaveObra = (e: React.FormEvent) => {
     e.preventDefault();
     if (!obraNome.trim()) return;
 
-    const novaObra: Obra = {
-      id: `obra-${Date.now()}`,
-      nome: obraNome.trim(),
-      endereco: obraEndereco.trim() || 'Endereço a definir',
-      dataInicio: getTodayISO(),
-      orcamentoTotal: obraOrcamento || 100000,
-      tetoMaoDeObra: obraTetoMaoDeObra || 30000,
-      etapaAtualId: 'etapa-1',
-      status: 'planejamento',
-    };
+    if (editingObra) {
+      const updated: Obra = {
+        ...editingObra,
+        nome: obraNome.trim(),
+        endereco: obraEndereco.trim() || 'Endereço a definir',
+        orcamentoTotal: obraOrcamento || 100000,
+        tetoMaoDeObra: obraTetoMaoDeObra || 30000,
+        valorVenda: obraValorVenda !== '' ? Number(obraValorVenda) : undefined,
+        status: obraStatus,
+        etapaAtual: obraEtapaAtual || 'Fundação',
+      };
+      updateObra(updated);
+    } else {
+      const novaObra: Obra = {
+        id: `obra-${Date.now()}`,
+        nome: obraNome.trim(),
+        endereco: obraEndereco.trim() || 'Endereço a definir',
+        dataInicio: getTodayISO(),
+        orcamentoTotal: obraOrcamento || 100000,
+        tetoMaoDeObra: obraTetoMaoDeObra || 30000,
+        etapaAtualId: 'etapa-1',
+        valorVenda: obraValorVenda !== '' ? Number(obraValorVenda) : undefined,
+        status: obraStatus,
+        etapaAtual: obraEtapaAtual || 'Fundação',
+      };
+      addObra(novaObra);
+    }
 
-    addObra(novaObra);
     setIsObraModalOpen(false);
+    setEditingObra(null);
     setObraNome('');
     setObraEndereco('');
+    setObraValorVenda('');
+    setObraStatus('em_andamento');
+    setObraEtapaAtual('Fundação');
   };
 
   const handleSaveMasterEmail = (e: React.FormEvent) => {
@@ -395,51 +445,38 @@ export const UsuariosView: React.FC = () => {
       <div className="flex flex-wrap items-center gap-2 border-b border-[#e6ecf1] dark:border-[#333f55] pb-3">
         <button
           onClick={() => setActiveSubTab('usuarios')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer inline-flex items-center gap-2 uppercase ${
             activeSubTab === 'usuarios'
               ? 'bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25'
               : 'text-[#707a82] hover:text-[#0085db] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]'
           }`}
         >
-          <span>Permissões</span>
-          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-            activeSubTab === 'usuarios'
-              ? 'bg-white/20 text-white'
-              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300'
-          }`}>
-            {usuarios.length}
-          </span>
+          <Shield className="w-3.5 h-3.5" />
+          <span>PERMISSÕES</span>
         </button>
 
         <button
           onClick={() => setActiveSubTab('obras')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer inline-flex items-center gap-2 uppercase ${
             activeSubTab === 'obras'
               ? 'bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25'
               : 'text-[#707a82] hover:text-[#0085db] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]'
           }`}
         >
           <Building className="w-3.5 h-3.5" />
-          <span>Obras</span>
-          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-            activeSubTab === 'obras'
-              ? 'bg-white/20 text-white'
-              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300'
-          }`}>
-            {obras.length}
-          </span>
+          <span>OBRAS</span>
         </button>
 
         <button
           onClick={() => setActiveSubTab('configuracoes')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-2 uppercase ${
             activeSubTab === 'configuracoes'
               ? 'bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25'
               : 'text-[#707a82] hover:text-[#0085db] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]'
           }`}
         >
           <Mail className="w-3.5 h-3.5" />
-          <span>Solicitações</span>
+          <span>SOLICITAÇÕES</span>
           {solicitacoesAcesso.filter(s => s.status === 'pendente').length > 0 && (
             <span className="px-1.5 py-0.5 text-[10px] bg-amber-500 text-white rounded-full font-bold">
               {solicitacoesAcesso.filter(s => s.status === 'pendente').length}
@@ -457,7 +494,7 @@ export const UsuariosView: React.FC = () => {
                 Permissões
               </h1>
               <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-1">
-                Gerencie contas corporativas, papéis e permissões de acesso por módulo.
+                Gerencie contas e permissões
               </p>
             </div>
 
@@ -677,10 +714,10 @@ export const UsuariosView: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white">
-                Gestão de Obras Simultâneas
+                Gestão de obras
               </h2>
               <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                Controle múltiplos canteiros de obras independentes com rateios e orçamentos isolados.
+                Múltiplas obras com orçamentos diferentes
               </p>
             </div>
 
@@ -689,13 +726,17 @@ export const UsuariosView: React.FC = () => {
               className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer self-start sm:self-auto"
             >
               <Plus className="w-4 h-4" />
-              <span>Cadastrar Nova Obra</span>
+              <span>Cadastrar obra</span>
             </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {obras.map(obra => {
               const isCurrent = obra.id === activeObra.id;
+              const statusLabel = obra.status === 'em_andamento' || obra.status === 'andamento' ? 'EM ANDAMENTO' : obra.status === 'concluida' ? 'CONCLUÍDA' : obra.status === 'cancelada' ? 'CANCELADA' : 'PLANEJAMENTO';
+              const statusColor = obra.status === 'em_andamento' || obra.status === 'andamento' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' : obra.status === 'concluida' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : obra.status === 'cancelada' ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+              const previsaoLucro = obra.valorVenda ? obra.valorVenda - obra.orcamentoTotal : null;
+
               return (
                 <div
                   key={obra.id}
@@ -724,12 +765,27 @@ export const UsuariosView: React.FC = () => {
                         <p className="text-xs text-[#707a82] mt-0.5">{obra.endereco}</p>
                       </div>
 
-                      <div className="w-9 h-9 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
-                        <Building className="w-5 h-5" />
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEditObra(obra)}
+                          className="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-[#0085db]/10 hover:text-[#0085db] flex items-center justify-center transition-colors cursor-pointer"
+                          title="Editar Obra"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setObraToDelete(obra)}
+                          className="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-rose-500/10 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer"
+                          title="Excluir Obra"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] space-y-1 text-xs">
+                    <div className="mt-4 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] space-y-1.5 text-xs">
                       <div className="flex justify-between text-[#707a82]">
                         <span>Orçamento Previsto:</span>
                         <span className="font-bold text-[#111c2d] dark:text-white tabular-nums">
@@ -742,12 +798,33 @@ export const UsuariosView: React.FC = () => {
                           {formatBRL(obra.tetoMaoDeObra)}
                         </span>
                       </div>
+                      {obra.valorVenda !== undefined && obra.valorVenda > 0 && (
+                        <>
+                          <div className="flex justify-between text-[#707a82]">
+                            <span>Valor de Venda:</span>
+                            <span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                              {formatBRL(obra.valorVenda)}
+                            </span>
+                          </div>
+                          {previsaoLucro !== null && (
+                            <div className="flex justify-between text-[#707a82]">
+                              <span>Previsão de Lucro:</span>
+                              <span className={`font-bold tabular-nums ${previsaoLucro >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600'}`}>
+                                {formatBRL(previsaoLucro)}
+                              </span>
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-between items-center">
-                    <span className="text-xs font-semibold capitalize text-[#707a82]">
-                      Status: {obra.status.replace('_', ' ')}
+                  <div className="mt-4 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center gap-2 text-xs">
+                    <span className={`px-2.5 py-1 rounded-lg font-bold border ${statusColor}`}>
+                      {statusLabel}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-lg font-bold border bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 uppercase">
+                      ETAPA: {obra.etapaAtual || 'FUNDAÇÃO'}
                     </span>
                   </div>
                 </div>
@@ -973,8 +1050,8 @@ export const UsuariosView: React.FC = () => {
           setIsPermissionsModalOpen(false);
           setEditingUser(null);
         }}
-        title={`Editar Usuário: ${editingUser?.nome || ''}`}
-        subtitle={`${editingUser?.email || ''} • Perfil: ${editingUser?.perfil === 'master' ? 'Master' : editingUser?.perfil === 'admin' ? 'Admin' : 'Operador'}`}
+        title="Editar usuário"
+        subtitle={editingUser?.perfil === 'master' ? 'Master' : editingUser?.perfil === 'admin' ? 'Admin' : 'Operador'}
         maxWidth="2xl"
       >
         {editingUser && (
@@ -985,19 +1062,16 @@ export const UsuariosView: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-4 h-4 text-[#0085db]" />
                   <span className="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
-                    Perfil e Dados da Conta
+                    DADOS DA CONTA
                   </span>
                 </div>
-                <span className="text-[10px] font-semibold text-[#0085db] bg-[#0085db]/10 px-2 py-0.5 rounded-full">
-                  Exclusivo Master
-                </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Nome */}
                 <div>
                   <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                    Nome Completo *
+                    Nome
                   </label>
                   <input
                     type="text"
@@ -1011,7 +1085,7 @@ export const UsuariosView: React.FC = () => {
                 {/* Email */}
                 <div>
                   <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                    E-mail de Acesso *
+                    E-mail
                   </label>
                   <input
                     type="email"
@@ -1027,12 +1101,12 @@ export const UsuariosView: React.FC = () => {
                 {/* Perfil de Acesso */}
                 <div>
                   <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                    Perfil de Acesso *
+                    Perfil
                   </label>
                   <select
                     value={editingUser.perfil}
                     onChange={e => handleRoleChange(e.target.value as PerfilUsuario)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold focus:outline-hidden focus:ring-2 focus:ring-[#0085db] cursor-pointer"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db] cursor-pointer"
                   >
                     <option value="master">Master (Acesso Total Irrestrito)</option>
                     <option value="admin">Admin</option>
@@ -1043,36 +1117,27 @@ export const UsuariosView: React.FC = () => {
                 {/* Status da Conta */}
                 <div>
                   <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                    Status da Conta *
+                    Status
                   </label>
                   <select
                     value={editingUser.ativo ? 'ativo' : 'inativo'}
                     onChange={e => setEditingUser({ ...editingUser, ativo: e.target.value === 'ativo' })}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold focus:outline-hidden focus:ring-2 focus:ring-[#0085db] cursor-pointer"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db] cursor-pointer"
                   >
-                    <option value="ativo">Ativo (Acesso Liberado)</option>
-                    <option value="inativo">Inativo (Acesso Bloqueado)</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
                   </select>
                 </div>
               </div>
             </div>
 
             {/* Master Banner if Master */}
-            {editingUser.perfil === 'master' ? (
+            {editingUser.perfil === 'master' && (
               <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 text-xs flex items-center gap-2.5">
                 <Shield className="w-5 h-5 text-amber-500 shrink-0" />
                 <span>
                   <strong className="text-amber-600 dark:text-amber-400 font-bold">Master:</strong> Este perfil possui privilégios totais e irrestritos por padrão em todas as telas e rotinas do sistema.
                 </span>
-              </div>
-            ) : (
-              <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-900 dark:text-blue-200 text-xs flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-[#0085db] shrink-0" />
-                  <span>
-                    Marque ou desmarque individualmente os privilégios de cada módulo para este usuário.
-                  </span>
-                </div>
               </div>
             )}
 
@@ -1085,28 +1150,28 @@ export const UsuariosView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleQuickAction('all')}
-                  className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-[#0085db]/10 hover:bg-[#0085db]/20 dark:bg-[#0085db]/20 dark:hover:bg-[#0085db]/30 text-[#0085db] dark:text-[#38bdf8] transition-colors cursor-pointer"
+                  className="px-3.5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer"
                 >
                   Marcar Todos
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickAction('view_only')}
-                  className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-[#0085db]/10 hover:bg-[#0085db]/20 dark:bg-[#0085db]/20 dark:hover:bg-[#0085db]/30 text-[#0085db] dark:text-[#38bdf8] transition-colors cursor-pointer"
+                  className="px-3.5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer"
                 >
                   Apenas Ver
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickAction('default')}
-                  className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-[#0085db]/10 hover:bg-[#0085db]/20 dark:bg-[#0085db]/20 dark:hover:bg-[#0085db]/30 text-[#0085db] dark:text-[#38bdf8] transition-colors cursor-pointer"
+                  className="px-3.5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer"
                 >
                   Padrão do Perfil
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickAction('none')}
-                  className="px-2.5 py-1 text-[11px] font-medium rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                  className="px-3.5 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer"
                 >
                   Desmarcar
                 </button>
@@ -1124,44 +1189,40 @@ export const UsuariosView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleToggleColumnAll('visualizar')}
-                          className="hover:text-[#0085db] transition-colors cursor-pointer inline-flex items-center gap-1 font-bold"
+                          className="hover:text-[#0085db] transition-colors cursor-pointer inline-flex items-center justify-center font-bold w-full uppercase"
                           title="Clique para alternar toda a coluna"
                         >
-                          <Eye className="w-3 h-3" />
-                          <span>Ver</span>
+                          <span>VER</span>
                         </button>
                       </th>
                       <th className="py-2.5 px-2 text-center">
                         <button
                           type="button"
                           onClick={() => handleToggleColumnAll('criar')}
-                          className="hover:text-[#0085db] transition-colors cursor-pointer inline-flex items-center gap-1 font-bold"
+                          className="hover:text-[#0085db] transition-colors cursor-pointer inline-flex items-center justify-center font-bold w-full uppercase"
                           title="Clique para alternar toda a coluna"
                         >
-                          <Plus className="w-3 h-3" />
-                          <span>Criar</span>
+                          <span>CRIAR</span>
                         </button>
                       </th>
                       <th className="py-2.5 px-2 text-center">
                         <button
                           type="button"
                           onClick={() => handleToggleColumnAll('editar')}
-                          className="hover:text-[#0085db] transition-colors cursor-pointer inline-flex items-center gap-1 font-bold"
+                          className="hover:text-[#0085db] transition-colors cursor-pointer inline-flex items-center justify-center font-bold w-full uppercase"
                           title="Clique para alternar toda a coluna"
                         >
-                          <FileEdit className="w-3 h-3" />
-                          <span>Editar</span>
+                          <span>EDITAR</span>
                         </button>
                       </th>
                       <th className="py-2.5 px-2 text-center">
                         <button
                           type="button"
                           onClick={() => handleToggleColumnAll('excluir')}
-                          className="hover:text-[#0085db] transition-colors cursor-pointer inline-flex items-center gap-1 font-bold"
+                          className="hover:text-[#0085db] transition-colors cursor-pointer inline-flex items-center justify-center font-bold w-full uppercase"
                           title="Clique para alternar toda a coluna"
                         >
-                          <Trash className="w-3 h-3" />
-                          <span>Excluir</span>
+                          <span>EXCLUIR</span>
                         </button>
                       </th>
                     </tr>
@@ -1183,9 +1244,6 @@ export const UsuariosView: React.FC = () => {
                           <td className="py-2.5 px-3">
                             <span className="font-bold text-[#111c2d] dark:text-white block">
                               {mod.label}
-                            </span>
-                            <span className="text-[10px] text-[#707a82] dark:text-[#7c8fac] block">
-                              {mod.description}
                             </span>
                           </td>
 
@@ -1275,14 +1333,14 @@ export const UsuariosView: React.FC = () => {
       <Modal
         isOpen={!!userToDelete}
         onClose={() => setUserToDelete(null)}
-        title="Confirmar Exclusão"
-        subtitle="Atenção: esta ação removerá o usuário do sistema."
+        title="Confirmar exclusão"
+        subtitle="Esta ação removerá o usuário do sistema"
         maxWidth="sm"
       >
         {userToDelete && (
           <div className="space-y-4">
             <p className="text-xs text-zinc-600 dark:text-zinc-300">
-              Tem certeza que deseja remover o usuário <strong>{userToDelete.nome}</strong> ({userToDelete.email})?
+              Tem certeza que deseja remover o usuário <strong>&ldquo;{userToDelete.nome}&rdquo;</strong>?
             </p>
             {userToDelete.perfil === 'master' && (
               <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs">
@@ -1302,8 +1360,7 @@ export const UsuariosView: React.FC = () => {
                 onClick={handleConfirmDelete}
                 className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
               >
-                <Trash2 className="w-4 h-4" />
-                <span>Sim, Excluir</span>
+                <span>Excluir</span>
               </button>
             </div>
           </div>
@@ -1314,19 +1371,19 @@ export const UsuariosView: React.FC = () => {
       <Modal
         isOpen={isUserModalOpen}
         onClose={() => setIsUserModalOpen(false)}
-        title="Cadastrar Novo Usuário"
+        title="Cadastrar usuário"
         subtitle="Defina perfil e permissões de acesso ao aplicativo."
         maxWidth="md"
       >
         <form onSubmit={handleSaveUser} className="space-y-3">
           <div>
             <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-              Nome Completo *
+              Nome *
             </label>
             <input
               type="text"
               required
-              placeholder="Ex: Alberto Silva"
+              placeholder="Digite seu nome aqui"
               value={nome}
               onChange={e => setNome(e.target.value)}
               className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
@@ -1335,12 +1392,12 @@ export const UsuariosView: React.FC = () => {
 
           <div>
             <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-              E-mail de Acesso *
+              E-mail *
             </label>
             <input
               type="email"
               required
-              placeholder="usuario@obra.com.br"
+              placeholder="Digite seu e-mail aqui"
               value={email}
               onChange={e => setEmail(e.target.value)}
               className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
@@ -1349,7 +1406,7 @@ export const UsuariosView: React.FC = () => {
 
           <div>
             <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-              Perfil de Acesso
+              Perfil
             </label>
             <select
               value={perfil}
@@ -1361,6 +1418,13 @@ export const UsuariosView: React.FC = () => {
               <option value="operador">Operador</option>
             </select>
           </div>
+
+          {userSavedSuccess && (
+            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs flex items-center gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span>Usuário cadastrado com sucesso!</span>
+            </div>
+          )}
 
           <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
             <button
@@ -1380,12 +1444,15 @@ export const UsuariosView: React.FC = () => {
         </form>
       </Modal>
 
-      {/* Modal: New Obra */}
+      {/* Modal: New / Edit Obra */}
       <Modal
         isOpen={isObraModalOpen}
-        onClose={() => setIsObraModalOpen(false)}
-        title="Cadastrar Nova Obra"
-        subtitle="Prepare o sistema para novas obras simultâneas."
+        onClose={() => {
+          setIsObraModalOpen(false);
+          setEditingObra(null);
+        }}
+        title={editingObra ? 'Editar Obra' : 'Cadastrar Nova Obra'}
+        subtitle="Gerencie canteiros, orçamentos, status e valor de venda."
         maxWidth="md"
       >
         <form onSubmit={handleSaveObra} className="space-y-3">
@@ -1445,10 +1512,58 @@ export const UsuariosView: React.FC = () => {
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                Valor de Venda (R$) (Opcional)
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="any"
+                placeholder="Ex: 200000"
+                value={obraValorVenda}
+                onChange={e => setObraValorVenda(e.target.value === '' ? '' : parseFloat(e.target.value) || 0)}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                Status *
+              </label>
+              <select
+                value={obraStatus}
+                onChange={e => setObraStatus(e.target.value as any)}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer"
+              >
+                <option value="em_andamento">Em andamento</option>
+                <option value="concluida">Concluída</option>
+                <option value="cancelada">Cancelada</option>
+                <option value="planejamento">Planejamento</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Etapa Atual
+            </label>
+            <input
+              type="text"
+              placeholder="Ex: Fundação, Estrutura, Alvenaria, Acabamento"
+              value={obraEtapaAtual}
+              onChange={e => setObraEtapaAtual(e.target.value)}
+              className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+            />
+          </div>
+
           <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
             <button
               type="button"
-              onClick={() => setIsObraModalOpen(false)}
+              onClick={() => {
+                setIsObraModalOpen(false);
+                setEditingObra(null);
+              }}
               className="px-3.5 py-2 text-xs text-[#707a82] hover:text-[#111c2d] cursor-pointer"
             >
               Cancelar
@@ -1461,6 +1576,39 @@ export const UsuariosView: React.FC = () => {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* MODAL: Confirm Delete Obra */}
+      <Modal
+        isOpen={!!obraToDelete}
+        onClose={() => setObraToDelete(null)}
+        title="Confirmar exclusão"
+        subtitle="Esta ação removerá a obra do sistema"
+        maxWidth="sm"
+      >
+        {obraToDelete && (
+          <div className="space-y-4">
+            <p className="text-xs text-zinc-600 dark:text-zinc-300">
+              Tem certeza que deseja remover a obra <strong>&ldquo;{obraToDelete.nome}&rdquo;</strong>?
+            </p>
+            <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setObraToDelete(null)}
+                className="px-3.5 py-2 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteObra}
+                className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs cursor-pointer"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        )}
       </Modal>
 
     </div>
