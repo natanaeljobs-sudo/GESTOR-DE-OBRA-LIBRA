@@ -1,31 +1,13 @@
-# Implementation Plan - Gestão de Obras (Edição, Exclusão, Valor de Venda, Lucro, Status e Etapa)
+# Barra de Etapas em Cada Obra da Tabela (Implementado)
 
-## Objectives
-1. Update `Obra` type in `src/types/index.ts` to support `valorVenda` (optional number), `status` ('andamento' | 'concluida' | 'cancelada'), and `etapaAtual` (string).
-2. Update AppContext / initial data if needed, or handle obea creation/update (`addObra`, `updateObra`, `deleteObra`).
-3. Enhance the Obra modal ("Cadastrar obra" / "Editar obra") in `UsuariosView.tsx` to include:
-   - Nome, Endereço
-   - Orçamento Estimado, Teto Mão de Obra
-   - Valor de Venda (opcional)
-   - Status (Em andamento, Concluída, Cancelada)
-   - Etapa atual
-4. Update Obra cards in `UsuariosView.tsx` to show:
-   - Status badge and current stage ("Etapa")
-   - Valor de Venda and Previsão de Lucro (if valor de venda is provided: `Valor de Venda - Orçamento Total`)
-   - Edit and Delete buttons on each card.
-5. Add delete confirmation modal for Obras.
+A barra de status com 11 etapas numeradas e a etapa final "Concluído" agora é exibida diretamente em cada obra da tabela.
 
-## Proposed Changes
+---
 
-### `src/types/index.ts`
-- Add/update `Obra` interface properties:
-  - `valorVenda?: number`
-  - `status: 'andamento' | 'concluida' | 'cancelada' | 'planejamento'`
-  - `etapaAtual: string`
-
-### `src/components/usuarios/UsuariosView.tsx`
-- Add states for editing an obra (`editingObra`, `obraToDelete`).
-- Update `handleSaveObra` to handle both creating and updating an obra.
-- Add delete obra handler.
-- Update Obra modal inputs for Valor de Venda and Status.
-- Update Obra card rendering to display status, stage, sale value, profit prediction, and Action buttons (Edit & Delete).
+## 1. O Que Foi Realizado
+- **Régua Individual por Obra**: Cada obra listada na tabela (atuais e qualquer nova cadastrada) possui sua própria linha com a barra de 11 etapas + Concluído.
+- **Novas Obras**: Toda nova obra cadastrada surge imediatamente na listagem com sua régua ativa, iniciando na **etapa 1 (Sapata)** com a primeira bolinha preenchida em azul.
+- **Interação Independente**:
+  - Clicar nas etapas 1 a 11 avança ou retrocede cumulativamente em azul (`#0085db`) apenas para aquela obra selecionada.
+  - Clicar na etapa final **Concluído** marca aquela obra como concluída e torna toda a sua régua 100% verde (`emerald-500`).
+- **Limpeza do Layout**: A régua única compartilhada que ficava no rodapé foi removida, eliminando duplicações e deixando a interface limpa e intuitiva.

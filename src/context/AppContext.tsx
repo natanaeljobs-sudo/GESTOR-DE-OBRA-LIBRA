@@ -233,7 +233,32 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   // State slices
-  const [obras, setObras] = useState<Obra[]>(() => getStoredOrDefault('obras', INITIAL_OBRAS));
+  const [obras, setObras] = useState<Obra[]>(() => {
+    const raw = getStoredOrDefault<Obra[]>('obras', INITIAL_OBRAS);
+    return raw.map(o => {
+      const upperName = o.nome ? o.nome.toUpperCase() : '';
+      if (o.id === 'obra-juscelino-mola') {
+        return {
+          ...o,
+          nome: upperName,
+          valorVenda: o.valorVenda !== undefined ? o.valorVenda : 185000,
+          etapaAtual: o.etapaAtual || 'Alvenaria',
+        };
+      }
+      if (o.id === 'obra-futura-parque') {
+        return {
+          ...o,
+          nome: upperName,
+          valorVenda: o.valorVenda !== undefined ? o.valorVenda : 270000,
+          etapaAtual: o.etapaAtual || 'Sapata',
+        };
+      }
+      return {
+        ...o,
+        nome: upperName,
+      };
+    });
+  });
   const [activeObraId, setActiveObraId] = useState<string>(() => obras[0]?.id || 'obra-juscelino-mola');
   const [etapas, setEtapas] = useState<Etapa[]>(() => getStoredOrDefault('etapas', INITIAL_ETAPAS));
   const [usuarios, setUsuarios] = useState<Usuario[]>(() => {
@@ -249,6 +274,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
       return {
         ...u,
+        nome: u.nome ? u.nome.toUpperCase() : '',
         perfil,
         email: u.email?.replace('alberto.mestre@', 'alberto.operador@') || u.email,
       };

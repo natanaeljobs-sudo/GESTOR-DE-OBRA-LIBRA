@@ -16,22 +16,26 @@ import {
 export const INITIAL_OBRAS: Obra[] = [
   {
     id: 'obra-juscelino-mola',
-    nome: 'Obra Juscelino Mola',
+    nome: 'OBRA JUSCELINO MOLA',
     endereco: 'Rua Juscelino Mola, Qd. 14, Lt. 08 - Setor Residencial',
     dataInicio: '2026-09-01',
     orcamentoTotal: 120000.0,
     tetoMaoDeObra: 32000.0,
+    valorVenda: 185000.0,
+    etapaAtual: 'Alvenaria',
     etapaAtualId: 'etapa-2',
     status: 'em_andamento',
     observacoes: 'Construção residencial mista com fabricação própria de trilhos e laje.',
   },
   {
     id: 'obra-futura-parque',
-    nome: 'Obra Parque das Acácias (Futura)',
+    nome: 'OBRA PARQUE DAS ACÁCIAS (FUTURA)',
     endereco: 'Av. das Acácias, 450 - Jardim América',
     dataInicio: '2027-02-15',
     orcamentoTotal: 180000.0,
     tetoMaoDeObra: 45000.0,
+    valorVenda: 270000.0,
+    etapaAtual: 'Sapata',
     etapaAtualId: 'etapa-1',
     status: 'planejamento',
     observacoes: 'Nova obra simultânea planejada para o início do próximo ano.',
@@ -55,7 +59,7 @@ export const INITIAL_ETAPAS: Etapa[] = [
 export const INITIAL_USUARIOS: Usuario[] = [
   {
     id: 'user-natanael',
-    nome: 'Natanael Dias',
+    nome: 'NATANAEL DIAS',
     email: 'natanaeljobs@gmail.com',
     perfil: 'master',
     avatarColor: 'bg-[#0085db] text-white',
@@ -76,7 +80,7 @@ export const INITIAL_USUARIOS: Usuario[] = [
   },
   {
     id: 'user-ives',
-    nome: 'Ives',
+    nome: 'IVES',
     email: 'ives@juscelinomola.com.br',
     perfil: 'admin',
     avatarColor: 'bg-[#0085db] text-white',
@@ -97,7 +101,7 @@ export const INITIAL_USUARIOS: Usuario[] = [
   },
   {
     id: 'user-alberto',
-    nome: 'Alberto',
+    nome: 'ALBERTO',
     email: 'alberto.operador@juscelinomola.com.br',
     perfil: 'operador',
     avatarColor: 'bg-[#0085db] text-white',
@@ -118,7 +122,7 @@ export const INITIAL_USUARIOS: Usuario[] = [
   },
   {
     id: 'user-irae',
-    nome: 'Iraê',
+    nome: 'IRAÊ',
     email: 'irae.investidor@juscelinomola.com.br',
     perfil: 'operador',
     avatarColor: 'bg-[#0085db] text-white',

@@ -30,6 +30,20 @@ import {
   Trash,
 } from 'lucide-react';
 
+export const ETAPAS_CRONOGRAMA = [
+  { numero: 1, nome: 'Sapata' },
+  { numero: 2, nome: 'Alvenaria' },
+  { numero: 3, nome: 'Laje' },
+  { numero: 4, nome: 'Hidráulico' },
+  { numero: 5, nome: 'Elétrico' },
+  { numero: 6, nome: 'Reboco' },
+  { numero: 7, nome: 'Piso' },
+  { numero: 8, nome: 'Cerâmica' },
+  { numero: 9, nome: 'Gesso' },
+  { numero: 10, nome: 'Pintura' },
+  { numero: 11, nome: 'Acabamento' },
+] as const;
+
 export const UsuariosView: React.FC = () => {
   const {
     usuarios,
@@ -40,6 +54,7 @@ export const UsuariosView: React.FC = () => {
     setActiveUserId,
     obras,
     activeObra,
+    setActiveObraId,
     addObra,
     updateObra,
     deleteObra,
@@ -83,11 +98,154 @@ export const UsuariosView: React.FC = () => {
   const [obraToDelete, setObraToDelete] = useState<Obra | null>(null);
   const [obraNome, setObraNome] = useState('');
   const [obraEndereco, setObraEndereco] = useState('');
-  const [obraOrcamento, setObraOrcamento] = useState<number>(150000);
-  const [obraTetoMaoDeObra, setObraTetoMaoDeObra] = useState<number>(38000);
-  const [obraValorVenda, setObraValorVenda] = useState<number | ''>('');
+  const [obraOrcamentoInput, setObraOrcamentoInput] = useState('150.000,00');
+  const [obraTetoMaoDeObraInput, setObraTetoMaoDeObraInput] = useState('38.000,00');
+  const [obraValorVendaInput, setObraValorVendaInput] = useState('');
   const [obraStatus, setObraStatus] = useState<'em_andamento' | 'planejamento' | 'concluida' | 'cancelada'>('em_andamento');
-  const [obraEtapaAtual, setObraEtapaAtual] = useState('Fundação');
+  const [obraEtapaAtual, setObraEtapaAtual] = useState('Sapata');
+  const [obraSavedSuccess, setObraSavedSuccess] = useState(false);
+
+  // Obra em foco para o Cronograma de 11 Etapas
+  const [selectedObraTimelineId, setSelectedObraTimelineId] = useState<string>(activeObra?.id || obras[0]?.id || '');
+
+  const obraEmFoco = useMemo(() => {
+    return obras.find(o => o.id === selectedObraTimelineId) || activeObra || obras[0];
+  }, [obras, selectedObraTimelineId, activeObra]);
+
+  const getStepIndexForObra = (obra?: Obra): number => {
+    if (!obra) return 1;
+    if (obra.status === 'concluida' || (obra.etapaAtual || '').toLowerCase().includes('conclu')) return 12;
+    const etapa = (obra.etapaAtual || '').trim().toLowerCase();
+    const found = ETAPAS_CRONOGRAMA.findIndex(
+      e => e.nome.toLowerCase() === etapa || etapa.includes(e.nome.toLowerCase())
+    );
+    return found !== -1 ? found + 1 : 1;
+  };
+
+  const handleSelectObraStep = (obraTarget: Obra, stepNumber: number) => {
+    const target = ETAPAS_CRONOGRAMA[stepNumber - 1];
+    if (!target) return;
+
+    updateObra({
+      ...obraTarget,
+      etapaAtual: target.nome,
+      status: 'em_andamento',
+    });
+  };
+
+  const handleSelectObraConcluido = (obraTarget: Obra) => {
+    updateObra({
+      ...obraTarget,
+      etapaAtual: 'Concluído',
+      status: 'concluida',
+    });
+  };
+
+  // Obras Table Filter & Search
+  const [obraSearchTerm, setObraSearchTerm] = useState('');
+  const [obraStatusFilter, setObraStatusFilter] = useState<'all' | 'ativo' | 'inativo' | 'em_andamento' | 'planejamento' | 'concluida' | 'cancelada'>('all');
+  const [obraEtapaFilter, setObraEtapaFilter] = useState<string>('all');
+
+  const etapasDisponiveis = useMemo(() => {
+    const defaultEtapas = [...ETAPAS_CRONOGRAMA.map(e => e.nome), 'Concluído'];
+    const fromObras = obras.map(o => o.etapaAtual).filter(Boolean) as string[];
+    return Array.from(new Set([...defaultEtapas, ...fromObras]));
+  }, [obras]);
+
+  const filteredObras = useMemo(() => {
+    return obras.filter(obra => {
+      const isAtivo = obra.status === 'em_andamento' || obra.status === 'andamento' || obra.status === 'planejamento';
+      const matchesSearch =
+        !obraSearchTerm ||
+        obra.nome.toLowerCase().includes(obraSearchTerm.toLowerCase()) ||
+        (obra.endereco && obra.endereco.toLowerCase().includes(obraSearchTerm.toLowerCase()));
+
+      const matchesStatus =
+        obraStatusFilter === 'all'
+          ? true
+          : obraStatusFilter === 'ativo'
+          ? isAtivo
+          : obraStatusFilter === 'inativo'
+          ? !isAtivo
+          : obraStatusFilter === 'em_andamento'
+          ? obra.status === 'em_andamento' || obra.status === 'andamento'
+          : obraStatusFilter === 'planejamento'
+          ? obra.status === 'planejamento'
+          : obraStatusFilter === 'concluida'
+          ? obra.status === 'concluida'
+          : obraStatusFilter === 'cancelada'
+          ? obra.status === 'cancelada'
+          : true;
+
+      const matchesEtapa =
+        obraEtapaFilter === 'all'
+          ? true
+          : (obra.etapaAtual || 'Fundação').toLowerCase() === obraEtapaFilter.toLowerCase();
+
+      return matchesSearch && matchesStatus && matchesEtapa;
+    });
+  }, [obras, obraSearchTerm, obraStatusFilter, obraEtapaFilter]);
+
+  const getObraStatusBadge = (status: string) => {
+    switch (status) {
+      case 'concluida':
+        return (
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60 whitespace-nowrap shrink-0 tracking-wide">
+            Concluído
+          </span>
+        );
+      case 'cancelada':
+        return (
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/60 whitespace-nowrap shrink-0 tracking-wide">
+            Cancelada
+          </span>
+        );
+      case 'planejamento':
+        return (
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60 whitespace-nowrap shrink-0 tracking-wide">
+            Projetando
+          </span>
+        );
+      case 'em_andamento':
+      case 'andamento':
+      default:
+        return (
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-[#0085db] dark:text-blue-400 border border-[#0085db]/20 whitespace-nowrap shrink-0 tracking-wide">
+            Operante
+          </span>
+        );
+    }
+  };
+
+  const formatMoneyInput = (val: number | undefined | null): string => {
+    if (val === undefined || val === null || isNaN(val) || val === 0) return '';
+    return new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(val);
+  };
+
+  const handleCurrencyInputChange = (value: string, setter: (val: string) => void) => {
+    const digits = value.replace(/\D/g, '');
+    if (!digits) {
+      setter('');
+      return;
+    }
+    const num = parseFloat(digits) / 100;
+    setter(
+      new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(num)
+    );
+  };
+
+  const parseMoney = (str: string): number => {
+    if (!str) return 0;
+    const clean = str.replace(/\./g, '').replace(',', '.');
+    const n = parseFloat(clean);
+    return isNaN(n) ? 0 : n;
+  };
 
   const modulosList: { key: keyof Usuario['permissoes']; label: string; description: string }[] = [
     { key: 'dashboard', label: 'Dashboard', description: '' },
@@ -288,7 +446,7 @@ export const UsuariosView: React.FC = () => {
 
     const newUser: Usuario = {
       id: `user-${Date.now()}`,
-      nome: nome.trim(),
+      nome: nome.trim().toUpperCase(),
       email: email.trim(),
       perfil,
       avatarColor: 'bg-[#f6f9fc] text-[#707a82]',
@@ -322,11 +480,11 @@ export const UsuariosView: React.FC = () => {
     setEditingObra(obra);
     setObraNome(obra.nome);
     setObraEndereco(obra.endereco);
-    setObraOrcamento(obra.orcamentoTotal);
-    setObraTetoMaoDeObra(obra.tetoMaoDeObra);
-    setObraValorVenda(obra.valorVenda ?? '');
+    setObraOrcamentoInput(obra.orcamentoTotal ? formatMoneyInput(obra.orcamentoTotal) : '');
+    setObraTetoMaoDeObraInput(obra.tetoMaoDeObra ? formatMoneyInput(obra.tetoMaoDeObra) : '');
+    setObraValorVendaInput(obra.valorVenda ? formatMoneyInput(obra.valorVenda) : '');
     setObraStatus(obra.status === 'andamento' ? 'em_andamento' : obra.status);
-    setObraEtapaAtual(obra.etapaAtual || 'Fundação');
+    setObraEtapaAtual(obra.etapaAtual || (obra.status === 'concluida' ? 'Concluído' : 'Sapata'));
     setIsObraModalOpen(true);
   };
 
@@ -340,41 +498,52 @@ export const UsuariosView: React.FC = () => {
     e.preventDefault();
     if (!obraNome.trim()) return;
 
+    const orcamentoTotal = parseMoney(obraOrcamentoInput) || 100000;
+    const tetoMaoDeObra = parseMoney(obraTetoMaoDeObraInput) || 30000;
+    const valorVenda = obraValorVendaInput ? parseMoney(obraValorVendaInput) : undefined;
+    const isConcluida = obraStatus === 'concluida' || obraEtapaAtual === 'Concluído';
+
     if (editingObra) {
       const updated: Obra = {
         ...editingObra,
-        nome: obraNome.trim(),
+        nome: obraNome.trim().toUpperCase(),
         endereco: obraEndereco.trim() || 'Endereço a definir',
-        orcamentoTotal: obraOrcamento || 100000,
-        tetoMaoDeObra: obraTetoMaoDeObra || 30000,
-        valorVenda: obraValorVenda !== '' ? Number(obraValorVenda) : undefined,
-        status: obraStatus,
-        etapaAtual: obraEtapaAtual || 'Fundação',
+        orcamentoTotal,
+        tetoMaoDeObra,
+        valorVenda,
+        status: isConcluida ? 'concluida' : obraStatus,
+        etapaAtual: obraEtapaAtual || (isConcluida ? 'Concluído' : 'Sapata'),
       };
       updateObra(updated);
     } else {
       const novaObra: Obra = {
         id: `obra-${Date.now()}`,
-        nome: obraNome.trim(),
+        nome: obraNome.trim().toUpperCase(),
         endereco: obraEndereco.trim() || 'Endereço a definir',
         dataInicio: getTodayISO(),
-        orcamentoTotal: obraOrcamento || 100000,
-        tetoMaoDeObra: obraTetoMaoDeObra || 30000,
+        orcamentoTotal,
+        tetoMaoDeObra,
         etapaAtualId: 'etapa-1',
-        valorVenda: obraValorVenda !== '' ? Number(obraValorVenda) : undefined,
-        status: obraStatus,
-        etapaAtual: obraEtapaAtual || 'Fundação',
+        valorVenda,
+        status: isConcluida ? 'concluida' : (obraStatus || 'em_andamento'),
+        etapaAtual: obraEtapaAtual || (isConcluida ? 'Concluído' : 'Sapata'),
       };
       addObra(novaObra);
     }
 
-    setIsObraModalOpen(false);
-    setEditingObra(null);
-    setObraNome('');
-    setObraEndereco('');
-    setObraValorVenda('');
-    setObraStatus('em_andamento');
-    setObraEtapaAtual('Fundação');
+    setObraSavedSuccess(true);
+    setTimeout(() => {
+      setObraSavedSuccess(false);
+      setIsObraModalOpen(false);
+      setEditingObra(null);
+      setObraNome('');
+      setObraEndereco('');
+      setObraOrcamentoInput('150.000,00');
+      setObraTetoMaoDeObraInput('38.000,00');
+      setObraValorVendaInput('');
+      setObraStatus('em_andamento');
+      setObraEtapaAtual('Sapata');
+    }, 1200);
   };
 
   const handleSaveMasterEmail = (e: React.FormEvent) => {
@@ -503,7 +672,7 @@ export const UsuariosView: React.FC = () => {
               className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#0085db] hover:bg-[#0071ba] text-white text-xs font-bold rounded-xl shadow-sm shadow-[#0085db]/25 transition-all active:scale-95 cursor-pointer self-start sm:self-auto"
             >
               <Plus className="w-4 h-4" />
-              <span>Adicionar Usuário</span>
+              <span>Adicionar usuário</span>
             </button>
           </div>
 
@@ -614,8 +783,11 @@ export const UsuariosView: React.FC = () => {
                               </div>
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <span className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white">
-                                    {user.nome}
+                                  <span
+                                    className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white uppercase"
+                                    style={{ textTransform: 'uppercase' }}
+                                  >
+                                    {user.nome?.toUpperCase()}
                                   </span>
                                   {isCurrentUser && (
                                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] border border-[#e6ecf1] dark:border-[#333f55]">
@@ -711,125 +883,392 @@ export const UsuariosView: React.FC = () => {
       ) : activeSubTab === 'obras' ? (
         /* Obras List */
         <div className="space-y-6">
+          {/* Section Header matching Permissões */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white">
-                Gestão de obras
-              </h2>
-              <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                Múltiplas obras com orçamentos diferentes
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111c2d] dark:text-white tracking-tight">
+                Obras
+              </h1>
+              <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-1">
+                Gerencie canteiros, orçamentos e etc.
               </p>
             </div>
 
             <button
-              onClick={() => setIsObraModalOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer self-start sm:self-auto"
+              onClick={() => {
+                setEditingObra(null);
+                setObraNome('');
+                setObraEndereco('');
+                setObraOrcamentoInput('150.000,00');
+                setObraTetoMaoDeObraInput('38.000,00');
+                setObraValorVendaInput('');
+                setObraStatus('em_andamento');
+                setObraEtapaAtual('Sapata');
+                setIsObraModalOpen(true);
+              }}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#0085db] hover:bg-[#0071ba] text-white text-xs font-bold rounded-xl shadow-sm shadow-[#0085db]/25 transition-all active:scale-95 cursor-pointer self-start sm:self-auto"
             >
               <Plus className="w-4 h-4" />
               <span>Cadastrar obra</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {obras.map(obra => {
-              const isCurrent = obra.id === activeObra.id;
-              const statusLabel = obra.status === 'em_andamento' || obra.status === 'andamento' ? 'EM ANDAMENTO' : obra.status === 'concluida' ? 'CONCLUÍDA' : obra.status === 'cancelada' ? 'CANCELADA' : 'PLANEJAMENTO';
-              const statusColor = obra.status === 'em_andamento' || obra.status === 'andamento' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' : obra.status === 'concluida' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : obra.status === 'cancelada' ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
-              const previsaoLucro = obra.valorVenda ? obra.valorVenda - obra.orcamentoTotal : null;
+          {/* Filter Toolbar matching Permissões */}
+          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3 sm:p-4 shadow-xs">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+              {/* Search Bar */}
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar obras..."
+                  value={obraSearchTerm}
+                  onChange={e => setObraSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white placeholder:text-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-[#0085db]/40"
+                />
+                {obraSearchTerm && (
+                  <button
+                    onClick={() => setObraSearchTerm('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 text-xs"
+                  >
+                    <XIcon className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
 
-              return (
-                <div
-                  key={obra.id}
-                  className={`bg-white dark:bg-[#111c2d] border rounded-[18px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between ${
-                    isCurrent
-                      ? 'border-[#0085db] ring-2 ring-[#0085db]/20'
-                      : 'border-[#e6ecf1] dark:border-[#333f55]'
-                  }`}
+              {/* Status Dropdown */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-zinc-500 shrink-0">Status:</span>
+                <select
+                  value={obraStatusFilter}
+                  onChange={e => setObraStatusFilter(e.target.value as any)}
+                  className="px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white font-medium focus:outline-hidden focus:ring-2 focus:ring-[#0085db]/40 cursor-pointer"
                 >
-                  <div>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-[#707a82] uppercase tracking-wider">
-                            Início: {formatDateBR(obra.dataInicio)}
-                          </span>
-                          {isCurrent && (
-                            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#0085db] text-white">
-                              Obra Ativa
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="text-base font-extrabold text-[#111c2d] dark:text-white mt-1">
-                          {obra.nome}
-                        </h3>
-                        <p className="text-xs text-[#707a82] mt-0.5">{obra.endereco}</p>
-                      </div>
+                  <option value="all">Todos os status</option>
+                  <option value="ativo">Ativo</option>
+                  <option value="inativo">Inativo</option>
+                  <option value="em_andamento">Operante</option>
+                  <option value="planejamento">Projetando</option>
+                  <option value="concluida">Concluído</option>
+                  <option value="cancelada">Cancelada</option>
+                </select>
+              </div>
 
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditObra(obra)}
-                          className="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-[#0085db]/10 hover:text-[#0085db] flex items-center justify-center transition-colors cursor-pointer"
-                          title="Editar Obra"
-                        >
-                          <Pencil className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setObraToDelete(obra)}
-                          className="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-rose-500/10 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer"
-                          title="Excluir Obra"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
+              {/* Etapa Dropdown */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-zinc-500 shrink-0">Etapa:</span>
+                <select
+                  value={obraEtapaFilter}
+                  onChange={e => setObraEtapaFilter(e.target.value)}
+                  className="px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white font-medium focus:outline-hidden focus:ring-2 focus:ring-[#0085db]/40 cursor-pointer"
+                >
+                  <option value="all">Todas as etapas</option>
+                  {etapasDisponiveis.map(etapa => (
+                    <option key={etapa} value={etapa}>{etapa}</option>
+                  ))}
+                </select>
+              </div>
 
-                    <div className="mt-4 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] space-y-1.5 text-xs">
-                      <div className="flex justify-between text-[#707a82]">
-                        <span>Orçamento Previsto:</span>
-                        <span className="font-bold text-[#111c2d] dark:text-white tabular-nums">
-                          {formatBRL(obra.orcamentoTotal)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-[#707a82]">
-                        <span>Teto Fechado Mão de Obra:</span>
-                        <span className="font-bold text-[#0085db] tabular-nums">
-                          {formatBRL(obra.tetoMaoDeObra)}
-                        </span>
-                      </div>
-                      {obra.valorVenda !== undefined && obra.valorVenda > 0 && (
-                        <>
-                          <div className="flex justify-between text-[#707a82]">
-                            <span>Valor de Venda:</span>
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
-                              {formatBRL(obra.valorVenda)}
-                            </span>
-                          </div>
-                          {previsaoLucro !== null && (
-                            <div className="flex justify-between text-[#707a82]">
-                              <span>Previsão de Lucro:</span>
-                              <span className={`font-bold tabular-nums ${previsaoLucro >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600'}`}>
-                                {formatBRL(previsaoLucro)}
+              {/* Clear / Reset Filters */}
+              {(obraSearchTerm || obraStatusFilter !== 'all' || obraEtapaFilter !== 'all') && (
+                <button
+                  onClick={() => {
+                    setObraSearchTerm('');
+                    setObraStatusFilter('all');
+                    setObraEtapaFilter('all');
+                  }}
+                  className="px-3.5 py-2 text-xs font-semibold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db]/20 dark:bg-[#0085db]/20 dark:hover:bg-[#0085db]/30 rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Limpar</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Corporate Data Table matching Permissões (Mais largo e fino) */}
+          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] bg-zinc-50/70 dark:bg-[#162232]/50 text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+                    <th className="py-4 px-5 sm:px-6">Obra</th>
+                    <th className="py-4 px-4 sm:px-6">Status</th>
+                    <th className="py-4 px-4 sm:px-6">Etapa</th>
+                    <th className="py-4 px-4 sm:px-6">Orçamento & Valores</th>
+                    <th className="py-4 px-5 sm:px-6 text-right">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#e6ecf1] dark:divide-[#333f55] text-xs">
+                  {filteredObras.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-zinc-400">
+                        Nenhuma obra encontrada com os filtros selecionados.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredObras.map(obra => {
+                      const isCurrent = obra.id === activeObra.id;
+                      const isAtivo = obra.status === 'em_andamento' || obra.status === 'andamento' || obra.status === 'planejamento';
+                      const currentStep = getStepIndexForObra(obra);
+                      const isAllCompleted = obra.status === 'concluida' || (obra.etapaAtual || '').toLowerCase().includes('conclu');
+
+                      return (
+                        <React.Fragment key={obra.id}>
+                          {/* Linha principal com informações da obra */}
+                          <tr
+                            className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors"
+                          >
+                            {/* Obra Column */}
+                            <td className="py-4 px-5 sm:px-6">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-[#0085db] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                                  <Building className="w-4 h-4" />
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                    <span
+                                      className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white uppercase"
+                                      style={{ textTransform: 'uppercase' }}
+                                    >
+                                      {obra.nome?.toUpperCase()}
+                                    </span>
+                                    {isCurrent && (
+                                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db] border border-[#0085db]/20 whitespace-nowrap shrink-0 uppercase">
+                                        EM USO
+                                      </span>
+                                    )}
+                                    {getObraStatusBadge(obra.status)}
+                                  </div>
+                                  <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block uppercase mt-0.5">
+                                    {obra.endereco || 'Sem endereço informado'}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Status Column with light indicator */}
+                            <td className="py-4 px-4 sm:px-6">
+                              <span
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border whitespace-nowrap ${
+                                  isAtivo
+                                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-900/60'
+                                    : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200/60 dark:border-rose-900/60'
+                                }`}
+                              >
+                                <span
+                                  className={`w-2 h-2 rounded-full shrink-0 ${
+                                    isAtivo ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+                                  }`}
+                                />
+                                <span>{isAtivo ? 'Ativo' : 'Inativo'}</span>
                               </span>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
+                            </td>
 
-                  <div className="mt-4 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center gap-2 text-xs">
-                    <span className={`px-2.5 py-1 rounded-lg font-bold border ${statusColor}`}>
-                      {statusLabel}
-                    </span>
-                    <span className="px-2.5 py-1 rounded-lg font-bold border bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 uppercase">
-                      ETAPA: {obra.etapaAtual || 'FUNDAÇÃO'}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+                            {/* Etapa Column */}
+                            <td className="py-4 px-4 sm:px-6">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#0085db]/10 text-[#0085db] dark:text-[#0085db] border border-[#0085db]/20">
+                                <span>{obra.etapaAtual || 'Sapata'}</span>
+                              </span>
+                            </td>
+
+                            {/* Orçamento & Valores Column */}
+                            <td className="py-4 px-4 sm:px-6">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white tabular-nums">
+                                    {formatBRL(obra.orcamentoTotal)}
+                                  </span>
+                                  <span className="text-[10px] font-semibold text-zinc-400 uppercase">
+                                    (Custo)
+                                  </span>
+                                </div>
+
+                                <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] tabular-nums block">
+                                  Mão de obra: <strong className="text-[#0085db] font-semibold">{formatBRL(obra.tetoMaoDeObra)}</strong>
+                                </span>
+
+                                {obra.valorVenda !== undefined && obra.valorVenda > 0 ? (
+                                  <div className="pt-1 mt-1 border-t border-[#e6ecf1] dark:border-[#333f55] space-y-0.5 text-[11px] tabular-nums">
+                                    <div className="flex items-center justify-between gap-3 text-[#707a82] dark:text-[#7c8fac]">
+                                      <span>Venda:</span>
+                                      <strong className="text-[#111c2d] dark:text-white font-bold">
+                                        {formatBRL(obra.valorVenda)}
+                                      </strong>
+                                    </div>
+                                    <div className="flex items-center justify-between gap-3">
+                                      <span className="text-[#707a82] dark:text-[#7c8fac]">Possível lucro:</span>
+                                      <strong
+                                        className={`font-bold ${
+                                          obra.valorVenda - obra.orcamentoTotal >= 0
+                                            ? 'text-emerald-600 dark:text-emerald-400'
+                                            : 'text-rose-600 dark:text-rose-400'
+                                        }`}
+                                      >
+                                        {formatBRL(obra.valorVenda - obra.orcamentoTotal)}
+                                      </strong>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <span className="text-[10px] text-zinc-400 italic block">
+                                    Venda não informada
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+
+                            {/* Actions Column */}
+                            <td className="py-4 px-5 sm:px-6 text-right">
+                              <div className="inline-flex items-center justify-end gap-1.5">
+                                {/* Switch Active Obra button if not current */}
+                                {!isCurrent && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setActiveObraId(obra.id);
+                                    }}
+                                    title={`Tornar ${obra.nome} a obra ativa`}
+                                    className="p-1.5 rounded-lg text-zinc-500 hover:text-[#0085db] hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all cursor-pointer"
+                                  >
+                                    <Building className="w-4 h-4" />
+                                  </button>
+                                )}
+
+                                {/* Edit Obra Modal Button (Pencil icon) */}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenEditObra(obra);
+                                  }}
+                                  title="Editar obra"
+                                  className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+
+                                {/* Delete Obra Button (Trash icon) */}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setObraToDelete(obra);
+                                  }}
+                                  title="Excluir obra"
+                                  className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+
+                          {/* Linha individual da régua de 11 etapas + Concluído para cada obra */}
+                          <tr className="border-b border-[#e6ecf1] dark:border-[#333f55]">
+                            <td colSpan={5} className="px-5 sm:px-6 pt-1 pb-4 bg-zinc-50/40 dark:bg-[#162232]/20">
+                              <div className="overflow-x-auto py-1 scrollbar-thin">
+                                <div className="min-w-[840px] px-2">
+                                  <div className="relative w-full">
+                                    {/* Linha conectora de fundo e progresso */}
+                                    <div className="absolute top-3 -translate-y-1/2 left-3 right-3 h-1.5 z-0 pointer-events-none">
+                                      <div className="w-full h-full bg-[#6b7280] dark:bg-zinc-700 rounded-full" />
+                                      <div
+                                        className={`absolute top-0 left-0 h-full rounded-full transition-all duration-300 ${
+                                          isAllCompleted ? 'bg-emerald-500' : 'bg-[#0085db]'
+                                        }`}
+                                        style={{
+                                          width: `${isAllCompleted ? 100 : Math.max(0, ((currentStep - 1) / 11) * 100)}%`,
+                                        }}
+                                      />
+                                    </div>
+
+                                    {/* 11 Etapas Numeradas + Etapa Concluído */}
+                                    <div className="relative flex items-start justify-between w-full z-10">
+                                      {ETAPAS_CRONOGRAMA.map(etapa => {
+                                        const isFilled = isAllCompleted || etapa.numero <= currentStep;
+
+                                        return (
+                                          <button
+                                            key={etapa.numero}
+                                            type="button"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleSelectObraStep(obra, etapa.numero);
+                                            }}
+                                            title={`${etapa.numero} - ${etapa.nome}`}
+                                            className="flex flex-col items-center group cursor-pointer focus:outline-hidden"
+                                          >
+                                            <div
+                                              className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white transition-all transform group-hover:scale-110 active:scale-95 shadow-xs ${
+                                                isAllCompleted
+                                                  ? 'bg-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-950/60'
+                                                  : isFilled
+                                                  ? 'bg-[#0085db] ring-2 ring-blue-100 dark:ring-blue-950/60'
+                                                  : 'bg-[#6b7280] dark:bg-zinc-600 text-white'
+                                              }`}
+                                            >
+                                              {etapa.numero}
+                                            </div>
+
+                                            <span
+                                              className={`mt-1.5 text-[10px] font-bold tracking-wider text-center select-none transition-colors ${
+                                                isAllCompleted
+                                                  ? 'text-emerald-600 dark:text-emerald-400 font-extrabold'
+                                                  : isFilled
+                                                  ? 'text-[#0085db] dark:text-blue-400 font-extrabold'
+                                                  : 'text-zinc-400 dark:text-zinc-500 font-medium'
+                                              }`}
+                                            >
+                                              {etapa.nome}
+                                            </span>
+                                          </button>
+                                        );
+                                      })}
+
+                                      {/* 12º Nó: Concluído */}
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleSelectObraConcluido(obra);
+                                        }}
+                                        title="Concluído"
+                                        className="flex flex-col items-center group cursor-pointer focus:outline-hidden"
+                                      >
+                                        <div
+                                          className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-all transform group-hover:scale-110 active:scale-95 shadow-xs ${
+                                            isAllCompleted
+                                              ? 'bg-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-950/60'
+                                              : 'bg-[#6b7280] dark:bg-zinc-600 text-white'
+                                          }`}
+                                        >
+                                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                                        </div>
+
+                                        <span
+                                          className={`mt-1.5 text-[10px] font-bold tracking-wider text-center select-none transition-colors ${
+                                            isAllCompleted
+                                              ? 'text-emerald-600 dark:text-emerald-400 font-extrabold'
+                                              : 'text-zinc-400 dark:text-zinc-500 font-medium'
+                                          }`}
+                                        >
+                                          Concluído
+                                        </span>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </React.Fragment>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       ) : (
@@ -1451,14 +1890,14 @@ export const UsuariosView: React.FC = () => {
           setIsObraModalOpen(false);
           setEditingObra(null);
         }}
-        title={editingObra ? 'Editar Obra' : 'Cadastrar Nova Obra'}
-        subtitle="Gerencie canteiros, orçamentos, status e valor de venda."
+        title={editingObra ? 'Editar obra' : 'Cadastrar obra'}
+        subtitle="Gerencie canteiros, orçamentos e etc."
         maxWidth="md"
       >
         <form onSubmit={handleSaveObra} className="space-y-3">
           <div>
             <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-              Nome da Obra *
+              Nome da obra
             </label>
             <input
               type="text"
@@ -1486,46 +1925,60 @@ export const UsuariosView: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Orçamento Estimado (R$)
+                Orçamento estimado (R$)
               </label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={obraOrcamento}
-                onChange={e => setObraOrcamento(parseFloat(e.target.value) || 0)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#707a82] dark:text-[#7c8fac] select-none">
+                  R$
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="0,00"
+                  value={obraOrcamentoInput}
+                  onChange={e => handleCurrencyInputChange(e.target.value, setObraOrcamentoInput)}
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db] font-semibold tabular-nums"
+                />
+              </div>
             </div>
             <div>
               <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Teto Mão de Obra (R$)
+                Total mão de obra (R$)
               </label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={obraTetoMaoDeObra}
-                onChange={e => setObraTetoMaoDeObra(parseFloat(e.target.value) || 0)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#707a82] dark:text-[#7c8fac] select-none">
+                  R$
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="0,00"
+                  value={obraTetoMaoDeObraInput}
+                  onChange={e => handleCurrencyInputChange(e.target.value, setObraTetoMaoDeObraInput)}
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db] font-semibold tabular-nums"
+                />
+              </div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Valor de Venda (R$) (Opcional)
+                Valor da venda (R$) (Opcional)
               </label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                placeholder="Ex: 200000"
-                value={obraValorVenda}
-                onChange={e => setObraValorVenda(e.target.value === '' ? '' : parseFloat(e.target.value) || 0)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#707a82] dark:text-[#7c8fac] select-none">
+                  R$
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="0,00"
+                  value={obraValorVendaInput}
+                  onChange={e => handleCurrencyInputChange(e.target.value, setObraValorVendaInput)}
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db] font-semibold tabular-nums"
+                />
+              </div>
             </div>
             <div>
               <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
@@ -1533,29 +1986,52 @@ export const UsuariosView: React.FC = () => {
               </label>
               <select
                 value={obraStatus}
-                onChange={e => setObraStatus(e.target.value as any)}
+                onChange={e => {
+                  const val = e.target.value as any;
+                  setObraStatus(val);
+                  if (val === 'concluida') {
+                    setObraEtapaAtual('Concluído');
+                  }
+                }}
                 className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer"
               >
-                <option value="em_andamento">Em andamento</option>
-                <option value="concluida">Concluída</option>
+                <option value="em_andamento">Operante</option>
+                <option value="concluida">Concluído</option>
                 <option value="cancelada">Cancelada</option>
-                <option value="planejamento">Planejamento</option>
+                <option value="planejamento">Projetando</option>
               </select>
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-              Etapa Atual
+              Etapa *
             </label>
-            <input
-              type="text"
-              placeholder="Ex: Fundação, Estrutura, Alvenaria, Acabamento"
+            <select
               value={obraEtapaAtual}
-              onChange={e => setObraEtapaAtual(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
-            />
+              onChange={e => {
+                setObraEtapaAtual(e.target.value);
+                if (e.target.value === 'Concluído') {
+                  setObraStatus('concluida');
+                }
+              }}
+              className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer"
+            >
+              {ETAPAS_CRONOGRAMA.map(e => (
+                <option key={e.numero} value={e.nome}>
+                  {e.numero} - {e.nome}
+                </option>
+              ))}
+              <option value="Concluído">Concluído</option>
+            </select>
           </div>
+
+          {obraSavedSuccess && (
+            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs flex items-center gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span>Salvo com sucesso!</span>
+            </div>
+          )}
 
           <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
             <button
@@ -1572,7 +2048,7 @@ export const UsuariosView: React.FC = () => {
               type="submit"
               className="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer"
             >
-              Salvar Obra
+              Salvar
             </button>
           </div>
         </form>
