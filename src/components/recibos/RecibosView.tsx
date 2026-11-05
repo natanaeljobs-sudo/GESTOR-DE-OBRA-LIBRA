@@ -125,15 +125,10 @@ REFERENTE A:
 ${rec.motivo}
 Período: ${formatDateBR(rec.periodoInicio)} a ${formatDateBR(rec.periodoFim)}
 
-TRABALHADOR:
-Nome: ${rec.trabalhadorNome}
-Função: ${rec.trabalhadorFuncao}
-CPF: ${rec.trabalhadorCpf}
-
 ${rec.localCidade}, ${formatDateBR(rec.dataEmissao)}
 
 _________________________________________
-Assinatura do Trabalhador
+Assinatura
     `.trim();
 
     navigator.clipboard.writeText(text);
@@ -359,9 +354,8 @@ Assinatura do Trabalhador
             <div className="space-y-3">
               {/* Toolbar */}
               <div className="flex items-center justify-between gap-2 bg-white dark:bg-[#111c2d] p-3.5 rounded-[18px] border border-[#e6ecf1] dark:border-[#333f55]">
-                <span className="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#4bd08b]" />
-                  Recibo #{previewRecibo.numeroRecibo} Gerado
+                <span className="text-xs font-bold text-[#111c2d] dark:text-white">
+                  Recibo #{previewRecibo.numeroRecibo}
                 </span>
                 <div className="flex items-center gap-2">
                   <button
@@ -388,10 +382,7 @@ Assinatura do Trabalhador
               >
                 {/* Header */}
                 <div className="text-center pb-4 border-b-2 border-[#111c2d] mb-6">
-                  <p className="text-[10px] tracking-widest text-[#707a82] uppercase font-bold">
-                    DOCUMENTO OFICIAL DE QUITAÇÃO DE MÃO DE OBRA
-                  </p>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-[#111c2d] uppercase mt-0.5">
+                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-[#111c2d] uppercase">
                     RECIBO DE PAGAMENTO
                   </h1>
                   <p className="text-xs font-semibold text-[#707a82] mt-1">
@@ -418,10 +409,6 @@ Assinatura do Trabalhador
                     <strong>{previewRecibo.motivo}</strong>, no período de{' '}
                     <strong>{formatDateBR(previewRecibo.periodoInicio)}</strong> até{' '}
                     <strong>{formatDateBR(previewRecibo.periodoFim)}</strong>.
-                  </p>
-
-                  <p className="text-slate-700">
-                    Pelo presente, dou plena, rasa, geral e irrevogável quitação de todos os valores e diárias referentes às tarefas executadas no período acima mencionado, nada mais tendo a reclamar a qualquer título.
                   </p>
                 </div>
 
@@ -453,16 +440,11 @@ Assinatura do Trabalhador
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-end">
                     <div className="text-center pt-8 border-t border-slate-400">
-                      <p className="font-bold text-[#111c2d]">{previewRecibo.responsavelNome}</p>
-                      <p className="text-[11px] text-[#707a82]">Responsável pelo Pagamento</p>
+                      <p className="text-xs text-[#707a82]">Assinatura</p>
                     </div>
 
-                    <div className="text-center pt-8 border-t border-[#111c2d]">
-                      <p className="font-black text-[#111c2d]">{previewRecibo.trabalhadorNome}</p>
-                      <p className="text-[11px] text-[#707a82]">
-                        {previewRecibo.trabalhadorFuncao} · CPF: {previewRecibo.trabalhadorCpf}
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Assinatura do Trabalhador</p>
+                    <div className="text-center pt-8 border-t border-slate-400">
+                      <p className="text-xs text-[#707a82]">Assinatura</p>
                     </div>
                   </div>
                 </div>

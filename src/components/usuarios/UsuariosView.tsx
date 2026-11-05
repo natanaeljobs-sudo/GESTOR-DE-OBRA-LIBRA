@@ -2352,7 +2352,7 @@ export const UsuariosView: React.FC = () => {
       <Modal
         isOpen={!!solicToDelete}
         onClose={() => setSolicToDelete(null)}
-        title="Excluir solicitação"
+        title="Confirmar exclusão"
         subtitle="Esta ação removerá o pedido de acesso do histórico"
         maxWidth="sm"
       >

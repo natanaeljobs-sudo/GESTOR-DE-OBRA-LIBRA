@@ -39,6 +39,7 @@ export const DespesasView: React.FC = () => {
   const [selectedEtapa, setSelectedEtapa] = useState<string>('todas');
   const [isModalOpen, setIsModalOpen] = useState(tabFilter === 'nova');
   const [editingDespesa, setEditingDespesa] = useState<Despesa | null>(null);
+  const [despesaToDelete, setDespesaToDelete] = useState<Despesa | null>(null);
 
   // Form state
   const [descricao, setDescricao] = useState('');
@@ -394,11 +395,7 @@ export const DespesasView: React.FC = () => {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => {
-                          if (confirm(`Excluir a despesa "${desp.descricao}"?`)) {
-                            deleteDespesa(desp.id);
-                          }
-                        }}
+                        onClick={() => setDespesaToDelete(desp)}
                         className="p-1.5 rounded-lg text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/10 cursor-pointer"
                         title="Excluir despesa"
                       >
@@ -832,6 +829,72 @@ export const DespesasView: React.FC = () => {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* MODAL: Confirmar exclusão de despesa no padrão do sistema */}
+      <Modal
+        isOpen={!!despesaToDelete}
+        onClose={() => setDespesaToDelete(null)}
+        title="Confirmar exclusão"
+        subtitle="Esta ação removerá a despesa do sistema"
+        maxWidth="sm"
+      >
+        {despesaToDelete && (
+          <div className="space-y-4">
+            <p className="text-xs text-zinc-600 dark:text-zinc-300">
+              Tem certeza que deseja remover a despesa <strong>&ldquo;{despesaToDelete.descricao}&rdquo;</strong>?
+            </p>
+
+            <div className="p-3 rounded-xl bg-zinc-50 dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] space-y-1.5 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Valor total:</span>
+                <span className="font-bold text-[#111c2d] dark:text-white tabular-nums">
+                  {formatBRL(despesaToDelete.valorTotalNota)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Fornecedor:</span>
+                <span className="font-medium text-[#111c2d] dark:text-white truncate max-w-[180px]">
+                  {despesaToDelete.fornecedorNome}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Data:</span>
+                <span className="text-[#111c2d] dark:text-white">
+                  {formatDateBR(despesaToDelete.data)}
+                </span>
+              </div>
+              {despesaToDelete.itens && despesaToDelete.itens.length > 0 && (
+                <div className="flex justify-between items-center text-[11px] text-[#707a82] dark:text-[#7c8fac] pt-1.5 border-t border-[#e6ecf1] dark:border-[#333f55]">
+                  <span>Itens discriminados:</span>
+                  <span className="font-semibold text-[#111c2d] dark:text-white">
+                    {despesaToDelete.itens.length} {despesaToDelete.itens.length === 1 ? 'item' : 'itens'}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setDespesaToDelete(null)}
+                className="px-3.5 py-2 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteDespesa(despesaToDelete.id);
+                  setDespesaToDelete(null);
+                }}
+                className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Excluir</span>
+              </button>
+            </div>
+          </div>
+        )}
       </Modal>
 
     </div>

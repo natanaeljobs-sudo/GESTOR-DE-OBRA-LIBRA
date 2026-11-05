@@ -36,6 +36,7 @@ export const MaoDeObraView: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<'todos' | 'pendente' | 'pago'>('todos');
   const [isDiariaModalOpen, setIsDiariaModalOpen] = useState(tabFilter === 'nova');
   const [isTrabModalOpen, setIsTrabModalOpen] = useState(false);
+  const [diariaToDelete, setDiariaToDelete] = useState<Diaria | null>(null);
 
   // Form for new Diaria
   const [trabalhadorId, setTrabalhadorId] = useState(trabalhadores[0]?.id || '');
@@ -495,11 +496,7 @@ export const MaoDeObraView: React.FC = () => {
                                 </button>
                               )}
                               <button
-                                onClick={() => {
-                                  if (confirm(`Excluir esta diária de ${dia.trabalhadorNome}?`)) {
-                                    deleteDiaria(dia.id);
-                                  }
-                                }}
+                                onClick={() => setDiariaToDelete(dia)}
                                 className="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer"
                                 title="Excluir lançamento"
                               >
@@ -766,6 +763,70 @@ export const MaoDeObraView: React.FC = () => {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* MODAL: Confirm Delete Diária no padrão do sistema */}
+      <Modal
+        isOpen={!!diariaToDelete}
+        onClose={() => setDiariaToDelete(null)}
+        title="Confirmar exclusão"
+        subtitle="Esta ação removerá o lançamento de diária do sistema"
+        maxWidth="sm"
+      >
+        {diariaToDelete && (
+          <div className="space-y-4">
+            <p className="text-xs text-zinc-600 dark:text-zinc-300">
+              Tem certeza que deseja remover a diária de <strong>&ldquo;{diariaToDelete.trabalhadorNome}&rdquo;</strong>?
+            </p>
+
+            <div className="p-3 rounded-xl bg-zinc-50 dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] space-y-1.5 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Trabalhador:</span>
+                <span className="font-bold text-[#111c2d] dark:text-white">
+                  {diariaToDelete.trabalhadorNome}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Data:</span>
+                <span className="text-[#111c2d] dark:text-white">
+                  {formatDateBR(diariaToDelete.data)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Valor líquido:</span>
+                <span className="font-bold text-[#111c2d] dark:text-white tabular-nums">
+                  {formatBRL(diariaToDelete.valorTotal)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Status:</span>
+                <span className={`font-semibold capitalize ${diariaToDelete.statusPagamento === 'pago' ? 'text-[#4bd08b]' : 'text-[#fb977d]'}`}>
+                  {diariaToDelete.statusPagamento}
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setDiariaToDelete(null)}
+                className="px-3.5 py-2 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteDiaria(diariaToDelete.id);
+                  setDiariaToDelete(null);
+                }}
+                className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Excluir</span>
+              </button>
+            </div>
+          </div>
+        )}
       </Modal>
 
     </div>

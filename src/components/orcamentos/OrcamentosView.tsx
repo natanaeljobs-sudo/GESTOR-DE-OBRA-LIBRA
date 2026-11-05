@@ -32,6 +32,7 @@ export const OrcamentosView: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConvertModalOpen, setIsConvertModalOpen] = useState(false);
   const [targetOrcamentoToConvert, setTargetOrcamentoToConvert] = useState<Orcamento | null>(null);
+  const [orcamentoToDelete, setOrcamentoToDelete] = useState<Orcamento | null>(null);
   const [convertFormaPagamento, setConvertFormaPagamento] = useState<'pix' | 'cartao_credito' | 'boleto' | 'dinheiro'>('pix');
 
   // Form for new quote
@@ -348,11 +349,7 @@ export const OrcamentosView: React.FC = () => {
                   {/* Actions Footer */}
                   <div className="mt-4 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
                     <button
-                      onClick={() => {
-                        if (confirm(`Excluir o orçamento de ${orc.fornecedorEmpresa}?`)) {
-                          deleteOrcamento(orc.id);
-                        }
-                      }}
+                      onClick={() => setOrcamentoToDelete(orc)}
                       className="p-1.5 text-[#707a82] hover:text-[#fb977d] rounded cursor-pointer"
                       title="Excluir orçamento"
                     >
@@ -711,6 +708,64 @@ export const OrcamentosView: React.FC = () => {
           </div>
         </Modal>
       )}
+
+      {/* MODAL: Confirm Delete Orçamento no padrão do sistema */}
+      <Modal
+        isOpen={!!orcamentoToDelete}
+        onClose={() => setOrcamentoToDelete(null)}
+        title="Confirmar exclusão"
+        subtitle="Esta ação removerá o orçamento do sistema"
+        maxWidth="sm"
+      >
+        {orcamentoToDelete && (
+          <div className="space-y-4">
+            <p className="text-xs text-zinc-600 dark:text-zinc-300">
+              Tem certeza que deseja remover o orçamento de <strong>&ldquo;{orcamentoToDelete.fornecedorEmpresa}&rdquo;</strong>?
+            </p>
+
+            <div className="p-3 rounded-xl bg-zinc-50 dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] space-y-1.5 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Valor total:</span>
+                <span className="font-bold text-[#111c2d] dark:text-white tabular-nums">
+                  {formatBRL(orcamentoToDelete.valorTotal)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Itens cotados:</span>
+                <span className="text-[#111c2d] dark:text-white font-medium">
+                  {orcamentoToDelete.itens.length} {orcamentoToDelete.itens.length === 1 ? 'item' : 'itens'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#707a82] dark:text-[#7c8fac]">Data da cotação:</span>
+                <span className="text-[#111c2d] dark:text-white">
+                  {formatDateBR(orcamentoToDelete.data)}
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setOrcamentoToDelete(null)}
+                className="px-3.5 py-2 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteOrcamento(orcamentoToDelete.id);
+                  setOrcamentoToDelete(null);
+                }}
+                className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Excluir</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
 
     </div>
   );
