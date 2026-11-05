@@ -16,6 +16,7 @@ import {
   CategoriaDespesa,
   SolicitacaoAcesso,
   PerfilUsuario,
+  ToastNotification,
 } from '../types';
 import {
   INITIAL_OBRAS,
@@ -169,6 +170,11 @@ interface AppContextType {
   isAuthenticated: boolean;
   login: (userId?: string) => void;
   logout: () => void;
+
+  // Toast Notification
+  toast: ToastNotification | null;
+  showToast: (message: string, type?: 'success' | 'warning' | 'error' | 'info', title?: string) => void;
+  hideToast: () => void;
 
   // Reset
   resetToSampleData: () => void;
@@ -368,6 +374,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }));
   });
 
+  // Toast state
+  const [toast, setToast] = useState<ToastNotification | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'warning' | 'error' | 'info' = 'success', title?: string) => {
+    const defaultTitle =
+      type === 'success' ? 'Sucesso' : type === 'error' ? 'Erro' : type === 'warning' ? 'Atenção' : 'Aviso';
+    setToast({
+      id: String(Date.now() + Math.random()),
+      type,
+      title: title || defaultTitle,
+      message,
+    });
+  };
+
+  const hideToast = () => {
+    setToast(null);
+  };
+
   // Sync state to local storage
   useEffect(() => setStored('obras', obras), [obras]);
   useEffect(() => setStored('etapas', etapas), [etapas]);
@@ -493,10 +517,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const deleteObra = (id: string) => {
     if (obras.length <= 1) return;
+    const obra = obras.find(o => o.id === id);
     setObras(prev => prev.filter(o => o.id !== id));
     if (activeObraId === id) {
       const remaining = obras.filter(o => o.id !== id);
       if (remaining.length > 0) setActiveObraId(remaining[0].id);
+    }
+    if (obra) {
+      showToast(`Obra "${obra.nome}" excluída com sucesso.`, 'success', 'Obra excluída');
     }
   };
 
@@ -513,7 +541,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const deleteUsuario = (id: string) => {
+    const user = usuarios.find(u => u.id === id);
     setUsuarios(prev => prev.filter(u => u.id !== id));
+    if (user) {
+      showToast(`Usuário "${user.nome}" excluído com sucesso.`, 'success', 'Usuário excluído');
+    }
   };
 
   const updateMasterEmail = (newEmail: string) => {
@@ -555,7 +587,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const deleteMaterial = (id: string) => {
+    const mat = materiais.find(m => m.id === id);
     setMateriais(prev => prev.filter(m => m.id !== id));
+    if (mat) {
+      showToast(`O material "${mat.nome}" foi excluído com sucesso do catálogo.`, 'success', 'Material excluído');
+    }
   };
 
   const addUnidadeMedida = (nome: string): boolean => {
@@ -678,8 +714,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const deleteDespesa = (id: string) => {
+    const desp = despesas.find(d => d.id === id);
     setDespesas(prev => prev.filter(d => d.id !== id));
     setAlertas(prev => prev.filter(a => a.entidadeId !== id));
+    if (desp) {
+      showToast(`Despesa "${desp.descricao}" excluída com sucesso.`, 'success', 'Despesa excluída');
+    }
   };
 
   const addTrabalhador = (trab: Omit<Trabalhador, 'id' | 'dataAdmissao'>) => {
@@ -709,6 +749,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const deleteDiaria = (id: string) => {
     setDiarias(prev => prev.filter(d => d.id !== id));
+    showToast(`Diária excluída com sucesso.`, 'success', 'Diária excluída');
   };
 
   const marcarDiariasPagas = (diariasIds: string[], comprovanteUrl?: string) => {
@@ -787,7 +828,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const deleteOrcamento = (id: string) => {
+    const orc = orcamentos.find(o => o.id === id);
     setOrcamentos(prev => prev.filter(o => o.id !== id));
+    if (orc) {
+      showToast(`Orçamento de "${orc.fornecedorEmpresa}" excluído com sucesso.`, 'success', 'Orçamento excluído');
+    }
   };
 
   const converterOrcamentoEmDespesa = (orcamentoId: string, formaPagamento: Despesa['formaPagamento']) => {
@@ -977,6 +1022,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         isAuthenticated,
         login,
         logout,
+        toast,
+        showToast,
+        hideToast,
       }}
     >
       {children}

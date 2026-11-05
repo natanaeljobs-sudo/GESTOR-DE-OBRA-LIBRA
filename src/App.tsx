@@ -4,6 +4,7 @@ import { Header } from './components/layout/Header';
 import { Sidebar } from './components/layout/Sidebar';
 import { MobileNav } from './components/layout/MobileNav';
 import { OfflineIndicator } from './components/layout/OfflineIndicator';
+import { Toast } from './components/common/Toast';
 
 import { LoginView } from './components/auth/LoginView';
 import { DashboardView } from './components/dashboard/DashboardView';
@@ -63,6 +64,9 @@ const MainApp: React.FC = () => {
 
       {/* Offline Indicator */}
       <OfflineIndicator />
+
+      {/* Action Notification Toast */}
+      <Toast />
     </div>
   );
 };

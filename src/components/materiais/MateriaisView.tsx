@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Material } from '../../types';
 import { formatBRL } from '../../utils/currency';
@@ -41,6 +41,7 @@ export const MateriaisView: React.FC = () => {
     activeObra,
     setActiveTab,
     navigateToTabWithFilter,
+    showToast,
   } = useApp();
 
   // Search & Filters matching Permissões view
@@ -83,6 +84,17 @@ export const MateriaisView: React.FC = () => {
   const [editingCategoriaNewName, setEditingCategoriaNewName] = useState('');
   const [deletingCategoria, setDeletingCategoria] = useState<string | null>(null);
   const [categoriaFeedback, setCategoriaFeedback] = useState<{ type: 'success' | 'warning'; message: string } | null>(null);
+
+  // Deleted material notification state
+  const [deletedMaterialNotice, setDeletedMaterialNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!deletedMaterialNotice) return;
+    const timer = setTimeout(() => {
+      setDeletedMaterialNotice(null);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [deletedMaterialNotice]);
 
   // Purchase stats calculation from real despesas
   const materialStats = useMemo(() => {
@@ -417,8 +429,15 @@ export const MateriaisView: React.FC = () => {
   // Handle Delete Material
   const handleConfirmDelete = () => {
     if (!materialToDelete) return;
+    const nomeExcluido = materialToDelete.nome;
     deleteMaterial(materialToDelete.id);
     setMaterialToDelete(null);
+    setDeletedMaterialNotice(nomeExcluido);
+    showToast(
+      `O material "${nomeExcluido}" foi excluído com sucesso do catálogo.`,
+      'success',
+      'Material excluído'
+    );
   };
 
   const formatCadastroData = (dataStr?: string) => {
@@ -454,6 +473,35 @@ export const MateriaisView: React.FC = () => {
         </button>
       </div>
 
+      {/* Notification banner when a material is deleted */}
+      {deletedMaterialNotice && (
+        <div
+          role="status"
+          className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/70 text-emerald-900 dark:text-emerald-100 text-xs shadow-xs flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-200"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-bold text-emerald-950 dark:text-emerald-100">
+                Material excluído com sucesso!
+              </p>
+              <p className="text-emerald-700 dark:text-emerald-300 text-[11px] mt-0.5 truncate">
+                O produto <strong className="uppercase font-bold">&quot;{deletedMaterialNotice}&quot;</strong> foi removido do catálogo.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setDeletedMaterialNotice(null)}
+            className="p-1.5 rounded-lg text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer shrink-0"
+            title="Fechar aviso"
+          >
+            <XIcon className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Filter Toolbar matching Permissões view */}
       <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3 sm:p-4 shadow-xs">
@@ -981,22 +1029,7 @@ export const MateriaisView: React.FC = () => {
               <p className="font-bold text-xs text-[#111c2d] dark:text-white uppercase">
                 {materialToDelete.nome}
               </p>
-              <p className="text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                Unidade: <strong className="text-[#111c2d] dark:text-white">{materialToDelete.unidadePadrao}</strong>
-                {materialToDelete.categoriaSugerida && ` · Categoria: ${materialToDelete.categoriaSugerida}`}
-              </p>
             </div>
-
-            {materialStats[materialToDelete.id]?.compras.length > 0 ? (
-              <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-400 text-xs">
-                ⚠️ <strong>Atenção:</strong> Este material possui{' '}
-                <strong>{materialStats[materialToDelete.id].compras.length} compras</strong> registradas em notas fiscais. A exclusão removerá o item da lista de novos lançamentos, mantendo os registros históricos das notas já emitidas.
-              </div>
-            ) : (
-              <p className="text-xs text-zinc-500">
-                Este item não possui compras registradas e será removido completamente do catálogo.
-              </p>
-            )}
 
             <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
               <button
@@ -1009,9 +1042,10 @@ export const MateriaisView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleConfirmDelete}
-                className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 transition-all rounded-xl shadow-xs cursor-pointer inline-flex items-center gap-1.5 focus:outline-hidden focus:ring-2 focus:ring-rose-500/50"
               >
-                Excluir Material
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Excluir</span>
               </button>
             </div>
           </div>
