@@ -633,7 +633,7 @@ export const MaoDeObraView: React.FC = () => {
             >
               {etapas.map(e => (
                 <option key={e.id} value={e.id}>
-                  {e.numero} — {e.nome}
+                  {e.numero === 0 ? e.nome : `${e.numero} - ${e.nome}`}
                 </option>
               ))}
             </select>

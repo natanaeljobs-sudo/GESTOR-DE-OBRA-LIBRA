@@ -5,8 +5,6 @@ import { formatDateBR, getTodayISO } from '../../utils/date';
 import {
   Download,
   Printer,
-  Calendar,
-  Layers,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -16,6 +14,7 @@ import {
 } from 'lucide-react';
 import { RelatorioObraImpresso } from './RelatorioObraImpresso';
 import { RelatorioPreviewModal } from './RelatorioPreviewModal';
+import { triggerSystemPrint } from '../../utils/relatorioPrintService';
 
 interface LedgerItem {
   id: string;
@@ -50,6 +49,10 @@ export const RelatoriosView: React.FC = () => {
   const [tempFim, setTempFim] = useState(dataFim);
   const datePopoverRef = useRef<HTMLDivElement>(null);
 
+  // Etapa dropdown state
+  const [isEtapaDropdownOpen, setIsEtapaDropdownOpen] = useState(false);
+  const etapaDropdownRef = useRef<HTMLDivElement>(null);
+
   // Table filter tab state
   const [categoryTab, setCategoryTab] = useState<string>('todos');
   const [tableSearch, setTableSearch] = useState<string>('');
@@ -58,20 +61,23 @@ export const RelatoriosView: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Close date popover on click outside
+  // Close popovers on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (datePopoverRef.current && !datePopoverRef.current.contains(event.target as Node)) {
         setIsDatePopoverOpen(false);
       }
+      if (etapaDropdownRef.current && !etapaDropdownRef.current.contains(event.target as Node)) {
+        setIsEtapaDropdownOpen(false);
+      }
     }
-    if (isDatePopoverOpen) {
+    if (isDatePopoverOpen || isEtapaDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isDatePopoverOpen]);
+  }, [isDatePopoverOpen, isEtapaDropdownOpen]);
 
   // Sync temp dates when popover opens
   const handleOpenDatePopover = () => {
@@ -326,6 +332,39 @@ export const RelatoriosView: React.FC = () => {
   const startIndex = (validCurrentPage - 1) * itemsPerPage;
   const paginatedItems = displayedLedgerItems.slice(startIndex, startIndex + itemsPerPage);
 
+  // Pagination items calculation (< 1 2 3 ... >)
+  const paginationConfig = useMemo(() => {
+    if (totalPages <= 4) {
+      return {
+        pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+        hasPrevEllipsis: false,
+        hasNextEllipsis: false,
+      };
+    }
+
+    if (validCurrentPage <= 3) {
+      return {
+        pages: [1, 2, 3],
+        hasPrevEllipsis: false,
+        hasNextEllipsis: true,
+      };
+    }
+
+    if (validCurrentPage >= totalPages - 2) {
+      return {
+        pages: [totalPages - 2, totalPages - 1, totalPages],
+        hasPrevEllipsis: true,
+        hasNextEllipsis: false,
+      };
+    }
+
+    return {
+      pages: [validCurrentPage - 1, validCurrentPage, validCurrentPage + 1],
+      hasPrevEllipsis: true,
+      hasNextEllipsis: true,
+    };
+  }, [totalPages, validCurrentPage]);
+
   // Helper for formatting short date (DD/MM)
   const formatShortDate = (dateStr: string) => {
     if (!dateStr) return '-';
@@ -369,15 +408,31 @@ export const RelatoriosView: React.FC = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    triggerSystemPrint({
+      obra: activeObra,
+      despesas: filteredDespesas,
+      diarias: filteredDiarias,
+      etapas,
+      dataInicio,
+      dataFim,
+      autoPrint: true,
+    });
   };
 
-  // Find selected etapa name
-  const selectedEtapaNome = useMemo(() => {
+  // Helper to format etapa label: "Antes de Iniciar" without 0, and "1 - Sapata", "2 - Alvenaria", etc.
+  const getEtapaLabel = (e: { numero: number; nome: string }) => {
+    if (e.numero === 0) return e.nome;
+    return `${e.numero} - ${e.nome}`;
+  };
+
+  // Find selected etapa label for filter button
+  const selectedEtapaLabel = useMemo(() => {
     if (selectedEtapa === 'todas') return 'Todas as etapas';
     const found = etapas.find(e => e.id === selectedEtapa);
-    return found ? `${found.numero} — ${found.nome}` : 'Etapa selecionada';
+    return found ? getEtapaLabel(found) : 'Todas as etapas';
   }, [selectedEtapa, etapas]);
+
+  const selectedEtapaNome = selectedEtapaLabel;
 
   return (
     <>
@@ -409,37 +464,26 @@ export const RelatoriosView: React.FC = () => {
 
             {/* Imprimir button */}
             <button
-              onClick={handlePrint}
+              onClick={() => setIsPreviewModalOpen(true)}
               className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer"
-              title="Imprimir relatório executivo consolidado da obra"
+              title="Abrir pré-visualização do relatório executivo consolidado"
             >
               <Printer className="w-4 h-4" />
               <span>Imprimir</span>
-            </button>
-
-            {/* Visualizar Relatório Impresso button */}
-            <button
-              onClick={() => setIsPreviewModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2.5 text-xs font-semibold text-[#0085db] dark:text-white bg-[#0085db]/10 dark:bg-[#0085db]/20 border border-[#0085db]/30 hover:bg-[#0085db]/20 rounded-xl transition-all shadow-xs cursor-pointer"
-              title="Pré-visualizar o relatório executivo de 3 páginas em tela"
-            >
-              <Eye className="w-4 h-4 text-[#0085db]" />
-              <span className="hidden sm:inline">Visualizar</span> A4
             </button>
           </div>
         </div>
 
         {/* Filter Controls Row */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           {/* Date Range Selector Dropdown */}
           <div className="relative" ref={datePopoverRef}>
             <button
               onClick={handleOpenDatePopover}
-              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-xl bg-[#0085db] hover:bg-[#0071ba] active:scale-95 text-white border border-[#0085db] shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-3.5 py-2 h-9 text-xs font-bold rounded-xl bg-[#0085db] hover:bg-[#0071ba] active:scale-95 text-white border border-[#0085db] shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer select-none"
             >
-              <Calendar className="w-4 h-4 text-white shrink-0" />
               <span>{formatDateBR(dataInicio)} – {formatDateBR(dataFim)}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-white/90 shrink-0 ml-1" />
+              <ChevronDown className="w-3.5 h-3.5 text-white/90 shrink-0 ml-0.5" />
             </button>
 
             {/* Popover Menu */}
@@ -513,25 +557,63 @@ export const RelatoriosView: React.FC = () => {
           </div>
 
           {/* Etapas Selector */}
-          <div className="relative">
-            <div className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white shadow-xs">
-              <Layers className="w-4 h-4 text-[#707a82] dark:text-[#7c8fac] shrink-0" />
-              <select
-                value={selectedEtapa}
-                onChange={e => {
-                  setSelectedEtapa(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="bg-transparent text-[#111c2d] dark:text-white font-semibold cursor-pointer outline-hidden pr-2 text-xs"
-              >
-                <option value="todas" className="dark:bg-[#111c2d]">Todas as etapas</option>
-                {etapas.map(e => (
-                  <option key={e.id} value={e.id} className="dark:bg-[#111c2d]">
-                    Etapa {e.numero} — {e.nome}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="relative" ref={etapaDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setIsEtapaDropdownOpen(!isEtapaDropdownOpen)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 h-9 text-xs font-semibold rounded-xl bg-white dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white shadow-xs hover:border-[#0085db]/40 active:scale-95 transition-all cursor-pointer select-none whitespace-nowrap"
+            >
+              <span>{selectedEtapaLabel}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-[#707a82] dark:text-[#7c8fac] transition-transform duration-150 ${isEtapaDropdownOpen ? 'rotate-180 text-[#0085db]' : ''}`} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isEtapaDropdownOpen && (
+              <div className="absolute left-0 top-full mt-1.5 z-50 min-w-full w-max max-h-72 overflow-y-auto bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl shadow-xl p-1 animate-in fade-in zoom-in-95 duration-100">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedEtapa('todas');
+                    setIsEtapaDropdownOpen(false);
+                    setCurrentPage(1);
+                  }}
+                  className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center justify-between gap-3 ${
+                    selectedEtapa === 'todas'
+                      ? 'bg-[#0085db] text-white font-bold'
+                      : 'text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#162232]'
+                  }`}
+                >
+                  <span>Todas as etapas</span>
+                  {selectedEtapa === 'todas' && <Check className="w-3.5 h-3.5 shrink-0" />}
+                </button>
+
+                <div className="border-t border-[#e6ecf1]/60 dark:border-[#333f55]/60 my-1" />
+
+                {etapas.map(e => {
+                  const label = getEtapaLabel(e);
+                  const isSelected = selectedEtapa === e.id;
+                  return (
+                    <button
+                      key={e.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedEtapa(e.id);
+                        setIsEtapaDropdownOpen(false);
+                        setCurrentPage(1);
+                      }}
+                      className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center justify-between gap-3 ${
+                        isSelected
+                          ? 'bg-[#0085db] text-white font-bold'
+                          : 'text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#162232]'
+                      }`}
+                    >
+                      <span className="truncate">{label}</span>
+                      {isSelected && <Check className="w-3.5 h-3.5 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
@@ -712,7 +794,7 @@ export const RelatoriosView: React.FC = () => {
                     : 'bg-white dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white'
                 }`}
               >
-                Abastec.
+                Abastecimentos
               </button>
             </div>
           </div>
@@ -805,50 +887,67 @@ export const RelatoriosView: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 {/* Previous Button */}
                 <button
+                  type="button"
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={validCurrentPage === 1}
-                  className="p-1.5 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#162232] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                  className="w-7 h-7 flex items-center justify-center rounded-lg border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#162232] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
                   title="Página anterior"
+                  aria-label="Página anterior"
                 >
                   <ChevronLeft className="w-3.5 h-3.5 text-[#111c2d] dark:text-white" />
                 </button>
 
+                {/* Left Ellipsis */}
+                {paginationConfig.hasPrevEllipsis && (
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 3))}
+                    className="w-7 h-7 flex items-center justify-center text-xs font-bold rounded-lg border border-transparent text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#162232] hover:border-[#e6ecf1] dark:hover:border-[#333f55] transition-colors cursor-pointer"
+                    title="Voltar 3 páginas"
+                  >
+                    ...
+                  </button>
+                )}
+
                 {/* Page Number Buttons */}
-                {Array.from({ length: totalPages }).map((_, idx) => {
-                  const pageNum = idx + 1;
-                  // Show current page, edges, and adjacent
-                  if (
-                    pageNum === 1 ||
-                    pageNum === totalPages ||
-                    Math.abs(pageNum - validCurrentPage) <= 1
-                  ) {
-                    const isActive = pageNum === validCurrentPage;
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`w-7 h-7 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
-                          isActive
-                            ? 'bg-[#0085db]/15 text-[#0085db] border border-[#0085db]/30 dark:bg-[#0085db]/30 dark:text-white'
-                            : 'border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#162232]'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  }
-                  if (pageNum === validCurrentPage - 2 || pageNum === validCurrentPage + 2) {
-                    return <span key={pageNum} className="px-0.5">...</span>;
-                  }
-                  return null;
+                {paginationConfig.pages.map(pageNum => {
+                  const isActive = pageNum === validCurrentPage;
+                  return (
+                    <button
+                      type="button"
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`w-7 h-7 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
+                        isActive
+                          ? 'bg-[#0085db]/15 text-[#0085db] border border-[#0085db]/30 dark:bg-[#0085db]/30 dark:text-white'
+                          : 'border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#162232]'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
                 })}
+
+                {/* Right Ellipsis */}
+                {paginationConfig.hasNextEllipsis && (
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 3))}
+                    className="w-7 h-7 flex items-center justify-center text-xs font-bold rounded-lg border border-transparent text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#162232] hover:border-[#e6ecf1] dark:hover:border-[#333f55] transition-colors cursor-pointer"
+                    title="Avançar 3 páginas"
+                  >
+                    ...
+                  </button>
+                )}
 
                 {/* Next Button */}
                 <button
+                  type="button"
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={validCurrentPage === totalPages}
-                  className="p-1.5 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#162232] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                  className="w-7 h-7 flex items-center justify-center rounded-lg border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#162232] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
                   title="Próxima página"
+                  aria-label="Próxima página"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-[#111c2d] dark:text-white" />
                 </button>
@@ -863,15 +962,17 @@ export const RelatoriosView: React.FC = () => {
       {/* =========================================================================
           PRINT EXECUTIVE REPORT (3 Pages matching relatorio_obra_juscelino_mola)
       ========================================================================= */}
-      <RelatorioObraImpresso
-        obra={activeObra}
-        despesas={filteredDespesas}
-        diarias={filteredDiarias}
-        etapas={etapas}
-        dataInicio={dataInicio}
-        dataFim={dataFim}
-        isPrintOnly={true}
-      />
+      {!isPreviewModalOpen && (
+        <RelatorioObraImpresso
+          obra={activeObra}
+          despesas={filteredDespesas}
+          diarias={filteredDiarias}
+          etapas={etapas}
+          dataInicio={dataInicio}
+          dataFim={dataFim}
+          isPrintOnly={true}
+        />
+      )}
 
       {/* Preview Modal for exploring the report on screen */}
       <RelatorioPreviewModal

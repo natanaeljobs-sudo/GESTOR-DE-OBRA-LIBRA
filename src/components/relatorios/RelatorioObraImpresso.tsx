@@ -11,6 +11,7 @@ interface RelatorioObraImpressoProps {
   dataInicio?: string;
   dataFim?: string;
   isPrintOnly?: boolean;
+  activePageTab?: 'todas' | 1 | 2 | 3;
 }
 
 interface MaterialRow {
@@ -74,6 +75,7 @@ export const RelatorioObraImpresso: React.FC<RelatorioObraImpressoProps> = ({
   dataInicio,
   dataFim,
   isPrintOnly = false,
+  activePageTab = 'todas',
 }) => {
   const isJuscelinoMola = obra.id === 'obra-juscelino-mola';
 
@@ -296,7 +298,11 @@ export const RelatorioObraImpresso: React.FC<RelatorioObraImpressoProps> = ({
       {/* =========================================================================
           PAGE 1: RESUMO EXECUTIVO
       ========================================================================= */}
-      <section className="relatorio-page rep-page">
+      <section
+        id="relatorio-page-1"
+        data-page="1"
+        className="relatorio-page rep-page flex"
+      >
         {/* Top Header */}
         <div className="rep-top">
           <div>
@@ -483,7 +489,11 @@ export const RelatorioObraImpresso: React.FC<RelatorioObraImpressoProps> = ({
       {/* =========================================================================
           PAGE 2: MATERIAIS E ABASTECIMENTOS
       ========================================================================= */}
-      <section className="relatorio-page rep-page">
+      <section
+        id="relatorio-page-2"
+        data-page="2"
+        className="relatorio-page rep-page flex"
+      >
         {/* Top Header */}
         <div className="rep-top">
           <div>
@@ -582,7 +592,11 @@ export const RelatorioObraImpresso: React.FC<RelatorioObraImpressoProps> = ({
       {/* =========================================================================
           PAGE 3: MÃO DE OBRA
       ========================================================================= */}
-      <section className="relatorio-page rep-page">
+      <section
+        id="relatorio-page-3"
+        data-page="3"
+        className="relatorio-page rep-page flex"
+      >
         {/* Top Header */}
         <div className="rep-top">
           <div>

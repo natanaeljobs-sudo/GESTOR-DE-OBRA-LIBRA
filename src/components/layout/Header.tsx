@@ -36,7 +36,7 @@ export const Header: React.FC = () => {
   const pendingCount = alertas.length;
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 dark:bg-[#111c2d]/90 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] transition-colors">
+    <header className="sticky top-0 z-40 bg-white/90 dark:bg-[#111c2d]/90 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] transition-colors print:hidden">
       <div className="w-full px-4 h-16 flex items-center justify-between gap-4">
         
         {/* Zone 1: Obra Context (Visible on mobile where sidebar is hidden) */}

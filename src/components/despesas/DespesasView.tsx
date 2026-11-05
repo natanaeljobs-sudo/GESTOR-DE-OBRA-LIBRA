@@ -305,7 +305,7 @@ export const DespesasView: React.FC = () => {
             <option value="todas">Todas as Etapas</option>
             {etapas.map(e => (
               <option key={e.id} value={e.id}>
-                {e.numero} — {e.nome}
+                {e.numero === 0 ? e.nome : `${e.numero} - ${e.nome}`}
               </option>
             ))}
           </select>
@@ -530,7 +530,7 @@ export const DespesasView: React.FC = () => {
               >
                 {etapas.map(e => (
                   <option key={e.id} value={e.id}>
-                    {e.numero} — {e.nome}
+                    {e.numero === 0 ? e.nome : `${e.numero} - ${e.nome}`}
                   </option>
                 ))}
               </select>

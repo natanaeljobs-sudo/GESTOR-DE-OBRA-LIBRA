@@ -46,6 +46,9 @@ export default defineConfig(() => {
         devOptions: {
           enabled: false,
         },
+        workbox: {
+          navigateFallbackDenylist: [/\.pdf$/i, /assets\/.*\.pdf$/i, /.*\.csv$/i],
+        },
       }),
     ],
     resolve: {

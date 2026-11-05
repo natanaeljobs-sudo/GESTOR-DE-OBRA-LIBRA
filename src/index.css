@@ -141,7 +141,9 @@ html.dark .spike-badge-danger {
 
   /* Force display of elements needed for pagination */
   #root, #root > div, #root > div > div, main {
+    display: block !important;
     overflow: visible !important;
+    position: static !important;
     height: auto !important;
     min-height: auto !important;
     max-height: none !important;
@@ -150,6 +152,10 @@ html.dark .spike-badge-danger {
     margin: 0 !important;
   }
 
+  /* Hide app navigation and headers */
+  header,
+  aside,
+  nav,
   .no-print,
   .print\:hidden {
     display: none !important;
@@ -160,13 +166,48 @@ html.dark .spike-badge-danger {
     display: block !important;
   }
 
+  /* Modal print adjustments: strip dark backdrop and viewport constraints */
+  .preview-modal-root {
+    position: static !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    z-index: auto !important;
+  }
+
+  .preview-viewport {
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+
+  .preview-zoom-canvas {
+    transform: none !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
   /* Exact A4 report page breaks */
   .relatorio-page {
     width: 210mm !important;
     height: 297mm !important;
     min-height: 297mm !important;
     max-height: 297mm !important;
-    padding: 14mm 14mm 12mm !important;
+    padding: 12mm 14mm 10mm !important;
     margin: 0 auto !important;
     page-break-after: always !important;
     break-after: page !important;
@@ -193,17 +234,21 @@ html.dark .spike-badge-danger {
   .rep-container .relatorio-page {
     width: 210mm;
     min-height: 297mm;
-    max-height: 297mm;
-    padding: 14mm 14mm 12mm;
+    height: auto;
+    padding: 12mm 14mm 10mm;
     margin: 20px auto;
     background: #ffffff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    border-radius: 2px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+    border-radius: 4px;
     box-sizing: border-box;
-    overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
+  }
+
+  .rep-container .relatorio-page.page-hidden,
+  .rep-container .relatorio-page.hidden {
+    display: none !important;
   }
 }
 
@@ -217,13 +262,17 @@ html.dark .spike-badge-danger {
   print-color-adjust: exact;
 }
 
+.rep-container * {
+  box-sizing: border-box;
+}
+
 .rep-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1.5px solid #0b7fe0;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .rep-kick {
@@ -235,46 +284,46 @@ html.dark .spike-badge-danger {
 }
 
 .rep-h1 {
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 600;
   letter-spacing: -.01em;
-  margin-top: 2px;
+  margin-top: 1px;
   color: #0f172a;
 }
 
 .rep-sub {
   color: #64748b;
-  font-size: 10px;
+  font-size: 9.5px;
   margin-top: 2px;
 }
 
 .rep-meta {
   text-align: right;
   color: #64748b;
-  font-size: 9px;
+  font-size: 8.5px;
 }
 
 .rep-meta b {
   display: block;
   color: #0f172a;
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 9.5px;
+  font-weight: 600;
 }
 
 .rep-h2 {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   color: #0f172a;
 }
 
 .rep-h2:before {
   content: "";
   width: 3px;
-  height: 11px;
+  height: 10px;
   background: #0b7fe0;
   border-radius: 2px;
   display: inline-block;
@@ -284,13 +333,13 @@ html.dark .spike-badge-danger {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1fr;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .rep-k {
   border: 0.5px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 8px;
+  padding: 8px 10px;
   background: #f8fafc;
 }
 
@@ -312,20 +361,20 @@ html.dark .spike-badge-danger {
 }
 
 .rep-k .rep-v {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  margin-top: 3px;
+  margin-top: 2px;
   letter-spacing: -.01em;
   color: #0f172a;
 }
 
 .rep-k.main .rep-v {
-  font-size: 20px;
+  font-size: 18px;
   color: #ffffff;
 }
 
 .rep-k .rep-s {
-  font-size: 8.5px;
+  font-size: 8px;
   color: #64748b;
   margin-top: 1px;
 }
@@ -336,25 +385,29 @@ html.dark .spike-badge-danger {
 
 .rep-card {
   border: 0.5px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 8px;
+  padding: 9px 12px;
   background: #ffffff;
+}
+
+.rep-sec {
+  margin-bottom: 9px;
 }
 
 .rep-g2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 9px;
 }
 
 .rep-stack {
   display: flex;
-  height: 12px;
+  height: 10px;
   border-radius: 99px;
   overflow: hidden;
   gap: 2px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .rep-stack span {
@@ -363,16 +416,17 @@ html.dark .spike-badge-danger {
 
 .rep-cr {
   display: grid;
-  grid-template-columns: 10px 1fr auto 40px;
-  gap: 8px;
+  grid-template-columns: 8px 1fr auto 38px;
+  gap: 6px;
   align-items: center;
-  padding: 5px 0;
+  padding: 3.5px 0;
   border-top: 0.5px solid #eef2f6;
+  font-size: 9.5px;
 }
 
 .rep-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   display: inline-block;
 }
@@ -386,20 +440,21 @@ html.dark .spike-badge-danger {
 .rep-cp {
   text-align: right;
   color: #64748b;
+  font-size: 8.5px;
 }
 
 .rep-br {
   display: grid;
-  grid-template-columns: 1fr 38px;
-  gap: 2px 8px;
-  margin-bottom: 7px;
+  grid-template-columns: 1fr 36px;
+  gap: 2px 6px;
+  margin-bottom: 5px;
 }
 
 .rep-brh {
   display: flex;
   justify-content: space-between;
   grid-column: 1/2;
-  font-size: 9.5px;
+  font-size: 9px;
   color: #0f172a;
 }
 
@@ -410,7 +465,7 @@ html.dark .spike-badge-danger {
 
 .rep-bt {
   grid-column: 1/2;
-  height: 6px;
+  height: 5px;
   background: #eef2f6;
   border-radius: 99px;
   overflow: hidden;
@@ -428,40 +483,40 @@ html.dark .spike-badge-danger {
   align-self: center;
   text-align: right;
   color: #64748b;
-  font-size: 9px;
+  font-size: 8.5px;
 }
 
 .rep-hl {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
 .rep-hl div {
   background: #f8fafc;
-  border-radius: 8px;
-  padding: 8px 10px;
+  border-radius: 6px;
+  padding: 6px 8px;
 }
 
 .rep-hl b {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #0f172a;
 }
 
 .rep-hl span {
   color: #64748b;
-  font-size: 8.5px;
+  font-size: 8px;
 }
 
 .rep-prog {
-  height: 10px;
+  height: 8px;
   background: #eef2f6;
   border-radius: 99px;
   overflow: hidden;
   display: flex;
-  margin: 6px 0;
+  margin: 5px 0;
 }
 
 .rep-note {

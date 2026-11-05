@@ -84,7 +84,7 @@ export const Sidebar: React.FC = () => {
   const visibleNavItems = navItems.filter(item => isTabAllowed(item.id));
 
   return (
-    <aside className="hidden lg:flex flex-col w-[265px] shrink-0 bg-white dark:bg-[#111c2d] border-r border-[#e6ecf1] dark:border-[#333f55] p-4 justify-between h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
+    <aside className="hidden lg:flex flex-col w-[265px] shrink-0 bg-white dark:bg-[#111c2d] border-r border-[#e6ecf1] dark:border-[#333f55] p-4 justify-between h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto print:hidden">
       <div className="space-y-4">
         
         {/* Obra Selector Button at the top of aside */}
