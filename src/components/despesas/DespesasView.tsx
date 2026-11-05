@@ -25,6 +25,7 @@ export const DespesasView: React.FC = () => {
     deleteDespesa,
     materiais,
     addMaterial,
+    unidadesMedida,
     etapas,
     cartoes,
     activeUser,
@@ -655,13 +656,18 @@ export const DespesasView: React.FC = () => {
                     onChange={e => setNovoMaterialNome(e.target.value)}
                     className="col-span-2 px-2.5 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
                   />
-                  <input
-                    type="text"
-                    placeholder="Unidade (saco, m³, un)"
+                  <select
                     value={novoMaterialUnidade}
                     onChange={e => setNovoMaterialUnidade(e.target.value)}
                     className="px-2.5 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
-                  />
+                  >
+                    <option value="">Unidade...</option>
+                    {unidadesMedida.map(u => (
+                      <option key={u} value={u}>
+                        {u}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="flex justify-end gap-2">
                   <button

@@ -1,77 +1,142 @@
-# Plano de Implementação: Redesign da Central de Permissões & Modal com Matriz de Checkboxes
+# Gerenciamento Completo de Unidades e Categorias de Materiais
 
-Redesenho completo da interface da **Central de Permissões** no componente `UsuariosView.tsx` para seguir o layout de tabela da referência (`image_551c4a2e.png`), com visual corporativo moderno, preservando o design system existente e adicionando um modal popup com matriz de permissões (Ver, Criar, Editar e Excluir) por módulo ao clicar no botão de editar.
+Implementação de recurso completo para cadastrar, editar e excluir Unidades de Medida e Categorias no módulo de Materiais, acessível diretamente por botões rápidos de gerenciamento e pelas opções dos campos de seleção, com sincronização automática dos materiais já cadastrados.
 
----
+## User Review & Critical Decisions
 
-## 1. Visão Geral da Mudança
+> [!IMPORTANT]
+> As decisões de usabilidade e comportamento foram confirmadas pelo usuário na etapa de esclarecimento:
+> - **Acesso Rápido**: Botão de gerenciamento posicionado diretamente ao lado dos campos de seleção nos modais de cadastro e edição de materiais, além de atalho dentro da própria lista suspensa.
+> - **Sincronização em Cascata**: Ao editar o nome de uma unidade ou categoria, todos os materiais vinculados são atualizados automaticamente no sistema.
+> - **Exclusão com Proteção**: Usuários podem excluir unidades e categorias personalizadas, com confirmação e alerta visual sobre itens em uso.
 
-Atualmente, as permissões são exibidas diretamente em cards divididos em grade (2 colunas) com botões pequenos de ação inline. O objetivo é:
-1. **Estrutura de Tabela Limpa (conforme a imagem de referência)**:
-   - Título e subtítulo da seção: *"Usuários & Permissões - Gerencie contas de usuários, papéis e permissões de acesso ao sistema."* com botão `+ Novo Usuário` no topo direito.
-   - Barra de filtros: busca por nome/e-mail, filtro por Perfil/Função, filtro por Status (Ativo/Inativo) e botão de limpar filtros.
-   - Tabela com colunas: **Usuário** (avatar circular + nome + e-mail), **Função / Papel** (badge de perfil estilizado), **Status** (badge Ativo / Inativo), **Data Cadastro / Acesso** e **Ações** (Editar permissões, Ativar/Inativar, Excluir, Alternar visualização).
-2. **Abas Superiores Preservadas Discretamente**:
-   - Manter as abas no topo: `Central de Permissões`, `Gestão de Obras` e `Configurações do Master & Solicitações` com contadores discretos.
-3. **Modal Popup de Permissões (ao clicar no lápis / editar)**:
-   - Abre um modal elegante focado no usuário selecionado.
-   - Barra de ações rápidas: *"Marcar Todos"*, *"Apenas Visualização"*, *"Padrão do Perfil"*.
-   - **Matriz de Checkboxes por Módulo**:
-     - 10 módulos do sistema: Dashboard, Despesas & Notas, Catálogo de Materiais, Mão de Obra & Diárias, Gerador de Recibos, Orçamentos & Cotações, Produção de Trilhos, Cartões & Faturas, Usuários & Permissões, Relatórios.
-     - 4 colunas de permissão com checkboxes clicáveis: **Visualizar**, **Criar**, **Editar**, **Excluir**.
-   - Botões de confirmação: *"Cancelar"* e *"Salvar Alterações"*.
+- **Decisão Confirmada 1**: Modais dedicados de gerenciamento rápido para Unidades e Categorias, permitindo cadastro, renomeação e exclusão sem sair do fluxo de trabalho.
+- **Decisão Confirmada 2**: Propagação automática de alterações em lote para materiais e despesas vinculadas.
+- **Decisão Confirmada 3**: Persistência no armazenamento local (`AppContext` e `localStorage`), garantindo que novas unidades e categorias permaneçam disponíveis em todas as telas, filtros e relatórios.
 
 ---
 
-## 2. Análise de Arquivos e Alterações
+## 1. Overview & Core Concept
 
-### A. `src/types/index.ts`
-- Adicionar o campo opcional `dataCadastro?: string;` na interface `Usuario` para exibir a data de entrada/cadastro na tabela (conforme coluna *"Joined"* da referência).
-
-### B. `src/context/AppContext.tsx`
-- Adicionar função `deleteUsuario(id: string)` ao contexto para possibilitar exclusão de usuários não-master (com proteção para nunca excluir os administradores master Natanael e Ives).
-- Garantir que `updateUsuario` persista adequadamente as alterações salvas pelo modal.
-
-### C. `src/data/initialData.ts`
-- Incluir `dataCadastro` nos usuários iniciais para enriquecer a visualização da tabela (ex: `"02/12/2025"`, `"01/12/2025"`).
-
-### D. `src/components/usuarios/UsuariosView.tsx`
-- **Estados Locais**:
-  - `searchTerm`: filtro de busca em tempo real (nome e e-mail).
-  - `perfilFilter`: filtro por perfil (`todos`, `admin_master`, `administrador`, `mestre_obra`, `socio_investidor`).
-  - `statusFilter`: filtro por status (`todos`, `ativo`, `inativo`).
-  - `editingUser`: usuário atualmente selecionado para edição de permissões no modal.
-  - `tempPermissoes`: cópia de trabalho das permissões no modal para permitir cancelamento ou confirmação.
-- **Tabela de Usuários**:
-  - Implementar tabela moderna compatível com tema claro e escuro (`bg-white dark:bg-[#111c2d]`, bordas `border-[#e6ecf1] dark:border-[#333f55]`).
-  - Ícone de lápis (`Edit3`) para abrir o modal de permissões.
-  - Ícone de alternância de status (`Ban` / `CheckCircle2`) para ativar ou desativar o usuário.
-  - Ícone de lixeira (`Trash2`) para exclusão de contas secundárias com confirmação.
-  - Ação rápida para testar o perfil ("Assumir perfil") mantida de forma elegante.
-- **Modal de Matriz de Permissões**:
-  - Matriz com cabeçalho: `Módulo | Visualizar | Criar | Editar | Excluir`.
-  - Checkboxes bem espaçados, com estados visuais claros (marcado/desmarcado) e atalhos rápidos no topo.
-  - Proteção especial se o usuário selecionado for `admin_master`: exibe aviso explicativo informando que administradores master possuem acesso irrestrito total.
+- **O que faz**: Permite que os gestores de obra e compradores cadastrem novos tipos de unidades (ex.: saco, m², barra 12m, caixa, pallet, kg) e categorias construtivas (ex.: Alvenaria, Hidráulico, Pintura, Cobertura, Ferramentas), editem nomes já existentes com atualização automática dos materiais vinculados, e excluam itens em desuso.
+- **Público-Alvo**: Engenheiros, mestres de obras, orçamentistas e administradores do sistema da Libra Construtora.
+- **Valor Principal**: Flexibilidade operacional imediata no canteiro de obras, eliminando a restrição de listas estáticas pré-fixadas e evitando duplicidade ou inconsistência cadastral.
 
 ---
 
-## 3. Plano de Verificação
+## 2. User Experience & Visual Design
 
-### Testes Automatizados
-- Executar `compile_applet` para assegurar que os tipos TypeScript e componentes compilam sem erros.
-- Executar `lint_applet` para garantir conformidade estrita de sintaxe e imports.
+### Fluxo de Usuário
 
-### Testes Manuais & Visuais
-1. **Layout e Responsividade**:
-   - Verificar renderização no desktop e em dispositivos móveis/tablets (scroll horizontal suave para tabelas menores).
-   - Verificar alternância entre modo claro e modo escuro.
-2. **Filtros e Busca**:
-   - Digitar nome no campo de busca e verificar se a tabela filtra instantaneamente.
-   - Filtrar por perfil e status e testar botão de limpar filtros.
-3. **Modal de Permissões**:
-   - Clicar no botão de editar (lápis) de um usuário não-master (ex: Alberto).
-   - Alterar checkboxes de `Visualizar`, `Criar`, `Editar`, `Excluir` em múltiplos módulos.
-   - Testar atalhos: *"Marcar Todos"*, *"Apenas Visualização"*, *"Padrão do Perfil"*.
-   - Clicar em *"Salvar Alterações"* e confirmar que os dados foram atualizados no estado global.
-4. **Preservação de Recursos**:
-   - Verificar se as abas *"Gestão de Obras"* e *"Configurações do Master & Solicitações"* continuam funcionando perfeitamente.
+1. **Abertura do Modal de Material (Novo ou Edição)**:
+   - Ao abrir "Novo material" ou "Editar material", os campos "Unidade padrão *" e "Categoria" contam com botões elegantes no cabeçalho de cada campo: `Gerenciar unidades` e `Gerenciar categorias` (com ícones da biblioteca Lucide `Settings2` / `Pencil`).
+   - Dentro da lista de opções do `<select>`, a última opção também exibe `⚙️ Cadastrar ou editar...`.
+
+2. **Modal de Gerenciamento de Unidades**:
+   - Título: *"Gerenciar Unidades de Medida"*.
+   - Subtítulo: *"Cadastre novas unidades, altere nomenclaturas existentes ou remova opções."*
+   - Campo superior para adição rápida: input de texto + botão `Adicionar Unidade` (`bg-[#0085db]`).
+   - Lista organizada em linhas limpas:
+     - Nome da unidade (ex.: `saco`, `m²`, `kg`).
+     - Contador sutil de materiais vinculados (ex.: `4 materiais vinculados`).
+     - Botão de edição inline (permite renomear diretamente na linha com `Salvar` ou `Cancelar`).
+     - Botão de exclusão com confirmação e aviso se houver materiais vinculados.
+   - Ao salvar ou adicionar uma unidade, o dropdown do formulário pai é automaticamente atualizado e seleciona a unidade recém-adicionada/modificada.
+
+3. **Modal de Gerenciamento de Categorias**:
+   - Título: *"Gerenciar Categorias de Materiais"*.
+   - Subtítulo: *"Organize as fases construtivas e classificações dos materiais da obra."*
+   - Campo para cadastro imediato de nova categoria com botão estilizado.
+   - Tabela/lista com edição inline, contador de vínculos de materiais e opção de exclusão.
+   - Sincronização em tempo real com o formulário principal.
+
+### Identidade Visual & Diretrizes de Design
+
+- **Padrão Spike / Libra Construtora**:
+  - Paleta base: Azul institucional `#0085db` (hover `#0071ba`), fundos `#ffffff` (light) e `#111c2d` / `#162232` (dark), bordas sutis `#e6ecf1` / `#333f55`.
+  - Tipografia: Títulos nítidos em `Plus Jakarta Sans`, numerais tabulares `tabular-nums` para contadores de itens vinculados.
+  - Alinhamento aos princípios Anti-Slop: Sem pílulas coloridas estáticas, sem gradientes roxos, sem elementos mortos. Todos os botões possuem microinterações e transições `duration-150`.
+
+---
+
+## 3. Key Product Decisions & Trade-Offs
+
+- **Decisão 1: Armazenamento Centralizado no AppContext**:
+  - *Abordagem*: Gerenciar `unidadesMedida` e `categoriasMateriais` no estado global do `AppContext`, sincronizando automaticamente com `localStorage`.
+  - *Motivo*: Permite que os filtros da tela de materiais, os lançamentos de despesas e cotações de orçamentos se beneficiem das mesmas unidades e categorias cadastradas.
+  - *Alternativa descartada*: Manter estado apenas local no componente `MateriaisView` (isso faria com que outros componentes não reconhecessem novas categorias).
+
+- **Decisão 2: Atualização em Cascata nos Materiais Existentes**:
+  - *Abordagem*: Quando o usuário renomear uma categoria (ex: de "Alvenaria" para "Alvenaria e Vedação"), o método do contexto varre os materiais e substitui a ocorrência antiga pela nova.
+  - *Motivo*: Evita orfandade de dados e listas desordenadas nos relatórios e filtros.
+
+- **Decisão 3: Modal de Gerenciamento vs. Inputs Descartáveis**:
+  - *Abordagem*: Substituir o antigo campo temporário "custom" por um gerenciador completo modal que permite editar e excluir além de criar.
+  - *Motivo*: Atende diretamente ao pedido do usuário ("Tem que ter a opção de cadastrar e editar") e à escolha confirmada na etapa de perguntas.
+
+---
+
+## 4. Technical Architecture & Data Strategy
+
+### Component Hierarchy & Interaction Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         AppContext                          │
+│  - unidadesMedida: string[]                                 │
+│  - categoriasMateriais: string[]                            │
+│  - addUnidadeMedida(nome)                                   │
+│  - updateUnidadeMedida(oldName, newName) [atualiza materiais]│
+│  - deleteUnidadeMedida(nome)                                │
+│  - addCategoriaMaterial(nome)                               │
+│  - updateCategoriaMaterial(oldName, newName) [atualiza mat.]│
+│  - deleteCategoriaMaterial(nome)                            │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+            ┌──────────────────┴──────────────────┐
+            ▼                                     ▼
+┌─────────────────────────────┐       ┌───────────────────────┐
+│        MateriaisView        │       │  Filtros de Pesquisa  │
+│  - Tabela de Materiais      │       │  - Unidade Filter     │
+│  - Indicadores e Histórico  │       │  - Status Filter      │
+└──────────────┬──────────────┘       └───────────────────────┘
+               │
+      ┌────────┴────────┐
+      ▼                 ▼
+┌─────────────────┐ ┌───────────────────────────┐
+│ Modal: Novo     │ │ Modal: Editar Material    │
+│ Material        │ │  - Dropdown Unidades      │
+│  - [Gerenciar]  │ │  - [Gerenciar]            │
+│  - Dropdown     │ │  - Dropdown Categorias    │
+│  - [Gerenciar]  │ │  - [Gerenciar]            │
+└────────┬────────┘ └─────────────┬─────────────┘
+         │                        │
+         └───────────┬────────────┘
+                     │ Abre modais dedicados
+                     ▼
+       ┌─────────────────────────────────────┐
+       │ Modais de Gerenciamento Especializado│
+       │  ├─ GerenciarUnidadesModal          │
+       │  │   - Adição de nova unidade       │
+       │  │   - Edição inline de nome        │
+       │  │   - Exclusão com verificação     │
+       │  └─ GerenciarCategoriasModal        │
+       │      - Adição de nova categoria     │
+       │      - Edição inline de nome        │
+       │      - Exclusão com verificação     │
+       └─────────────────────────────────────┘
+```
+
+### Arquivos Envolvidos
+
+1. `src/types/index.ts`:
+   - Adicionar assinaturas das novas funções e coleções no contrato do `AppContextType`.
+2. `src/context/AppContext.tsx`:
+   - Inicializar e persistir `unidadesMedida` e `categoriasMateriais` com valores padrão da construção civil.
+   - Implementar `addUnidadeMedida`, `updateUnidadeMedida` (com cascata nos materiais), `deleteUnidadeMedida`.
+   - Implementar `addCategoriaMaterial`, `updateCategoriaMaterial` (com cascata nos materiais), `deleteCategoriaMaterial`.
+3. `src/components/materiais/MateriaisView.tsx`:
+   - Inserir botões de ação rápida `Gerenciar unidades` e `Gerenciar categorias` ao lado dos selects nos modais de criação e edição.
+   - Adicionar opção `⚙️ Cadastrar e editar...` dentro dos `<select>`.
+   - Adicionar os componentes de modal para gestão de unidades e categorias com formulário de adição rápida, listagem com contagem de uso e edição inline.
+   - Vincular o filtro superior de unidades com o estado dinâmico `unidadesMedida`.

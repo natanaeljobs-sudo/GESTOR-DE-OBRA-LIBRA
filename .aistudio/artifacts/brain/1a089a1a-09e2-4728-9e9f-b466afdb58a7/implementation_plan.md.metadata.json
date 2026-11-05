@@ -1,6 +1,6 @@
 {
-  "summary": "Plano detalhado para redesenhar a Central de Permissões conforme a referência visual fornecida pelo usuário, implementando tabela limpa de usuários com busca/filtros e modal popup com matriz de checkboxes (Ver, Criar, Editar, Excluir) por módulo.",
-  "updatedAt": "2026-11-04T12:41:19.693457517Z",
+  "summary": "Plano de implementação para o cadastro, edição e exclusão de Unidades de Medida e Categorias de Materiais com botão de gerenciamento rápido ao lado dos campos de seleção e propagação automática para materiais existentes.",
+  "updatedAt": "2026-11-05T18:28:14.148624741Z",
   "requestFeedback": true,
   "userFacing": true
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { PWAInstallButton } from './PWAInstallButton';
 import {
   Sun,
   Moon,
@@ -103,10 +102,8 @@ export const Header: React.FC = () => {
         </div>
 
 
-        {/* Zone 3: Actions (PWA install, Alerts, User switch, Theme toggle) */}
+        {/* Zone 3: Actions (Alerts, User switch, Theme toggle) */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* PWA Install Button */}
-          <PWAInstallButton />
 
           {/* Active User Switcher */}
           <div className="relative">

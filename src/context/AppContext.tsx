@@ -96,6 +96,18 @@ interface AppContextType {
   // Materiais
   materiais: Material[];
   addMaterial: (material: Omit<Material, 'id' | 'dataCadastro'>) => Material;
+  updateMaterial: (material: Material) => void;
+  deleteMaterial: (id: string) => void;
+
+  // Unidades e Categorias de Materiais
+  unidadesMedida: string[];
+  categoriasMateriais: string[];
+  addUnidadeMedida: (nome: string) => boolean;
+  updateUnidadeMedida: (oldNome: string, newNome: string) => boolean;
+  deleteUnidadeMedida: (nome: string) => void;
+  addCategoriaMaterial: (nome: string) => boolean;
+  updateCategoriaMaterial: (oldNome: string, newNome: string) => boolean;
+  deleteCategoriaMaterial: (nome: string) => void;
 
   // Trabalhadores & Diárias
   trabalhadores: Trabalhador[];
@@ -182,6 +194,34 @@ function setStored<T>(key: string, value: T): void {
     console.error('Storage error', e);
   }
 }
+
+export const DEFAULT_UNIDADES_MEDIDA = [
+  'Unidade',
+  'saco',
+  'm²',
+  'm³',
+  'm',
+  'barra 12m',
+  'kg',
+  'milheiro',
+  'litros',
+  'dúzia',
+];
+
+export const DEFAULT_CATEGORIAS_MATERIAIS = [
+  'Alvenaria',
+  'Sapata',
+  'Laje',
+  'Hidráulico',
+  'Elétrico',
+  'Piso',
+  'Pintura',
+  'Acabamento',
+  'Produção Trilhos',
+  'Abastecimento',
+  'Equipamentos',
+  'Estrutural',
+];
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Theme state
@@ -292,6 +332,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [producao, setProducao] = useState<ProducaoItem[]>(() => getStoredOrDefault('producao', INITIAL_PRODUCAO));
   const [parcelas, setParcelas] = useState<Parcela[]>(() => getStoredOrDefault('parcelas', INITIAL_PARCELAS));
   const [alertas, setAlertas] = useState<AlertaPendencia[]>(() => getStoredOrDefault('alertas', INITIAL_ALERTAS));
+  const [unidadesMedida, setUnidadesMedida] = useState<string[]>(() =>
+    getStoredOrDefault('unidades_medida', DEFAULT_UNIDADES_MEDIDA)
+  );
+  const [categoriasMateriais, setCategoriasMateriais] = useState<string[]>(() =>
+    getStoredOrDefault('categorias_materiais', DEFAULT_CATEGORIAS_MATERIAIS)
+  );
   const [masterEmail, setMasterEmail] = useState<string>(() => getStoredOrDefault('master_email', 'natanaeljobs@gmail.com'));
   const [solicitacoesAcesso, setSolicitacoesAcesso] = useState<SolicitacaoAcesso[]>(() => {
     const raw = getStoredOrDefault('solicitacoes_acesso', [
@@ -328,6 +374,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => setStored('usuarios', usuarios), [usuarios]);
   useEffect(() => setStored('cartoes', cartoes), [cartoes]);
   useEffect(() => setStored('materiais', materiais), [materiais]);
+  useEffect(() => setStored('unidades_medida', unidadesMedida), [unidadesMedida]);
+  useEffect(() => setStored('categorias_materiais', categoriasMateriais), [categoriasMateriais]);
   useEffect(() => setStored('trabalhadores', trabalhadores), [trabalhadores]);
   useEffect(() => setStored('despesas', despesas), [despesas]);
   useEffect(() => setStored('diarias', diarias), [diarias]);
@@ -500,6 +548,75 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
     setMateriais(prev => [...prev, novo]);
     return novo;
+  };
+
+  const updateMaterial = (material: Material) => {
+    setMateriais(prev => prev.map(m => (m.id === material.id ? material : m)));
+  };
+
+  const deleteMaterial = (id: string) => {
+    setMateriais(prev => prev.filter(m => m.id !== id));
+  };
+
+  const addUnidadeMedida = (nome: string): boolean => {
+    const trimmed = nome.trim();
+    if (!trimmed) return false;
+    if (unidadesMedida.some(u => u.toLowerCase() === trimmed.toLowerCase())) return false;
+    setUnidadesMedida(prev => [...prev, trimmed]);
+    return true;
+  };
+
+  const updateUnidadeMedida = (oldNome: string, newNome: string): boolean => {
+    const trimmedNew = newNome.trim();
+    if (!trimmedNew || oldNome.toLowerCase() === trimmedNew.toLowerCase()) return false;
+    setUnidadesMedida(prev => prev.map(u => (u.toLowerCase() === oldNome.toLowerCase() ? trimmedNew : u)));
+    // Atualiza automaticamente materiais já vinculados
+    setMateriais(prev =>
+      prev.map(m =>
+        m.unidadePadrao.toLowerCase() === oldNome.toLowerCase() ? { ...m, unidadePadrao: trimmedNew } : m
+      )
+    );
+    // Atualiza itens de despesas
+    setDespesas(prev =>
+      prev.map(d => ({
+        ...d,
+        itens: d.itens.map(item =>
+          item.unidade.toLowerCase() === oldNome.toLowerCase() ? { ...item, unidade: trimmedNew } : item
+        ),
+      }))
+    );
+    return true;
+  };
+
+  const deleteUnidadeMedida = (nome: string) => {
+    setUnidadesMedida(prev => prev.filter(u => u.toLowerCase() !== nome.toLowerCase()));
+  };
+
+  const addCategoriaMaterial = (nome: string): boolean => {
+    const trimmed = nome.trim();
+    if (!trimmed) return false;
+    if (categoriasMateriais.some(c => c.toLowerCase() === trimmed.toLowerCase())) return false;
+    setCategoriasMateriais(prev => [...prev, trimmed]);
+    return true;
+  };
+
+  const updateCategoriaMaterial = (oldNome: string, newNome: string): boolean => {
+    const trimmedNew = newNome.trim();
+    if (!trimmedNew || oldNome.toLowerCase() === trimmedNew.toLowerCase()) return false;
+    setCategoriasMateriais(prev => prev.map(c => (c.toLowerCase() === oldNome.toLowerCase() ? trimmedNew : c)));
+    // Atualiza automaticamente materiais já vinculados
+    setMateriais(prev =>
+      prev.map(m =>
+        m.categoriaSugerida && m.categoriaSugerida.toLowerCase() === oldNome.toLowerCase()
+          ? { ...m, categoriaSugerida: trimmedNew }
+          : m
+      )
+    );
+    return true;
+  };
+
+  const deleteCategoriaMaterial = (nome: string) => {
+    setCategoriasMateriais(prev => prev.filter(c => c.toLowerCase() !== nome.toLowerCase()));
   };
 
   const addDespesa = (despesaData: Omit<Despesa, 'id' | 'criadoEm'>) => {
@@ -773,6 +890,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setProducao(INITIAL_PRODUCAO);
     setParcelas(INITIAL_PARCELAS);
     setAlertas(INITIAL_ALERTAS);
+    setUnidadesMedida(DEFAULT_UNIDADES_MEDIDA);
+    setCategoriasMateriais(DEFAULT_CATEGORIAS_MATERIAIS);
   };
 
   return (
@@ -811,6 +930,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         deleteDespesa,
         materiais,
         addMaterial,
+        updateMaterial,
+        deleteMaterial,
+        unidadesMedida,
+        categoriasMateriais,
+        addUnidadeMedida,
+        updateUnidadeMedida,
+        deleteUnidadeMedida,
+        addCategoriaMaterial,
+        updateCategoriaMaterial,
+        deleteCategoriaMaterial,
         trabalhadores,
         diarias: obraDiarias,
         addTrabalhador,

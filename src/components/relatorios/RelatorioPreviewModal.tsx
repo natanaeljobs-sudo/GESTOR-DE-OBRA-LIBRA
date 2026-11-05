@@ -3,7 +3,6 @@ import { Obra, Despesa, Diaria, Etapa } from '../../types';
 import { RelatorioObraImpresso } from './RelatorioObraImpresso';
 import {
   printRelatorioDocument,
-  openRelatorioInNewTab,
   downloadRelatorioPDF,
   triggerSystemPrint,
 } from '../../utils/relatorioPrintService';
@@ -15,12 +14,12 @@ import {
   Maximize2,
   FileText,
   Download,
-  ExternalLink,
   Layers,
   Check,
   Smartphone,
   ChevronLeft,
   ChevronRight,
+  Building2,
 } from 'lucide-react';
 
 interface RelatorioPreviewModalProps {
@@ -222,17 +221,6 @@ export const RelatorioPreviewModal: React.FC<RelatorioPreviewModalProps> = ({
     }
   };
 
-  const handleOpenNewTab = () => {
-    openRelatorioInNewTab({
-      obra,
-      despesas,
-      diarias,
-      etapas,
-      dataInicio,
-      dataFim,
-    });
-  };
-
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     setDownloadError(null);
@@ -272,20 +260,12 @@ export const RelatorioPreviewModal: React.FC<RelatorioPreviewModalProps> = ({
         {/* Left: Info */}
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#0085db]/20 flex items-center justify-center text-[#0085db] shrink-0">
-            <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Building2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xs sm:text-sm font-bold text-white truncate">
-                Relatório Impresso
-              </h2>
-              <span className="hidden sm:inline-flex text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#0085db]/20 text-[#38bdf8] border border-[#0085db]/30 shrink-0">
-                A4 · 3 Páginas
-              </span>
-            </div>
-            <p className="text-[10px] sm:text-[11px] text-[#7c8fac] truncate">
-              {obra.nome} · Pronto para impressão ou PDF
-            </p>
+            <h2 className="text-xs sm:text-sm font-bold text-white truncate uppercase">
+              {obra.nome}
+            </h2>
           </div>
         </div>
 
@@ -339,44 +319,6 @@ export const RelatorioPreviewModal: React.FC<RelatorioPreviewModalProps> = ({
 
         {/* Right: Actions */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          
-          {/* Zoom Controls (Desktop / Tablet) */}
-          <div className="hidden sm:flex items-center gap-1 bg-[#162232] rounded-xl border border-[#333f55] p-0.5">
-            <button
-              onClick={() => setZoom(z => Math.max(0.35, Number((z - 0.1).toFixed(2))))}
-              className="p-1.5 rounded-lg text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
-              title="Reduzir Zoom"
-            >
-              <ZoomOut className="w-3.5 h-3.5" />
-            </button>
-            <span className="text-xs font-mono text-zinc-300 w-10 text-center">
-              {Math.round(zoom * 100)}%
-            </span>
-            <button
-              onClick={() => setZoom(z => Math.min(1.4, Number((z + 0.1).toFixed(2))))}
-              className="p-1.5 rounded-lg text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
-              title="Aumentar Zoom"
-            >
-              <ZoomIn className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={handleFitScreen}
-              className="p-1.5 rounded-lg text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
-              title="Ajustar à Tela"
-            >
-              <Maximize2 className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {/* Open in New Tab (Essential fallback for mobile iOS & Android) */}
-          <button
-            onClick={handleOpenNewTab}
-            className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-200 bg-[#162232] hover:bg-[#1f2d42] border border-[#333f55] transition-colors cursor-pointer"
-            title="Abrir em Nova Aba (Ideal para celular ou salvar direto)"
-          >
-            <ExternalLink className="w-3.5 h-3.5 text-[#38bdf8]" />
-            <span>Nova Aba</span>
-          </button>
 
           {/* Download Official PDF */}
           <button
@@ -508,6 +450,80 @@ export const RelatorioPreviewModal: React.FC<RelatorioPreviewModalProps> = ({
             <span>{isPrinting ? '...' : 'Imprimir'}</span>
           </button>
         </div>
+      </div>
+
+      {/* =========================================================================
+          FLOATING BOTTOM-LEFT PAGE INDICATOR (1 - 3)
+          Visualização da contagem de página no canto inferior esquerdo:
+          "1 - 3" dinâmico conforme a página visualizada (Página 1: 1 - 3, Página 2: 2 - 3, Página 3: 3 - 3)
+          Apenas a visualização discreta, sem botões conforme solicitado pelo usuário.
+      ========================================================================= */}
+      <div 
+        className="fixed bottom-20 sm:bottom-6 left-4 sm:left-6 z-40 print:hidden flex items-center bg-[#111c2d]/95 backdrop-blur-md border border-[#333f55] shadow-2xl rounded-2xl px-3 py-1.5 select-none"
+        role="status"
+        aria-label={`Página ${currentPage} de 3`}
+      >
+        <span
+          className="text-xs sm:text-sm font-mono font-bold text-zinc-100 tabular-nums tracking-wide flex items-center gap-1.5"
+          aria-live="polite"
+        >
+          <span className="text-[#0085db] font-black text-sm sm:text-base">{currentPage}</span>
+          <span className="text-zinc-500 font-normal">-</span>
+          <span className="text-zinc-300 text-sm sm:text-base font-semibold">3</span>
+        </span>
+      </div>
+
+      {/* =========================================================================
+          FLOATING BOTTOM-RIGHT ZOOM CONTROLS
+          Posicionado no canto inferior direito conforme solicitado,
+          liberando o cabeçalho superior e mantendo a visualização desobstruída.
+      ========================================================================= */}
+      <div 
+        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 print:hidden flex items-center gap-1.5 bg-[#111c2d]/95 backdrop-blur-md border border-[#333f55] shadow-2xl rounded-2xl px-2 py-1.5 transition-all hover:border-[#0085db]/50 hover:bg-[#162232]/95 group"
+        role="toolbar"
+        aria-label="Controles de zoom do relatório"
+      >
+        <button
+          type="button"
+          onClick={() => setZoom(z => Math.max(0.35, Number((z - 0.1).toFixed(2))))}
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
+          title="Reduzir Zoom (-10%)"
+          aria-label="Reduzir Zoom"
+        >
+          <ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setZoom(0.85)}
+          className="text-xs font-mono font-medium text-zinc-200 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer select-none tabular-nums text-center min-w-[42px]"
+          title="Clique para redefinir zoom para 85%"
+          aria-label="Redefinir Zoom para 85%"
+        >
+          {Math.round(zoom * 100)}%
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setZoom(z => Math.min(1.4, Number((z + 0.1).toFixed(2))))}
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
+          title="Aumentar Zoom (+10%)"
+          aria-label="Aumentar Zoom"
+        >
+          <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        </button>
+
+        <div className="h-4 w-px bg-[#333f55] mx-0.5" />
+
+        <button
+          type="button"
+          onClick={handleFitScreen}
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
+          title="Ajustar à Tela"
+          aria-label="Ajustar à Tela"
+        >
+          <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        </button>
       </div>
 
     </div>

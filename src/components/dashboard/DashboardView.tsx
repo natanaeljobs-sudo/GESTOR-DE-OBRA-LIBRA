@@ -7,7 +7,6 @@ import {
   Users2,
   Hammer,
   CreditCard,
-  AlertTriangle,
   Receipt,
   PlusCircle,
   FileCheck2,
@@ -34,7 +33,6 @@ export const DashboardView: React.FC = () => {
     custoIndicativoTrilho,
     despesas,
     diarias,
-    alertas,
     navigateToTabWithFilter,
   } = useApp();
 
@@ -123,30 +121,6 @@ export const DashboardView: React.FC = () => {
         </div>
       </div>
 
-      {/* Critical Alerts Banner (Spike warning card) */}
-      {alertas.length > 0 && (
-        <div className="bg-[#f8c076]/15 border border-[#f8c076]/30 rounded-[18px] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076] flex items-center justify-center shrink-0 mt-0.5">
-              <AlertTriangle className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xs sm:text-sm font-bold text-[#111c2d] dark:text-white">
-                {alertas.length} pendências aguardando conferência ou preenchimento
-              </p>
-              <p className="text-xs text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                {alertas[0]?.titulo}: {alertas[0]?.descricao}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => navigateToTabWithFilter('alertas')}
-            className="self-start sm:self-center px-4 py-2 rounded-xl bg-[#0085db] hover:bg-[#0071ba] text-white text-xs font-bold transition-colors whitespace-nowrap shadow-sm shadow-[#0085db]/20 cursor-pointer"
-          >
-            Ver Todas as Pendências
-          </button>
-        </div>
-      )}
 
       {/* 4 Core Financial KPI Cards (Spike Card Style) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
