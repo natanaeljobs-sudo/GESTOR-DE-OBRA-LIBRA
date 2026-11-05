@@ -66,16 +66,33 @@ export const DashboardView: React.FC = () => {
               <span>·</span>
               <span>Início {formatDateBR(activeObra.dataInicio)}</span>
               <span>·</span>
-              <span className="text-[#4bd08b] font-bold flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#4bd08b]" />
-                Em andamento
-              </span>
+              {activeObra.status === 'concluida' ? (
+                <span className="text-emerald-500 font-bold flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  Concluído
+                </span>
+              ) : activeObra.status === 'cancelada' ? (
+                <span className="text-rose-500 font-bold flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  Cancelada
+                </span>
+              ) : activeObra.status === 'planejamento' ? (
+                <span className="text-amber-500 font-bold flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-amber-500" />
+                  Projetando
+                </span>
+              ) : (
+                <span className="text-[#4bd08b] font-bold flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-[#4bd08b]" />
+                  Operante
+                </span>
+              )}
             </div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111c2d] dark:text-white mt-2">
               Painel Geral de Obras
             </h1>
             <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-              Etapa em execução: <strong className="text-[#111c2d] dark:text-white">{etapaAtual.numero} — {etapaAtual.nome}</strong>. Controle de notas, diárias semanais e trilhos fabricados.
+              Etapa: <strong className="text-[#111c2d] dark:text-white">{activeObra.etapaAtual || `${etapaAtual.numero} — ${etapaAtual.nome}`}</strong>. Controle de notas, diárias semanais e trilhos fabricados.
             </p>
           </div>
 

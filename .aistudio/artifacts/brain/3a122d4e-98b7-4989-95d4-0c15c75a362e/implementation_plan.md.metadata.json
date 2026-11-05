@@ -1,0 +1,6 @@
+{
+  "summary": "Plano de implementação para o novo layout da aba Relatórios Financeiros, reproduzindo com fidelidade a referência visual fornecida (cards de métricas, barra proporcional de categorias e tabela paginada com abas) e integrando ao design system (Spike / Tailwind CSS) da aplicação com suporte a modo escuro e impressão executiva A4.",
+  "updatedAt": "2026-11-05T01:52:10.426948259Z",
+  "requestFeedback": true,
+  "userFacing": true
+}

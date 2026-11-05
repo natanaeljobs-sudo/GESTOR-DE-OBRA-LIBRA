@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Usuario, PerfilUsuario, Obra, PermissaoModulo } from '../../types';
+import { Usuario, PerfilUsuario, Obra, PermissaoModulo, SolicitacaoAcesso } from '../../types';
 import { formatDateBR, getTodayISO } from '../../utils/date';
 import { formatBRL } from '../../utils/currency';
 import { Modal } from '../common/Modal';
@@ -62,6 +62,7 @@ export const UsuariosView: React.FC = () => {
     updateMasterEmail,
     solicitacoesAcesso,
     atualizarStatusSolicitacao,
+    excluirSolicitacaoAcesso,
     setActiveTab,
   } = useApp();
 
@@ -82,10 +83,17 @@ export const UsuariosView: React.FC = () => {
   // Delete User Confirmation Modal
   const [userToDelete, setUserToDelete] = useState<Usuario | null>(null);
 
-  // Master email settings form
+  // Master email settings form & modal
   const [configEmailInput, setConfigEmailInput] = useState(masterEmail || 'natanaeljobs@gmail.com');
   const [emailSavedSuccess, setEmailSavedSuccess] = useState(false);
-  const [filterSolicitacoes, setFilterSolicitacoes] = useState<'todas' | 'pendente' | 'aprovado' | 'recusado'>('todas');
+  const [isMasterEmailModalOpen, setIsMasterEmailModalOpen] = useState(false);
+
+  // Solicitações Table Filters & Search
+  const [solicSearchTerm, setSolicSearchTerm] = useState('');
+  const [solicStatusFilter, setSolicStatusFilter] = useState<'all' | 'pendente' | 'aprovado' | 'recusado'>('all');
+  const [viewingSolic, setViewingSolic] = useState<SolicitacaoAcesso | null>(null);
+  const [solicToDelete, setSolicToDelete] = useState<SolicitacaoAcesso | null>(null);
+  const [solicAprovandoId, setSolicAprovandoId] = useState<string | null>(null);
 
   // New User form
   const [nome, setNome] = useState('');
@@ -122,24 +130,6 @@ export const UsuariosView: React.FC = () => {
     return found !== -1 ? found + 1 : 1;
   };
 
-  const handleSelectObraStep = (obraTarget: Obra, stepNumber: number) => {
-    const target = ETAPAS_CRONOGRAMA[stepNumber - 1];
-    if (!target) return;
-
-    updateObra({
-      ...obraTarget,
-      etapaAtual: target.nome,
-      status: 'em_andamento',
-    });
-  };
-
-  const handleSelectObraConcluido = (obraTarget: Obra) => {
-    updateObra({
-      ...obraTarget,
-      etapaAtual: 'Concluído',
-      status: 'concluida',
-    });
-  };
 
   // Obras Table Filter & Search
   const [obraSearchTerm, setObraSearchTerm] = useState('');
@@ -277,6 +267,44 @@ export const UsuariosView: React.FC = () => {
       return matchesSearch && matchesRole && matchesStatus;
     });
   }, [usuarios, searchTerm, roleFilter, statusFilter]);
+
+  // Helper to format date for Solicitacoes table
+  const formatSolicData = (dateStr: string) => {
+    if (!dateStr) return '-';
+    if (dateStr.includes('-') && dateStr.length >= 10) {
+      const parts = dateStr.split(' ');
+      const [y, m, d] = parts[0].split('-');
+      const time = parts[1] || '';
+      if (y && m && d) {
+        return `${d}/${m}/${y}${time ? ` ${time}` : ''}`;
+      }
+    }
+    return dateStr;
+  };
+
+  // Filtering Solicitacoes
+  const filteredSolicitacoes = useMemo(() => {
+    return solicitacoesAcesso.filter(s => {
+      const matchesSearch =
+        !solicSearchTerm ||
+        s.nome.toLowerCase().includes(solicSearchTerm.toLowerCase()) ||
+        s.email.toLowerCase().includes(solicSearchTerm.toLowerCase()) ||
+        (s.mensagem && s.mensagem.toLowerCase().includes(solicSearchTerm.toLowerCase()));
+
+      const matchesStatus =
+        solicStatusFilter === 'all' || s.status === solicStatusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [solicitacoesAcesso, solicSearchTerm, solicStatusFilter]);
+
+  const handleStartAprovarSolicitacao = (solic: SolicitacaoAcesso) => {
+    setNome(solic.nome);
+    setEmail(solic.email);
+    setPerfil('operador');
+    setSolicAprovandoId(solic.id);
+    setIsUserModalOpen(true);
+  };
 
   const handleOpenEditPermissions = (user: Usuario) => {
     // Clone user object for isolated modal editing
@@ -467,10 +495,14 @@ export const UsuariosView: React.FC = () => {
     };
 
     addUsuario(newUser);
+    if (solicAprovandoId) {
+      atualizarStatusSolicitacao(solicAprovandoId, 'aprovado');
+    }
     setUserSavedSuccess(true);
     setTimeout(() => {
       setUserSavedSuccess(false);
       setIsUserModalOpen(false);
+      setSolicAprovandoId(null);
       setNome('');
       setEmail('');
     }, 1200);
@@ -501,7 +533,22 @@ export const UsuariosView: React.FC = () => {
     const orcamentoTotal = parseMoney(obraOrcamentoInput) || 100000;
     const tetoMaoDeObra = parseMoney(obraTetoMaoDeObraInput) || 30000;
     const valorVenda = obraValorVendaInput ? parseMoney(obraValorVendaInput) : undefined;
-    const isConcluida = obraStatus === 'concluida' || obraEtapaAtual === 'Concluído';
+    let finalStatus: Obra['status'] = obraStatus;
+    let finalEtapa: string = obraEtapaAtual;
+
+    if (finalStatus === 'concluida') {
+      finalEtapa = 'Concluído';
+    } else {
+      // Se não é concluída (operante, cancelada, planejamento) mas a etapa ainda é 'Concluído', retrocede para etapa válida
+      if (finalEtapa.toLowerCase().includes('conclu')) {
+        finalEtapa = finalStatus === 'planejamento' ? 'Sapata' : 'Acabamento';
+      }
+    }
+
+    const matchedCronograma = ETAPAS_CRONOGRAMA.find(
+      e => e.nome.toLowerCase() === finalEtapa.toLowerCase()
+    );
+    const etapaAtualId = matchedCronograma ? `etapa-${matchedCronograma.numero}` : (editingObra?.etapaAtualId || 'etapa-1');
 
     if (editingObra) {
       const updated: Obra = {
@@ -511,8 +558,9 @@ export const UsuariosView: React.FC = () => {
         orcamentoTotal,
         tetoMaoDeObra,
         valorVenda,
-        status: isConcluida ? 'concluida' : obraStatus,
-        etapaAtual: obraEtapaAtual || (isConcluida ? 'Concluído' : 'Sapata'),
+        status: finalStatus,
+        etapaAtual: finalEtapa,
+        etapaAtualId,
       };
       updateObra(updated);
     } else {
@@ -523,10 +571,10 @@ export const UsuariosView: React.FC = () => {
         dataInicio: getTodayISO(),
         orcamentoTotal,
         tetoMaoDeObra,
-        etapaAtualId: 'etapa-1',
+        etapaAtualId,
         valorVenda,
-        status: isConcluida ? 'concluida' : (obraStatus || 'em_andamento'),
-        etapaAtual: obraEtapaAtual || (isConcluida ? 'Concluído' : 'Sapata'),
+        status: finalStatus,
+        etapaAtual: finalEtapa,
       };
       addObra(novaObra);
     }
@@ -551,7 +599,10 @@ export const UsuariosView: React.FC = () => {
     if (!configEmailInput.trim()) return;
     updateMasterEmail(configEmailInput.trim());
     setEmailSavedSuccess(true);
-    setTimeout(() => setEmailSavedSuccess(false), 3000);
+    setTimeout(() => {
+      setEmailSavedSuccess(false);
+      setIsMasterEmailModalOpen(false);
+    }, 1200);
   };
 
   const getRoleBadge = (p: PerfilUsuario) => {
@@ -659,10 +710,10 @@ export const UsuariosView: React.FC = () => {
           {/* Section Header matching mockup (Users / Manage user accounts, roles, and permissions. + Add User) */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111c2d] dark:text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white font-sans">
                 Permissões
               </h1>
-              <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-1">
+              <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5 font-sans">
                 Gerencie contas e permissões
               </p>
             </div>
@@ -886,10 +937,10 @@ export const UsuariosView: React.FC = () => {
           {/* Section Header matching Permissões */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111c2d] dark:text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white font-sans">
                 Obras
               </h1>
-              <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-1">
+              <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5 font-sans">
                 Gerencie canteiros, orçamentos e etc.
               </p>
             </div>
@@ -1038,7 +1089,6 @@ export const UsuariosView: React.FC = () => {
                                         EM USO
                                       </span>
                                     )}
-                                    {getObraStatusBadge(obra.status)}
                                   </div>
                                   <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block uppercase mt-0.5">
                                     {obra.endereco || 'Sem endereço informado'}
@@ -1047,28 +1097,46 @@ export const UsuariosView: React.FC = () => {
                               </div>
                             </td>
 
-                            {/* Status Column with light indicator */}
+                            {/* Status Column (Opções fixas, sem dropdown) */}
                             <td className="py-4 px-4 sm:px-6">
-                              <span
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border whitespace-nowrap ${
-                                  isAtivo
-                                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-900/60'
-                                    : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200/60 dark:border-rose-900/60'
-                                }`}
-                              >
+                              <div className="flex flex-wrap items-center gap-2">
                                 <span
-                                  className={`w-2 h-2 rounded-full shrink-0 ${
-                                    isAtivo ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+                                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold border whitespace-nowrap shrink-0 ${
+                                    isAtivo
+                                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-900/60'
+                                      : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200/60 dark:border-rose-900/60'
                                   }`}
-                                />
-                                <span>{isAtivo ? 'Ativo' : 'Inativo'}</span>
-                              </span>
+                                >
+                                  <span
+                                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                      isAtivo ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+                                    }`}
+                                  />
+                                  <span>{isAtivo ? 'Ativo' : 'Inativo'}</span>
+                                </span>
+
+                                {getObraStatusBadge(obra.status)}
+                              </div>
                             </td>
 
-                            {/* Etapa Column */}
+                            {/* Etapa Column (Opção fixa, sem dropdown) */}
                             <td className="py-4 px-4 sm:px-6">
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#0085db]/10 text-[#0085db] dark:text-[#0085db] border border-[#0085db]/20">
-                                <span>{obra.etapaAtual || 'Sapata'}</span>
+                              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold py-1 px-2.5 rounded-xl border border-[#0085db]/20 bg-blue-50/70 dark:bg-blue-950/30 text-[#0085db] dark:text-blue-400 whitespace-nowrap">
+                                <span
+                                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                    isAllCompleted ? 'bg-emerald-500' : 'bg-[#0085db]'
+                                  }`}
+                                />
+                                <span>
+                                  {obra.status === 'concluida' || (obra.etapaAtual || '').toLowerCase().includes('conclu')
+                                    ? 'Concluído'
+                                    : (() => {
+                                        const matched = ETAPAS_CRONOGRAMA.find(
+                                          e => e.nome.toLowerCase() === (obra.etapaAtual || '').toLowerCase()
+                                        );
+                                        return matched ? `${matched.numero} - ${matched.nome}` : (obra.etapaAtual || '1 - Sapata');
+                                      })()}
+                                </span>
                               </span>
                             </td>
 
@@ -1189,18 +1257,13 @@ export const UsuariosView: React.FC = () => {
                                         const isFilled = isAllCompleted || etapa.numero <= currentStep;
 
                                         return (
-                                          <button
+                                          <div
                                             key={etapa.numero}
-                                            type="button"
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              handleSelectObraStep(obra, etapa.numero);
-                                            }}
-                                            title={`${etapa.numero} - ${etapa.nome}`}
-                                            className="flex flex-col items-center group cursor-pointer focus:outline-hidden"
+                                            title={`Etapa ${etapa.numero}: ${etapa.nome}`}
+                                            className="flex flex-col items-center group select-none cursor-default"
                                           >
                                             <div
-                                              className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white transition-all transform group-hover:scale-110 active:scale-95 shadow-xs ${
+                                              className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white transition-all shadow-xs ${
                                                 isAllCompleted
                                                   ? 'bg-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-950/60'
                                                   : isFilled
@@ -1222,22 +1285,17 @@ export const UsuariosView: React.FC = () => {
                                             >
                                               {etapa.nome}
                                             </span>
-                                          </button>
+                                          </div>
                                         );
                                       })}
 
                                       {/* 12º Nó: Concluído */}
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleSelectObraConcluido(obra);
-                                        }}
-                                        title="Concluído"
-                                        className="flex flex-col items-center group cursor-pointer focus:outline-hidden"
+                                      <div
+                                        title="Etapa Concluída"
+                                        className="flex flex-col items-center group select-none cursor-default"
                                       >
                                         <div
-                                          className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-all transform group-hover:scale-110 active:scale-95 shadow-xs ${
+                                          className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-all shadow-xs ${
                                             isAllCompleted
                                               ? 'bg-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-950/60'
                                               : 'bg-[#6b7280] dark:bg-zinc-600 text-white'
@@ -1255,7 +1313,7 @@ export const UsuariosView: React.FC = () => {
                                         >
                                           Concluído
                                         </span>
-                                      </button>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -1272,211 +1330,235 @@ export const UsuariosView: React.FC = () => {
           </div>
         </div>
       ) : (
-        /* Configurações do Master & Solicitações de Acesso */
+        /* Solicitações de Acesso no estilo corporativo de Permissões */
         <div className="space-y-6">
-          {/* Card 1: E-mail do Administrador Master para Notificações */}
-          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[22px] p-5 sm:p-6 shadow-[0px_2px_8px_rgba(37,83,185,0.06)] dark:shadow-none">
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-5 border-b border-[#e6ecf1] dark:border-[#333f55]">
-              <div className="flex items-start gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-[#0085db]/10 dark:bg-[#0085db]/20 text-[#0085db] flex items-center justify-center shrink-0">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base sm:text-lg font-bold text-[#111c2d] dark:text-white">
-                      E-mail do Administrador Master
-                    </h2>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
-                      Configuração Ativa
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#707a82] dark:text-[#7c8fac] mt-1 max-w-2xl leading-relaxed">
-                    Cadastre o e-mail oficial do Administrador Master que receberá as mensagens e pedidos de novos acessos enviados pelos colaboradores na tela de login (&ldquo;Solicitar acesso&rdquo;).
-                  </p>
-                </div>
-              </div>
-
-              <div className="shrink-0 bg-[#f6f9fc] dark:bg-[#1a2535] px-3.5 py-2 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-right">
-                <span className="block text-[10px] font-semibold text-[#707a82] uppercase">E-mail Cadastrado</span>
-                <span className="text-xs font-bold text-[#0085db]">{masterEmail}</span>
-              </div>
+          {/* Section Header matching Permissões */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white font-sans">
+                Solicitações
+              </h1>
+              <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5 font-sans">
+                Gerencie pedidos de novos acessos e aprovações
+              </p>
             </div>
 
-            <form onSubmit={handleSaveMasterEmail} className="mt-5 space-y-4">
-              <div className="max-w-xl">
-                <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5">
-                  E-mail para Recebimento de Solicitações *
-                </label>
-                <div className="flex flex-col sm:flex-row gap-2.5">
-                  <div className="relative flex-1">
-                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#707a82] pointer-events-none">
-                      <Mail className="w-4 h-4" />
-                    </div>
-                    <input
-                      type="email"
-                      required
-                      value={configEmailInput}
-                      onChange={e => setConfigEmailInput(e.target.value)}
-                      placeholder="master@libraconstrutora.com.br"
-                      className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="px-5 py-2.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Salvar E-mail</span>
-                  </button>
-                </div>
-              </div>
-
-              {emailSavedSuccess && (
-                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs flex items-center gap-2 animate-in fade-in">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <span>Configuração salva com sucesso! Todas as novas solicitações da tela de login serão direcionadas para <strong>{masterEmail}</strong>.</span>
-                </div>
-              )}
-
-              <div className="p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535]/60 border border-[#e6ecf1] dark:border-[#333f55] text-[11px] text-[#707a82] dark:text-[#7c8fac] flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#0085db] shrink-0" />
-                <span>Integração ativa com a tela de login: quando qualquer colaborador clica em &ldquo;Solicitar acesso&rdquo;, a mensagem e os dados de contato são gravados e encaminhados diretamente para este endereço.</span>
-              </div>
-            </form>
+            <button
+              onClick={() => {
+                setConfigEmailInput(masterEmail || 'natanaeljobs@gmail.com');
+                setIsMasterEmailModalOpen(true);
+              }}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#0085db] hover:bg-[#0071ba] text-white text-xs font-bold rounded-xl shadow-sm shadow-[#0085db]/25 transition-all active:scale-95 cursor-pointer self-start sm:self-auto"
+            >
+              <Mail className="w-4 h-4" />
+              <span>Configurar e-mail</span>
+            </button>
           </div>
 
-          {/* Card 2: Solicitações de Acesso Recebidas */}
-          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[22px] p-5 sm:p-6 shadow-[0px_2px_8px_rgba(37,83,185,0.06)] dark:shadow-none">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#e6ecf1] dark:border-[#333f55]">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center">
-                  <Inbox className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white">
-                    Solicitações de Acesso Recebidas ({solicitacoesAcesso.length})
-                  </h3>
-                  <p className="text-xs text-[#707a82] dark:text-[#7c8fac]">
-                    Mensagens e justificativas enviadas por usuários na tela de login
-                  </p>
-                </div>
-              </div>
-
-              {/* Status Filters */}
-              <div className="flex items-center gap-1.5 self-start sm:self-auto">
-                {(['todas', 'pendente', 'aprovado', 'recusado'] as const).map(f => (
+          {/* Filter Toolbar matching Permissões */}
+          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3 sm:p-4 shadow-xs">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+              {/* Search Bar */}
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar solicitações por nome, e-mail ou justificativa..."
+                  value={solicSearchTerm}
+                  onChange={e => setSolicSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white placeholder:text-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-[#0085db]/40"
+                />
+                {solicSearchTerm && (
                   <button
-                    key={f}
-                    onClick={() => setFilterSolicitacoes(f)}
-                    className={`px-3 py-1 text-[11px] font-semibold rounded-lg capitalize transition-colors cursor-pointer ${
-                      filterSolicitacoes === f
-                        ? 'bg-[#0085db] text-white shadow-xs'
-                        : 'text-[#707a82] bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#e6ecf1] dark:hover:bg-[#253245]'
-                    }`}
+                    onClick={() => setSolicSearchTerm('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 text-xs"
                   >
-                    {f === 'todas' ? 'Todas' : f === 'pendente' ? 'Pendentes' : f === 'aprovado' ? 'Aprovadas' : 'Recusadas'}
+                    <XIcon className="w-3.5 h-3.5" />
                   </button>
-                ))}
+                )}
               </div>
-            </div>
 
-            {/* List */}
-            <div className="mt-4 space-y-3">
-              {solicitacoesAcesso
-                .filter(s => filterSolicitacoes === 'todas' || s.status === filterSolicitacoes)
-                .map(solic => {
-                  const isPendente = solic.status === 'pendente';
-                  const isAprovado = solic.status === 'aprovado';
-                  return (
-                    <div
-                      key={solic.id}
-                      className="p-4 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#fafbfd] dark:bg-[#162232] hover:border-[#0085db]/40 transition-all flex flex-col md:flex-row md:items-start justify-between gap-4"
-                    >
-                      <div className="space-y-2 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white">
-                            {solic.nome}
-                          </span>
-                          <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac]">
-                            • {solic.email}
-                          </span>
-                          <span className="text-[10px] text-[#707a82] dark:text-[#7c8fac] flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {solic.data}
-                          </span>
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              isPendente
-                                ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
-                                : isAprovado
-                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300'
-                                : 'bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300'
-                            }`}
-                          >
-                            {isPendente ? 'Pendente' : isAprovado ? 'Aprovado' : 'Recusado'}
-                          </span>
-                        </div>
+              {/* Status Dropdown */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-zinc-500 shrink-0">Status:</span>
+                <select
+                  value={solicStatusFilter}
+                  onChange={e => setSolicStatusFilter(e.target.value as any)}
+                  className="px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white font-medium focus:outline-hidden focus:ring-2 focus:ring-[#0085db]/40 cursor-pointer"
+                >
+                  <option value="all">Todos os Status ({solicitacoesAcesso.length})</option>
+                  <option value="pendente">Pendentes ({solicitacoesAcesso.filter(s => s.status === 'pendente').length})</option>
+                  <option value="aprovado">Aprovadas ({solicitacoesAcesso.filter(s => s.status === 'aprovado').length})</option>
+                  <option value="recusado">Recusadas ({solicitacoesAcesso.filter(s => s.status === 'recusado').length})</option>
+                </select>
+              </div>
 
-                        {/* Text box / message entered by user */}
-                        <div className="p-3 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-xs text-[#111c2d] dark:text-slate-200">
-                          <span className="block text-[10px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider mb-1">
-                            Mensagem / Justificativa da Solicitação:
-                          </span>
-                          <p className="whitespace-pre-line leading-relaxed italic">
-                            &ldquo;{solic.mensagem}&rdquo;
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex md:flex-col gap-2 shrink-0 justify-end">
-                        {isPendente && (
-                          <>
-                            <button
-                              onClick={() => {
-                                setNome(solic.nome);
-                                setEmail(solic.email);
-                                setPerfil('operador');
-                                atualizarStatusSolicitacao(solic.id, 'aprovado');
-                                setIsUserModalOpen(true);
-                              }}
-                              className="px-3 py-1.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-lg shadow-xs flex items-center gap-1 cursor-pointer transition-all"
-                            >
-                              <UserPlus className="w-3.5 h-3.5" />
-                              <span>Aprovar & Criar Conta</span>
-                            </button>
-                            <button
-                              onClick={() => atualizarStatusSolicitacao(solic.id, 'recusado')}
-                              className="px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg border border-rose-200 dark:border-rose-900/50 cursor-pointer transition-colors"
-                            >
-                              Recusar
-                            </button>
-                          </>
-                        )}
-                        {isAprovado && (
-                          <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-                            <Check className="w-3.5 h-3.5" />
-                            Liberado
-                          </span>
-                        )}
-                        {solic.status === 'recusado' && (
-                          <button
-                            onClick={() => atualizarStatusSolicitacao(solic.id, 'pendente')}
-                            className="px-2.5 py-1 text-xs text-[#707a82] hover:text-[#111c2d] dark:hover:text-white underline cursor-pointer"
-                          >
-                            Reabrir
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-
-              {solicitacoesAcesso.filter(s => filterSolicitacoes === 'todas' || s.status === filterSolicitacoes).length === 0 && (
-                <div className="text-center py-8 text-xs text-[#707a82]">
-                  Nenhuma solicitação encontrada nesta categoria.
-                </div>
+              {/* Clear / Reset Filters */}
+              {(solicSearchTerm || solicStatusFilter !== 'all') && (
+                <button
+                  onClick={() => {
+                    setSolicSearchTerm('');
+                    setSolicStatusFilter('all');
+                  }}
+                  className="px-3.5 py-2 text-xs font-semibold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db]/20 dark:bg-[#0085db]/20 dark:hover:bg-[#0085db]/30 rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Limpar</span>
+                </button>
               )}
+            </div>
+          </div>
+
+          {/* Corporate Data Table matching Permissões */}
+          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] bg-zinc-50/70 dark:bg-[#162232]/50 text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+                    <th className="py-4 px-5 sm:px-6">Solicitante</th>
+                    <th className="py-4 px-4 sm:px-6">Justificativa</th>
+                    <th className="py-4 px-4 sm:px-6">Status</th>
+                    <th className="py-4 px-4 sm:px-6">Data</th>
+                    <th className="py-4 px-5 sm:px-6 text-right">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#e6ecf1] dark:divide-[#333f55] text-xs">
+                  {filteredSolicitacoes.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-zinc-400">
+                        Nenhuma solicitação encontrada com os filtros selecionados.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredSolicitacoes.map(solic => {
+                      const isPendente = solic.status === 'pendente';
+                      const isAprovado = solic.status === 'aprovado';
+
+                      return (
+                        <tr
+                          key={solic.id}
+                          className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors"
+                        >
+                          {/* Solicitante Column */}
+                          <td className="py-4 px-5 sm:px-6">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-full bg-[#0085db] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                                {solic.nome.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <span
+                                  className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white uppercase block"
+                                  style={{ textTransform: 'uppercase' }}
+                                >
+                                  {solic.nome?.toUpperCase()}
+                                </span>
+                                <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block">
+                                  {solic.email}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Justificativa Column */}
+                          <td className="py-4 px-4 sm:px-6 max-w-xs sm:max-w-md">
+                            <div className="space-y-1">
+                              <p className="text-xs text-[#111c2d] dark:text-zinc-200 line-clamp-2 leading-relaxed">
+                                &ldquo;{solic.mensagem}&rdquo;
+                              </p>
+                              {solic.mensagem.length > 80 && (
+                                <button
+                                  type="button"
+                                  onClick={() => setViewingSolic(solic)}
+                                  className="text-[11px] font-semibold text-[#0085db] hover:underline cursor-pointer inline-flex items-center gap-1"
+                                >
+                                  Ver completa
+                                </button>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Status Column */}
+                          <td className="py-4 px-4 sm:px-6">
+                            {isPendente ? (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60 whitespace-nowrap">
+                                Pendente
+                              </span>
+                            ) : isAprovado ? (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60 whitespace-nowrap">
+                                Aprovado
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/60 whitespace-nowrap">
+                                Recusado
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Data Column */}
+                          <td className="py-4 px-4 sm:px-6 text-zinc-600 dark:text-zinc-400 tabular-nums whitespace-nowrap">
+                            {formatSolicData(solic.data)}
+                          </td>
+
+                          {/* Actions Column */}
+                          <td className="py-4 px-5 sm:px-6 text-right">
+                            <div className="inline-flex items-center justify-end gap-1.5">
+                              {/* Visualizar Mensagem Completa */}
+                              <button
+                                onClick={() => setViewingSolic(solic)}
+                                title="Ver mensagem completa"
+                                className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+
+                              {/* Ações para Pendente */}
+                              {isPendente && (
+                                <>
+                                  <button
+                                    onClick={() => handleStartAprovarSolicitacao(solic)}
+                                    title="Aprovar e cadastrar usuário"
+                                    className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all cursor-pointer"
+                                  >
+                                    <UserPlus className="w-4 h-4" />
+                                  </button>
+
+                                  <button
+                                    onClick={() => atualizarStatusSolicitacao(solic.id, 'recusado')}
+                                    title="Recusar solicitação"
+                                    className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                                  >
+                                    <Ban className="w-4 h-4" />
+                                  </button>
+                                </>
+                              )}
+
+                              {/* Ações para Recusado */}
+                              {solic.status === 'recusado' && (
+                                <button
+                                  onClick={() => atualizarStatusSolicitacao(solic.id, 'pendente')}
+                                  title="Reabrir solicitação como pendente"
+                                  className="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-all cursor-pointer"
+                                >
+                                  <RotateCcw className="w-4 h-4" />
+                                </button>
+                              )}
+
+                              {/* Excluir Solicitação */}
+                              <button
+                                onClick={() => setSolicToDelete(solic)}
+                                title="Excluir solicitação"
+                                className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1809,9 +1891,12 @@ export const UsuariosView: React.FC = () => {
       {/* Modal: New User */}
       <Modal
         isOpen={isUserModalOpen}
-        onClose={() => setIsUserModalOpen(false)}
-        title="Cadastrar usuário"
-        subtitle="Defina perfil e permissões de acesso ao aplicativo."
+        onClose={() => {
+          setIsUserModalOpen(false);
+          setSolicAprovandoId(null);
+        }}
+        title={solicAprovandoId ? 'Aprovar solicitação & Criar conta' : 'Cadastrar usuário'}
+        subtitle={solicAprovandoId ? 'Defina o perfil de acesso e salve para liberar o colaborador' : 'Defina perfil e permissões de acesso ao aplicativo.'}
         maxWidth="md"
       >
         <form onSubmit={handleSaveUser} className="space-y-3">
@@ -1868,7 +1953,10 @@ export const UsuariosView: React.FC = () => {
           <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
             <button
               type="button"
-              onClick={() => setIsUserModalOpen(false)}
+              onClick={() => {
+                setIsUserModalOpen(false);
+                setSolicAprovandoId(null);
+              }}
               className="px-3.5 py-2 text-xs text-[#707a82] hover:text-[#111c2d] cursor-pointer"
             >
               Cancelar
@@ -1877,7 +1965,7 @@ export const UsuariosView: React.FC = () => {
               type="submit"
               className="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer"
             >
-              Cadastrar Usuário
+              {solicAprovandoId ? 'Aprovar & Criar Usuário' : 'Cadastrar Usuário'}
             </button>
           </div>
         </form>
@@ -1987,10 +2075,13 @@ export const UsuariosView: React.FC = () => {
               <select
                 value={obraStatus}
                 onChange={e => {
-                  const val = e.target.value as any;
+                  const val = e.target.value as 'em_andamento' | 'planejamento' | 'concluida' | 'cancelada';
                   setObraStatus(val);
                   if (val === 'concluida') {
                     setObraEtapaAtual('Concluído');
+                  } else if (obraEtapaAtual === 'Concluído') {
+                    // Retrocedendo de concluída para operante, cancelada ou planejamento
+                    setObraEtapaAtual(val === 'planejamento' ? 'Sapata' : 'Acabamento');
                   }
                 }}
                 className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer"
@@ -2010,9 +2101,13 @@ export const UsuariosView: React.FC = () => {
             <select
               value={obraEtapaAtual}
               onChange={e => {
-                setObraEtapaAtual(e.target.value);
-                if (e.target.value === 'Concluído') {
+                const val = e.target.value;
+                setObraEtapaAtual(val);
+                if (val === 'Concluído') {
                   setObraStatus('concluida');
+                } else if (obraStatus === 'concluida') {
+                  // Se mudar a etapa saindo de Concluído, retrocede status para operante
+                  setObraStatus('em_andamento');
                 }
               }}
               className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer"
@@ -2078,6 +2173,208 @@ export const UsuariosView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleConfirmDeleteObra}
+                className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs cursor-pointer"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* MODAL: Configurar E-mail Master */}
+      <Modal
+        isOpen={isMasterEmailModalOpen}
+        onClose={() => setIsMasterEmailModalOpen(false)}
+        title="E-mail do Administrador Master"
+        subtitle="Endereço para notificações de novos acessos"
+        maxWidth="md"
+      >
+        <form onSubmit={handleSaveMasterEmail} className="space-y-4">
+          <div className="p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs text-[#707a82] dark:text-[#7c8fac] flex items-start gap-2.5">
+            <ShieldCheck className="w-5 h-5 text-[#0085db] shrink-0 mt-0.5" />
+            <span className="leading-relaxed">
+              Quando qualquer colaborador clicar em <strong>&ldquo;Solicitar acesso&rdquo;</strong> na tela de login, os dados e a justificativa serão gravados no sistema e notificados para este e-mail.
+            </span>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5">
+              E-mail para Recebimento de Solicitações *
+            </label>
+            <div className="relative">
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#707a82] pointer-events-none">
+                <Mail className="w-4 h-4" />
+              </div>
+              <input
+                type="email"
+                required
+                value={configEmailInput}
+                onChange={e => setConfigEmailInput(e.target.value)}
+                placeholder="master@libraconstrutora.com.br"
+                className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
+              />
+            </div>
+          </div>
+
+          {emailSavedSuccess && (
+            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs flex items-center gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span>Configuração salva com sucesso!</span>
+            </div>
+          )}
+
+          <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setIsMasterEmailModalOpen(false)}
+              className="px-3.5 py-2 text-xs text-[#707a82] hover:text-[#111c2d] dark:hover:text-white cursor-pointer"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Salvar E-mail</span>
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* MODAL: Visualizar Justificativa da Solicitação */}
+      <Modal
+        isOpen={!!viewingSolic}
+        onClose={() => setViewingSolic(null)}
+        title="Detalhes da Solicitação de Acesso"
+        subtitle="Justificativa enviada pelo colaborador na tela de login"
+        maxWidth="md"
+      >
+        {viewingSolic && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+              <div className="w-10 h-10 rounded-full bg-[#0085db] text-white font-bold text-sm flex items-center justify-center shrink-0">
+                {viewingSolic.nome.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white uppercase truncate">
+                    {viewingSolic.nome}
+                  </span>
+                  {viewingSolic.status === 'pendente' ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60">
+                      Pendente
+                    </span>
+                  ) : viewingSolic.status === 'aprovado' ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60">
+                      Aprovado
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60">
+                      Recusado
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs text-[#707a82] dark:text-[#7c8fac] block">
+                  {viewingSolic.email}
+                </span>
+                <span className="text-[11px] text-zinc-400 flex items-center gap-1 mt-0.5">
+                  <Clock className="w-3 h-3" /> Solicitado em {formatSolicData(viewingSolic.data)}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider text-[10px]">
+                Mensagem / Justificativa
+              </label>
+              <div className="p-3.5 rounded-xl bg-[#fafbfd] dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] text-xs text-[#111c2d] dark:text-zinc-200 leading-relaxed whitespace-pre-wrap">
+                &ldquo;{viewingSolic.mensagem}&rdquo;
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex flex-wrap justify-between items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setViewingSolic(null)}
+                className="px-3.5 py-2 text-xs text-[#707a82] hover:text-[#111c2d] dark:hover:text-white cursor-pointer"
+              >
+                Fechar
+              </button>
+
+              <div className="flex items-center gap-2">
+                {viewingSolic.status === 'pendente' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        atualizarStatusSolicitacao(viewingSolic.id, 'recusado');
+                        setViewingSolic(null);
+                      }}
+                      className="px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl border border-rose-200 dark:border-rose-900/50 cursor-pointer"
+                    >
+                      Recusar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const target = viewingSolic;
+                        setViewingSolic(null);
+                        handleStartAprovarSolicitacao(target);
+                      }}
+                      className="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" />
+                      <span>Aprovar & Criar Conta</span>
+                    </button>
+                  </>
+                )}
+                {viewingSolic.status === 'recusado' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      atualizarStatusSolicitacao(viewingSolic.id, 'pendente');
+                      setViewingSolic(null);
+                    }}
+                    className="px-3 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-900/50 cursor-pointer"
+                  >
+                    Reabrir como Pendente
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* MODAL: Confirmar Exclusão de Solicitação */}
+      <Modal
+        isOpen={!!solicToDelete}
+        onClose={() => setSolicToDelete(null)}
+        title="Excluir solicitação"
+        subtitle="Esta ação removerá o pedido de acesso do histórico"
+        maxWidth="sm"
+      >
+        {solicToDelete && (
+          <div className="space-y-4">
+            <p className="text-xs text-zinc-600 dark:text-zinc-300">
+              Tem certeza que deseja excluir o pedido de acesso de <strong>&ldquo;{solicToDelete.nome}&rdquo;</strong>?
+            </p>
+            <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setSolicToDelete(null)}
+                className="px-3.5 py-2 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  excluirSolicitacaoAcesso(solicToDelete.id);
+                  setSolicToDelete(null);
+                }}
                 className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs cursor-pointer"
               >
                 Excluir

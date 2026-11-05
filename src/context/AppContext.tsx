@@ -85,6 +85,7 @@ interface AppContextType {
   solicitacoesAcesso: SolicitacaoAcesso[];
   registrarSolicitacaoAcesso: (dados: { nome: string; email: string; mensagem: string }) => void;
   atualizarStatusSolicitacao: (id: string, status: 'pendente' | 'aprovado' | 'recusado') => void;
+  excluirSolicitacaoAcesso: (id: string) => void;
 
   // Despesas
   despesas: Despesa[];
@@ -487,6 +488,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setSolicitacoesAcesso(prev => prev.map(s => (s.id === id ? { ...s, status } : s)));
   };
 
+  const excluirSolicitacaoAcesso = (id: string) => {
+    setSolicitacoesAcesso(prev => prev.filter(s => s.id !== id));
+  };
+
   const addMaterial = (mat: Omit<Material, 'id' | 'dataCadastro'>): Material => {
     const novo: Material = {
       ...mat,
@@ -799,6 +804,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         solicitacoesAcesso,
         registrarSolicitacaoAcesso,
         atualizarStatusSolicitacao,
+        excluirSolicitacaoAcesso,
         despesas: obraDespesas,
         addDespesa,
         updateDespesa,
