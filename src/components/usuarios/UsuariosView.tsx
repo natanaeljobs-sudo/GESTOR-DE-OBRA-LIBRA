@@ -824,13 +824,13 @@ export const UsuariosView: React.FC = () => {
                       return (
                         <tr
                           key={user.id}
-                          className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors h-[52.5px]"
-                          style={{ height: '52.5px' }}
+                          className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors"
+                          style={{ height: index === 1 ? '53px' : '52.5px' }}
                         >
                           {/* User Column */}
                           <td
                             className="py-1.5 px-5 sm:px-6 align-middle"
-                            style={{ height: '52.5px' }}
+                            style={{ height: index === 1 ? '53px' : '52.5px' }}
                           >
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 rounded-full bg-[#0085db] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
@@ -881,16 +881,16 @@ export const UsuariosView: React.FC = () => {
                           </td>
 
                           {/* Actions Column matching mockup (Pencil, Ban/Toggle, Trash) */}
-                          <td className="py-1.5 px-5 sm:px-6 text-right align-middle" style={{ height: '52.5px' }}>
+                          <td className="py-1.5 px-5 sm:px-6 text-right align-middle" style={{ height: index === 1 ? '53px' : '52.5px' }}>
                             <div className="inline-flex items-center justify-end gap-1.5">
                               {/* Switch profile for testing if not current user */}
                               {!isCurrentUser && (
                                 <button
                                   onClick={() => setActiveUserId(user.id)}
                                   title={`Assumir perfil de ${user.nome} para teste`}
-                                  className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all cursor-pointer"
+                                  className="w-7 h-7 rounded-lg text-zinc-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                                 >
-                                  <UserCheck className="w-4 h-4" />
+                                  <UserCheck size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                                 </button>
                               )}
 
@@ -898,31 +898,31 @@ export const UsuariosView: React.FC = () => {
                               <button
                                 onClick={() => handleOpenEditPermissions(user)}
                                 title="Editar permissões e checkboxes de acesso"
-                                className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer"
+                                className="w-7 h-7 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                               >
-                                <Pencil className="w-4 h-4" />
+                                <Pencil size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                               </button>
 
                               {/* Toggle Active/Inactive (Ban icon) */}
                               <button
                                 onClick={() => handleToggleUserStatus(user)}
                                 title={user.ativo ? 'Desativar usuário' : 'Ativar usuário'}
-                                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                                className={`w-7 h-7 rounded-lg transition-all cursor-pointer inline-flex items-center justify-center shrink-0 ${
                                   user.ativo
                                     ? 'text-zinc-600 dark:text-zinc-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30'
                                     : 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30'
                                 }`}
                               >
-                                <Ban className="w-4 h-4" />
+                                <Ban size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                               </button>
 
                               {/* Delete User (Trash icon) */}
                               <button
                                 onClick={() => setUserToDelete(user)}
                                 title="Excluir usuário"
-                                className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                                className="w-7 h-7 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                               </button>
                             </div>
                           </td>
@@ -1201,9 +1201,9 @@ export const UsuariosView: React.FC = () => {
                                       setActiveObraId(obra.id);
                                     }}
                                     title={`Tornar ${obra.nome} a obra ativa`}
-                                    className="p-1.5 rounded-lg text-zinc-500 hover:text-[#0085db] hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all cursor-pointer"
+                                    className="w-7 h-7 rounded-lg text-zinc-500 hover:text-[#0085db] hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                                   >
-                                    <Building className="w-4 h-4" />
+                                    <Building size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                                   </button>
                                 )}
 
@@ -1215,9 +1215,9 @@ export const UsuariosView: React.FC = () => {
                                     handleOpenEditObra(obra);
                                   }}
                                   title="Editar obra"
-                                  className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer"
+                                  className="w-7 h-7 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                                 >
-                                  <Pencil className="w-4 h-4" />
+                                  <Pencil size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                                 </button>
 
                                 {/* Delete Obra Button (Trash icon) */}
@@ -1228,9 +1228,9 @@ export const UsuariosView: React.FC = () => {
                                     setObraToDelete(obra);
                                   }}
                                   title="Excluir obra"
-                                  className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                                  className="w-7 h-7 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                                 >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Trash2 size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                                 </button>
                               </div>
                             </td>
@@ -1488,14 +1488,14 @@ export const UsuariosView: React.FC = () => {
 
                           {/* Actions Column */}
                           <td className="py-2.5 px-5 sm:px-6 text-right">
-                            <div className="inline-flex items-center justify-end gap-1">
+                            <div className="inline-flex items-center justify-end gap-1.5">
                               {/* Visualizar Mensagem Completa */}
                               <button
                                 onClick={() => setViewingSolic(solic)}
                                 title="Ver mensagem completa"
-                                className="p-1 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer"
+                                className="w-7 h-7 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                               >
-                                <Eye className="w-3.5 h-3.5" />
+                                <Eye size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                               </button>
 
                               {/* Ações para Pendente */}
@@ -1504,17 +1504,17 @@ export const UsuariosView: React.FC = () => {
                                   <button
                                     onClick={() => handleStartAprovarSolicitacao(solic)}
                                     title="Aprovar e cadastrar usuário"
-                                    className="p-1 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all cursor-pointer"
+                                    className="w-7 h-7 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                                   >
-                                    <UserPlus className="w-3.5 h-3.5" />
+                                    <UserPlus size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                                   </button>
 
                                   <button
                                     onClick={() => atualizarStatusSolicitacao(solic.id, 'recusado')}
                                     title="Recusar solicitação"
-                                    className="p-1 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                                    className="w-7 h-7 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                                   >
-                                    <Ban className="w-3.5 h-3.5" />
+                                    <Ban size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                                   </button>
                                 </>
                               )}
@@ -1524,9 +1524,9 @@ export const UsuariosView: React.FC = () => {
                                 <button
                                   onClick={() => atualizarStatusSolicitacao(solic.id, 'pendente')}
                                   title="Reabrir solicitação como pendente"
-                                  className="p-1 rounded-lg text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-all cursor-pointer"
+                                  className="w-7 h-7 rounded-lg text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                                 >
-                                  <RotateCcw className="w-3.5 h-3.5" />
+                                  <RotateCcw size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                                 </button>
                               )}
 
@@ -1534,9 +1534,9 @@ export const UsuariosView: React.FC = () => {
                               <button
                                 onClick={() => setSolicToDelete(solic)}
                                 title="Excluir solicitação"
-                                className="p-1 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                                className="w-7 h-7 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
                               >
-                                <Trash2 className="w-3.5 h-3.5" />
+                                <Trash2 size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
                               </button>
                             </div>
                           </td>
