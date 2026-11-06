@@ -123,6 +123,7 @@ interface AppContextType {
   // Recibos
   recibos: ReciboPagamento[];
   emitirRecibo: (dados: {
+    numeroRecibo?: string;
     trabalhadorId?: string;
     trabalhadorManual?: {
       nome: string;
@@ -137,6 +138,8 @@ interface AppContextType {
     localCidade?: string;
     marcarComoPagas?: boolean;
   }) => ReciboPagamento;
+  updateRecibo: (recibo: ReciboPagamento) => void;
+  deleteRecibo: (id: string, restaurarDiarias?: boolean) => void;
 
   // Orçamentos
   orcamentos: Orcamento[];
@@ -855,6 +858,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const emitirRecibo = (dados: {
+    numeroRecibo?: string;
     trabalhadorId?: string;
     trabalhadorManual?: {
       nome: string;
@@ -876,11 +880,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const nomeTrabalhador = dados.trabalhadorManual?.nome || trabalhador?.nome || 'Trabalhador';
     const cpfTrabalhador = dados.trabalhadorManual?.cpf || trabalhador?.cpf || 'Não informado';
     const funcaoTrabalhador = dados.trabalhadorManual?.funcao || trabalhador?.funcao || 'Serviços Gerais';
+    const numeroFinal = dados.numeroRecibo?.trim() || `REC-${new Date().getFullYear()}-${String(recibos.length + 1).padStart(3, '0')}`;
 
     const novoRecibo: ReciboPagamento = {
       id: `rec-${Date.now()}`,
       obraId: activeObra.id,
-      numeroRecibo: `REC-${new Date().getFullYear()}-${String(recibos.length + 1).padStart(3, '0')}`,
+      numeroRecibo: numeroFinal,
       trabalhadorId: dados.trabalhadorId || 'manual',
       trabalhadorNome: nomeTrabalhador,
       trabalhadorCpf: cpfTrabalhador,
@@ -904,6 +909,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     return novoRecibo;
+  };
+
+  const updateRecibo = (recibo: ReciboPagamento) => {
+    setRecibos(prev => prev.map(r => (r.id === recibo.id ? recibo : r)));
+    showToast(`Recibo "${recibo.numeroRecibo}" atualizado com sucesso.`, 'success');
+  };
+
+  const deleteRecibo = (id: string, restaurarDiarias = false) => {
+    const rec = recibos.find(r => r.id === id);
+    if (!rec) return;
+
+    if (restaurarDiarias && rec.diariasIds && rec.diariasIds.length > 0) {
+      setDiarias(prev =>
+        prev.map(d => (rec.diariasIds.includes(d.id) ? { ...d, statusPagamento: 'pendente', dataPagamento: undefined } : d))
+      );
+    }
+
+    setRecibos(prev => prev.filter(r => r.id !== id));
+    showToast(`Recibo "${rec.numeroRecibo}" excluído do histórico.`, 'success', 'Recibo excluído');
   };
 
   const addOrcamento = (orc: Omit<Orcamento, 'id' | 'criadoEm'>) => {
@@ -1099,6 +1123,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         marcarDiariasPagas,
         recibos,
         emitirRecibo,
+        updateRecibo,
+        deleteRecibo,
         orcamentos,
         addOrcamento,
         updateOrcamento,

@@ -801,12 +801,12 @@ export const UsuariosView: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] bg-zinc-50/70 dark:bg-[#162232]/50 text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                    <th className="py-4 px-5 sm:px-6">Usuário</th>
-                    <th className="py-4 px-4 sm:px-6">Perfil</th>
-                    <th className="py-4 px-4 sm:px-6">Status</th>
-                    <th className="py-4 px-4 sm:px-6">Cadastro</th>
-                    <th className="py-4 px-5 sm:px-6 text-right">Ações</th>
+                  <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] bg-zinc-50/70 dark:bg-[#162232]/50 text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider" style={{ height: '52.5px' }}>
+                    <th className="py-2 px-5 sm:px-6 align-middle" style={{ height: '52.5px' }}>Usuário</th>
+                    <th className="py-2 px-4 sm:px-6 align-middle" style={{ height: '52.5px' }}>Perfil</th>
+                    <th className="py-2 px-4 sm:px-6 align-middle" style={{ height: '52.5px' }}>Status</th>
+                    <th className="py-2 px-4 sm:px-6 align-middle" style={{ height: '52.5px' }}>Cadastro</th>
+                    <th className="py-2 px-5 sm:px-6 text-right align-middle" style={{ height: '52.5px' }}>Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#e6ecf1] dark:divide-[#333f55] text-xs">
@@ -817,25 +817,29 @@ export const UsuariosView: React.FC = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredUsers.map(user => {
+                    filteredUsers.map((user, index) => {
                       const isCurrentUser = user.id === activeUser.id;
                       const isMaster = user.perfil === 'master';
 
                       return (
                         <tr
                           key={user.id}
-                          className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors"
+                          className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors h-[52.5px]"
+                          style={{ height: '52.5px' }}
                         >
                           {/* User Column */}
-                          <td className="py-4 px-5 sm:px-6">
+                          <td
+                            className="py-1.5 px-5 sm:px-6 align-middle"
+                            style={{ height: '52.5px' }}
+                          >
                             <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-[#0085db] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                              <div className="w-8 h-8 rounded-full bg-[#0085db] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
                                 {user.nome.charAt(0).toUpperCase()}
                               </div>
                               <div>
                                 <div className="flex items-center gap-2">
                                   <span
-                                    className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white uppercase"
+                                    className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white uppercase leading-none"
                                     style={{ textTransform: 'uppercase' }}
                                   >
                                     {user.nome?.toUpperCase()}
@@ -846,7 +850,7 @@ export const UsuariosView: React.FC = () => {
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block">
+                                <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block leading-none mt-1">
                                   {user.email}
                                 </span>
                               </div>
@@ -854,12 +858,12 @@ export const UsuariosView: React.FC = () => {
                           </td>
 
                           {/* Roles Column */}
-                          <td className="py-4 px-4 sm:px-6">
+                          <td className="py-1.5 px-4 sm:px-6 align-middle" style={{ height: '52.5px' }}>
                             {getRoleBadge(user.perfil)}
                           </td>
 
                           {/* Status Column */}
-                          <td className="py-4 px-4 sm:px-6">
+                          <td className="py-1.5 px-4 sm:px-6 align-middle" style={{ height: '52.5px' }}>
                             {user.ativo ? (
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
                                 Ativo
@@ -872,12 +876,12 @@ export const UsuariosView: React.FC = () => {
                           </td>
 
                           {/* Joined Column */}
-                          <td className="py-4 px-4 sm:px-6 text-zinc-600 dark:text-zinc-400 tabular-nums">
+                          <td className="py-1.5 px-4 sm:px-6 text-zinc-600 dark:text-zinc-400 tabular-nums align-middle" style={{ height: '52.5px' }}>
                             {user.dataCadastro || '01/12/2025'}
                           </td>
 
                           {/* Actions Column matching mockup (Pencil, Ban/Toggle, Trash) */}
-                          <td className="py-4 px-5 sm:px-6 text-right">
+                          <td className="py-1.5 px-5 sm:px-6 text-right align-middle" style={{ height: '52.5px' }}>
                             <div className="inline-flex items-center justify-end gap-1.5">
                               {/* Switch profile for testing if not current user */}
                               {!isCurrentUser && (
