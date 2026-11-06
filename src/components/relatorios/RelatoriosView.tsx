@@ -818,11 +818,11 @@ export const RelatoriosView: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] text-[11px] font-semibold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider">
-                  <th className="pb-3 px-2">DATA</th>
-                  <th className="pb-3 px-3">TIPO</th>
-                  <th className="pb-3 px-3">DESCRIÇÃO</th>
-                  <th className="pb-3 px-2 text-right">VALOR</th>
+                <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] text-[11px] font-semibold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider" style={{ height: '53px' }}>
+                  <th className="px-2 align-middle" style={{ height: '53px' }}>DATA</th>
+                  <th className="px-3 align-middle" style={{ height: '53px' }}>TIPO</th>
+                  <th className="px-3 align-middle" style={{ height: '53px' }}>DESCRIÇÃO</th>
+                  <th className="px-2 text-right align-middle" style={{ height: '53px' }}>VALOR</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#e6ecf1]/70 dark:divide-[#333f55]/60">
@@ -831,14 +831,15 @@ export const RelatoriosView: React.FC = () => {
                     <tr
                       key={item.id}
                       className="hover:bg-[#f6f9fc]/80 dark:hover:bg-[#162232]/50 transition-colors"
+                      style={{ height: '53px' }}
                     >
                       {/* DATA */}
-                      <td className="py-3 px-2 text-xs font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                      <td className="px-2 text-xs font-semibold text-[#111c2d] dark:text-white whitespace-nowrap align-middle" style={{ height: '53px' }}>
                         {formatShortDate(item.data)}
                       </td>
 
                       {/* TIPO */}
-                      <td className="py-3 px-3 whitespace-nowrap">
+                      <td className="px-3 whitespace-nowrap align-middle" style={{ height: '53px' }}>
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[11px] font-bold ${item.badgeBg} ${item.badgeText}`}
                         >
@@ -847,7 +848,7 @@ export const RelatoriosView: React.FC = () => {
                       </td>
 
                       {/* DESCRIÇÃO */}
-                      <td className="py-3 px-3">
+                      <td className="px-3 align-middle" style={{ height: '53px' }}>
                         <p className="text-xs sm:text-sm font-semibold text-[#111c2d] dark:text-white leading-tight">
                           {item.descricao}
                         </p>
@@ -859,14 +860,14 @@ export const RelatoriosView: React.FC = () => {
                       </td>
 
                       {/* VALOR */}
-                      <td className="py-3 px-2 text-right text-xs sm:text-sm font-extrabold text-[#111c2d] dark:text-white tabular-nums whitespace-nowrap">
+                      <td className="px-2 text-right text-xs sm:text-sm font-extrabold text-[#111c2d] dark:text-white tabular-nums whitespace-nowrap align-middle" style={{ height: '53px' }}>
                         {formatBRL(item.valor)}
                       </td>
                     </tr>
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan={4} className="py-8 text-center text-xs text-[#707a82] dark:text-[#7c8fac]">
+                  <tr style={{ height: '53px' }}>
+                    <td colSpan={4} className="py-4 text-center text-xs text-[#707a82] dark:text-[#7c8fac] align-middle" style={{ height: '53px' }}>
                       Nenhum lançamento encontrado para os filtros selecionados.
                     </td>
                   </tr>

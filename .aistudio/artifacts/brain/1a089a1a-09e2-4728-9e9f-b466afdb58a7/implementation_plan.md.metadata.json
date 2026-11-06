@@ -1,6 +1,6 @@
 {
-  "summary": "Plano de implementação para o cadastro, edição e exclusão de Unidades de Medida e Categorias de Materiais com botão de gerenciamento rápido ao lado dos campos de seleção e propagação automática para materiais existentes.",
-  "updatedAt": "2026-11-05T18:28:14.148624741Z",
+  "summary": "Plano de redesign exclusivo do Histórico de Recibos Emitidos na aba Recibos, transformando a lista atual em uma tabela corporativa padronizada com barra de busca, filtros e botões de ação compactos, idêntica ao design das abas Permissões e Solicitações. Nenhuma outra página ou seção será alterada.",
+  "updatedAt": "2026-11-06T19:28:20.549458450Z",
   "requestFeedback": true,
   "userFacing": true
 }

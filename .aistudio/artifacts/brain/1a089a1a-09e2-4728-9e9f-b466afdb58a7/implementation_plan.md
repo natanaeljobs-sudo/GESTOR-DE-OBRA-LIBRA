@@ -1,142 +1,85 @@
-# Gerenciamento Completo de Unidades e Categorias de Materiais
+# Redesign do Histórico de Recibos (Padronização com Permissões e Solicitações)
 
-Implementação de recurso completo para cadastrar, editar e excluir Unidades de Medida e Categorias no módulo de Materiais, acessível diretamente por botões rápidos de gerenciamento e pelas opções dos campos de seleção, com sincronização automática dos materiais já cadastrados.
-
-## User Review & Critical Decisions
+Adequação visual exclusiva da seção **Histórico de Recibos Emitidos** dentro da aba de **Recibos**, substituindo a lista simples por uma tabela corporativa de dados com barra de pesquisa, filtros e botões de ação compactos idêntica ao padrão adotado nas abas de Permissões e Solicitações.
 
 > [!IMPORTANT]
-> As decisões de usabilidade e comportamento foram confirmadas pelo usuário na etapa de esclarecimento:
-> - **Acesso Rápido**: Botão de gerenciamento posicionado diretamente ao lado dos campos de seleção nos modais de cadastro e edição de materiais, além de atalho dentro da própria lista suspensa.
-> - **Sincronização em Cascata**: Ao editar o nome de uma unidade ou categoria, todos os materiais vinculados são atualizados automaticamente no sistema.
-> - **Exclusão com Proteção**: Usuários podem excluir unidades e categorias personalizadas, com confirmação e alerta visual sobre itens em uso.
-
-- **Decisão Confirmada 1**: Modais dedicados de gerenciamento rápido para Unidades e Categorias, permitindo cadastro, renomeação e exclusão sem sair do fluxo de trabalho.
-- **Decisão Confirmada 2**: Propagação automática de alterações em lote para materiais e despesas vinculadas.
-- **Decisão Confirmada 3**: Persistência no armazenamento local (`AppContext` e `localStorage`), garantindo que novas unidades e categorias permaneçam disponíveis em todas as telas, filtros e relatórios.
+> **Escopo Estrito e Isolamento Total**: Conforme ordem expressa, **nenhuma outra aba ou página será alterada**. Dentro da aba Recibos, o gerador de recibo e a folha de pré-visualização oficial permanecem exatamente como estão. A alteração incidirá unicamente sobre o bloco demarcado de Histórico de Recibos Emitidos.
 
 ---
 
-## 1. Overview & Core Concept
+### Decisões Confirmadas na Fase 1
 
-- **O que faz**: Permite que os gestores de obra e compradores cadastrem novos tipos de unidades (ex.: saco, m², barra 12m, caixa, pallet, kg) e categorias construtivas (ex.: Alvenaria, Hidráulico, Pintura, Cobertura, Ferramentas), editem nomes já existentes com atualização automática dos materiais vinculados, e excluam itens em desuso.
-- **Público-Alvo**: Engenheiros, mestres de obras, orçamentistas e administradores do sistema da Libra Construtora.
-- **Valor Principal**: Flexibilidade operacional imediata no canteiro de obras, eliminando a restrição de listas estáticas pré-fixadas e evitando duplicidade ou inconsistência cadastral.
-
----
-
-## 2. User Experience & Visual Design
-
-### Fluxo de Usuário
-
-1. **Abertura do Modal de Material (Novo ou Edição)**:
-   - Ao abrir "Novo material" ou "Editar material", os campos "Unidade padrão *" e "Categoria" contam com botões elegantes no cabeçalho de cada campo: `Gerenciar unidades` e `Gerenciar categorias` (com ícones da biblioteca Lucide `Settings2` / `Pencil`).
-   - Dentro da lista de opções do `<select>`, a última opção também exibe `⚙️ Cadastrar ou editar...`.
-
-2. **Modal de Gerenciamento de Unidades**:
-   - Título: *"Gerenciar Unidades de Medida"*.
-   - Subtítulo: *"Cadastre novas unidades, altere nomenclaturas existentes ou remova opções."*
-   - Campo superior para adição rápida: input de texto + botão `Adicionar Unidade` (`bg-[#0085db]`).
-   - Lista organizada em linhas limpas:
-     - Nome da unidade (ex.: `saco`, `m²`, `kg`).
-     - Contador sutil de materiais vinculados (ex.: `4 materiais vinculados`).
-     - Botão de edição inline (permite renomear diretamente na linha com `Salvar` ou `Cancelar`).
-     - Botão de exclusão com confirmação e aviso se houver materiais vinculados.
-   - Ao salvar ou adicionar uma unidade, o dropdown do formulário pai é automaticamente atualizado e seleciona a unidade recém-adicionada/modificada.
-
-3. **Modal de Gerenciamento de Categorias**:
-   - Título: *"Gerenciar Categorias de Materiais"*.
-   - Subtítulo: *"Organize as fases construtivas e classificações dos materiais da obra."*
-   - Campo para cadastro imediato de nova categoria com botão estilizado.
-   - Tabela/lista com edição inline, contador de vínculos de materiais e opção de exclusão.
-   - Sincronização em tempo real com o formulário principal.
-
-### Identidade Visual & Diretrizes de Design
-
-- **Padrão Spike / Libra Construtora**:
-  - Paleta base: Azul institucional `#0085db` (hover `#0071ba`), fundos `#ffffff` (light) e `#111c2d` / `#162232` (dark), bordas sutis `#e6ecf1` / `#333f55`.
-  - Tipografia: Títulos nítidos em `Plus Jakarta Sans`, numerais tabulares `tabular-nums` para contadores de itens vinculados.
-  - Alinhamento aos princípios Anti-Slop: Sem pílulas coloridas estáticas, sem gradientes roxos, sem elementos mortos. Todos os botões possuem microinterações e transições `duration-150`.
+- **Estrutura de Colunas**: Tabela estruturada com `Recibo`, `Trabalhador`, `Período / Motivo`, `Valor Total` e `Ações`.
+- **Barra de Pesquisa e Filtros**: Barra superior no estilo corporativo de Permissões, contendo campo de busca em tempo real (número do recibo, trabalhador ou motivo) e filtro por trabalhador/período com botão de limpeza rápida (`RotateCcw`).
+- **Botões de Ação**: Botões compactos de ícone (`w-7 h-7 rounded-lg`) para Visualizar (`Eye`), Editar (`Pencil`) e Excluir (`Trash2`), harmonizando exatamente com a tabela de Permissões e Solicitações.
 
 ---
 
-## 3. Key Product Decisions & Trade-Offs
+## 1. Visão Geral da Mudança
 
-- **Decisão 1: Armazenamento Centralizado no AppContext**:
-  - *Abordagem*: Gerenciar `unidadesMedida` e `categoriasMateriais` no estado global do `AppContext`, sincronizando automaticamente com `localStorage`.
-  - *Motivo*: Permite que os filtros da tela de materiais, os lançamentos de despesas e cotações de orçamentos se beneficiem das mesmas unidades e categorias cadastradas.
-  - *Alternativa descartada*: Manter estado apenas local no componente `MateriaisView` (isso faria com que outros componentes não reconhecessem novas categorias).
-
-- **Decisão 2: Atualização em Cascata nos Materiais Existentes**:
-  - *Abordagem*: Quando o usuário renomear uma categoria (ex: de "Alvenaria" para "Alvenaria e Vedação"), o método do contexto varre os materiais e substitui a ocorrência antiga pela nova.
-  - *Motivo*: Evita orfandade de dados e listas desordenadas nos relatórios e filtros.
-
-- **Decisão 3: Modal de Gerenciamento vs. Inputs Descartáveis**:
-  - *Abordagem*: Substituir o antigo campo temporário "custom" por um gerenciador completo modal que permite editar e excluir além de criar.
-  - *Motivo*: Atende diretamente ao pedido do usuário ("Tem que ter a opção de cadastrar e editar") e à escolha confirmada na etapa de perguntas.
-
----
-
-## 4. Technical Architecture & Data Strategy
-
-### Component Hierarchy & Interaction Flow
+Transformar a apresentação inferior da aba de Recibos para oferecer a mesma consistência visual, densidade de informações e facilidade de localização de itens que o usuário já utiliza na aba de Permissões e Solicitações.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         AppContext                          │
-│  - unidadesMedida: string[]                                 │
-│  - categoriasMateriais: string[]                            │
-│  - addUnidadeMedida(nome)                                   │
-│  - updateUnidadeMedida(oldName, newName) [atualiza materiais]│
-│  - deleteUnidadeMedida(nome)                                │
-│  - addCategoriaMaterial(nome)                               │
-│  - updateCategoriaMaterial(oldName, newName) [atualiza mat.]│
-│  - deleteCategoriaMaterial(nome)                            │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-            ┌──────────────────┴──────────────────┐
-            ▼                                     ▼
-┌─────────────────────────────┐       ┌───────────────────────┐
-│        MateriaisView        │       │  Filtros de Pesquisa  │
-│  - Tabela de Materiais      │       │  - Unidade Filter     │
-│  - Indicadores e Histórico  │       │  - Status Filter      │
-└──────────────┬──────────────┘       └───────────────────────┘
-               │
-      ┌────────┴────────┐
-      ▼                 ▼
-┌─────────────────┐ ┌───────────────────────────┐
-│ Modal: Novo     │ │ Modal: Editar Material    │
-│ Material        │ │  - Dropdown Unidades      │
-│  - [Gerenciar]  │ │  - [Gerenciar]            │
-│  - Dropdown     │ │  - Dropdown Categorias    │
-│  - [Gerenciar]  │ │  - [Gerenciar]            │
-└────────┬────────┘ └─────────────┬─────────────┘
-         │                        │
-         └───────────┬────────────┘
-                     │ Abre modais dedicados
-                     ▼
-       ┌─────────────────────────────────────┐
-       │ Modais de Gerenciamento Especializado│
-       │  ├─ GerenciarUnidadesModal          │
-       │  │   - Adição de nova unidade       │
-       │  │   - Edição inline de nome        │
-       │  │   - Exclusão com verificação     │
-       │  └─ GerenciarCategoriasModal        │
-       │      - Adição de nova categoria     │
-       │      - Edição inline de nome        │
-       │      - Exclusão com verificação     │
-       └─────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                        ABA RECIBOS (INALTERADO)                        │
+│  [Dados do Recibo / Gerador]       [Pré-visualização Oficial Folha]    │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+┌───────────────────────────────────▼────────────────────────────────────┐
+│         NOVO DESIGN: HISTÓRICO DE RECIBOS (ESTILO PERMISSÕES)          │
+│                                                                        │
+│  ┌─ BARRA DE PESQUISA & FILTROS ─────────────────────────────────────┐  │
+│  │ 🔍 [Buscar por recibo, beneficiário...]  [Trabalhador ▾]  [Limpar]│  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+│                                                                        │
+│  ┌─ TABELA CORPORATIVA (HEADER ZINC-50/70) ──────────────────────────┐  │
+│  │ RECIBO     │ TRABALHADOR  │ PERÍODO / MOTIVO │ VALOR      │ AÇÕES │  │
+│  ├────────────┼──────────────┼──────────────────┼────────────┼───────┤  │
+│  │ REC-2026-01│ MANOEL SILVA │ 23/10 a 03/11    │ R$ 560,00  │ 👁️ ✏️ 🗑️│  │
+│  └────────────┴──────────────┴──────────────────┴────────────┴───────┘  │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Arquivos Envolvidos
+---
 
-1. `src/types/index.ts`:
-   - Adicionar assinaturas das novas funções e coleções no contrato do `AppContextType`.
-2. `src/context/AppContext.tsx`:
-   - Inicializar e persistir `unidadesMedida` e `categoriasMateriais` com valores padrão da construção civil.
-   - Implementar `addUnidadeMedida`, `updateUnidadeMedida` (com cascata nos materiais), `deleteUnidadeMedida`.
-   - Implementar `addCategoriaMaterial`, `updateCategoriaMaterial` (com cascata nos materiais), `deleteCategoriaMaterial`.
-3. `src/components/materiais/MateriaisView.tsx`:
-   - Inserir botões de ação rápida `Gerenciar unidades` e `Gerenciar categorias` ao lado dos selects nos modais de criação e edição.
-   - Adicionar opção `⚙️ Cadastrar e editar...` dentro dos `<select>`.
-   - Adicionar os componentes de modal para gestão de unidades e categorias com formulário de adição rápida, listagem com contagem de uso e edição inline.
-   - Vincular o filtro superior de unidades com o estado dinâmico `unidadesMedida`.
+## 2. Experiência do Usuário & Design Visual
+
+### Barra de Pesquisa e Filtros
+- Container com cantos arredondados (`rounded-[18px]`), fundo branco / escuro no modo dark (`bg-white dark:bg-[#111c2d]`), borda sutil (`border-[#e6ecf1] dark:border-[#333f55]`) e padding equilibrado (`p-3 sm:p-4`).
+- Campo de busca com ícone de lupa (`Search`) à esquerda e botão de limpar busca (`X`) quando houver texto preenchido.
+- Seletor suspenso de filtro por trabalhador para filtrar instantaneamente os recibos de um profissional específico ou ver todos.
+- Botão "Limpar" com ícone de rotação (`RotateCcw`) visível sempre que houver algum filtro ou termo de busca ativo.
+
+### Tabela Corporativa
+- Container com cantos `rounded-[20px]`, sombra suave e overflow controlado (`overflow-hidden`).
+- Cabeçalho padronizado com `bg-zinc-50/70 dark:bg-[#162232]/50`, texto em caixa alta `text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider`.
+- Linhas com efeito hover suave (`hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors`) e altura padronizada.
+- Célula de **Recibo**: Tag identificadora destacada com `#0085db`, data de emissão em formato brasileiro (`formatDateBR`).
+- Célula de **Trabalhador**: Nome em caixa alta bold (`font-bold uppercase text-[#111c2d] dark:text-white`) acompanhado da função do profissional (ex: Pedreiro, Serviços Gerais).
+- Célula de **Período**: Período de apuração (data inicial a data final) e prévia do motivo com tooltip explicativo.
+- Célula de **Valor**: Numerais tabulares alinhados (`font-bold tabular-nums text-sm text-[#111c2d] dark:text-white`).
+- Célula de **Ações**: Alinhada à direita com grupo inline de botões de ícone compactos (`w-7 h-7 rounded-lg`):
+  - `Eye` (Visualizar no modelo oficial impresso à direita)
+  - `Pencil` (Editar recibo no modal de edição completa)
+  - `Trash2` (Excluir recibo com opção de estorno das diárias)
+- Estado Vazio ("Empty State") elegante com mensagem orientativa quando não houver recibos ou nenhum resultado corresponder aos filtros.
+
+---
+
+## 3. Decisões Técnicas & Arquitetura
+
+- **Arquivo Único Modificado**: `src/components/recibos/RecibosView.tsx`. Nenhuma outra página do sistema será tocada.
+- **Estados Locais Adicionados**:
+  - `searchTermHistory`: termo de busca na lista de recibos emitidos.
+  - `filterTrabHistory`: filtro por trabalhador selecionado.
+  - `filteredRecibos`: memoized list filtrando por identificação, beneficiário e motivo.
+- **Preservação Total da Lógica de Negócio**: Os modais de edição (`handleOpenFullEdit`), confirmação de exclusão (`handleOpenDelete`) e carregamento na folha de impressão (`handleVisualizarRecibo`) continuam com todas as validações e sincronizações ativas com `AppContext`.
+
+---
+
+## 4. Plano de Implementação
+
+1. **Adicionar estados de busca e filtro** no componente `RecibosView.tsx`.
+2. **Substituir o bloco de renderização do histórico** (atualmente uma lista de `div`s separadas por linha) pela estrutura completa de Toolbar + Tabela Corporativa de dados no padrão de `Permissões`.
+3. **Implementar os botões de ação compactos** com tooltips e transições suaves.
+4. **Verificar a compilação e validação de lint** sem alterar nenhum outro arquivo da aplicação.

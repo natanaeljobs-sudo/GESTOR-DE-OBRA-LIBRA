@@ -20,6 +20,8 @@ import {
   RotateCcw,
   Sparkles,
   CheckCircle2,
+  Search,
+  X as XIcon,
 } from 'lucide-react';
 
 export const RecibosView: React.FC = () => {
@@ -73,6 +75,10 @@ export const RecibosView: React.FC = () => {
   // Preview & feedback
   const [previewRecibo, setPreviewRecibo] = useState<ReciboPagamento | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Recibos History Table Search & Filters
+  const [reciboSearchTerm, setReciboSearchTerm] = useState('');
+  const [reciboWorkerFilter, setReciboWorkerFilter] = useState<string>('all');
 
   // Quick edit name modal state (edit name after generating)
   const [quickEditRecibo, setQuickEditRecibo] = useState<ReciboPagamento | null>(null);
@@ -364,6 +370,35 @@ Assinatura do Recebedor: ${rec.trabalhadorNome}
     }
     setDeletingRecibo(null);
   };
+
+  // Distinct workers list for history dropdown filter
+  const reciboWorkerOptions = useMemo(() => {
+    const names = new Set<string>();
+    recibos.forEach(r => {
+      if (r.trabalhadorNome) names.add(r.trabalhadorNome);
+    });
+    return Array.from(names).sort();
+  }, [recibos]);
+
+  // Filtered recibos for the table
+  const filteredRecibos = useMemo(() => {
+    return recibos.filter(rec => {
+      const term = reciboSearchTerm.toLowerCase().trim();
+      const matchesSearch =
+        !term ||
+        rec.numeroRecibo.toLowerCase().includes(term) ||
+        rec.trabalhadorNome.toLowerCase().includes(term) ||
+        (rec.trabalhadorCpf && rec.trabalhadorCpf.toLowerCase().includes(term)) ||
+        (rec.motivo && rec.motivo.toLowerCase().includes(term));
+
+      const matchesWorker =
+        reciboWorkerFilter === 'all' ||
+        rec.trabalhadorNome.toLowerCase() === reciboWorkerFilter.toLowerCase() ||
+        (rec.trabalhadorId && rec.trabalhadorId === reciboWorkerFilter);
+
+      return matchesSearch && matchesWorker;
+    });
+  }, [recibos, reciboSearchTerm, reciboWorkerFilter]);
 
   // View Handler from History
   const handleVisualizarRecibo = (rec: ReciboPagamento) => {
@@ -984,86 +1019,230 @@ Assinatura do Recebedor: ${rec.trabalhadorNome}
         </div>
       </div>
 
-      {/* Emission History Section with Excluir, Editar e Visualizar */}
-      {recibos.length > 0 && (
-        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 sm:p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none no-print space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55] gap-2">
-            <div>
-              <h3 className="text-sm font-bold text-[#111c2d] dark:text-white flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#0085db]" />
-                Histórico de Recibos Emitidos ({recibos.length})
-              </h3>
-              <p className="text-xs text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                Gerencie todos os recibos emitidos: visualize no modelo oficial, edite dados ou exclua
-              </p>
-            </div>
-          </div>
-
-          <div className="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
-            {recibos.map(rec => (
-              <div key={rec.id} className="py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-[#0085db] bg-[#0085db]/10 px-2 py-0.5 rounded-lg">
-                      {rec.numeroRecibo}
-                    </span>
-                    <span className="font-bold text-[#111c2d] dark:text-white">
-                      {rec.trabalhadorNome}
-                    </span>
-                    {rec.trabalhadorFuncao && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] border border-[#e6ecf1] dark:border-[#333f55]">
-                        {rec.trabalhadorFuncao}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-[#707a82] dark:text-[#7c8fac]">
-                    Emitido em <strong className="text-[#111c2d] dark:text-white">{formatDateBR(rec.dataEmissao)}</strong> · Período de {formatDateBR(rec.periodoInicio)} a {formatDateBR(rec.periodoFim)}
-                  </p>
-                  <p className="text-[11px] text-[#707a82] dark:text-[#7c8fac] truncate max-w-xl">
-                    Motivo: {rec.motivo}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2 sm:gap-3 self-end md:self-center shrink-0">
-                  <span className="font-black text-sm text-[#111c2d] dark:text-white tabular-nums mr-1">
-                    {formatBRL(rec.valorTotal)}
-                  </span>
-
-                  {/* 1. Visualizar */}
-                  <button
-                    onClick={() => handleVisualizarRecibo(rec)}
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db]/20 rounded-xl transition-colors cursor-pointer"
-                    title="Visualizar este recibo na íntegra"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Visualizar</span>
-                  </button>
-
-                  {/* 2. Editar */}
-                  <button
-                    onClick={() => handleOpenFullEdit(rec)}
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#2fa868] dark:text-[#4bd08b] bg-[#4bd08b]/10 hover:bg-[#4bd08b]/20 rounded-xl transition-colors cursor-pointer"
-                    title="Editar informações deste recibo"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                    <span>Editar</span>
-                  </button>
-
-                  {/* 3. Excluir */}
-                  <button
-                    onClick={() => handleOpenDelete(rec)}
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#e46a76] bg-[#e46a76]/10 hover:bg-[#e46a76]/20 rounded-xl transition-colors cursor-pointer"
-                    title="Excluir recibo do histórico"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Excluir</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+      {/* Emission History Section in Corporate Table Design matching Permissões & Solicitações */}
+      <div className="space-y-4 no-print pt-2">
+        {/* Section Header matching Permissões */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white font-sans flex items-center gap-2">
+              <Clock className="w-6 h-6 text-[#0085db]" />
+              <span>Histórico de recibos emitidos</span>
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db] border border-[#0085db]/20">
+                {recibos.length}
+              </span>
+            </h2>
+            <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5 font-sans">
+              Gerencie todos os recibos emitidos, consulte dados e visualize no modelo oficial
+            </p>
           </div>
         </div>
-      )}
+
+        {/* Filter Toolbar matching Permissões e Solicitações */}
+        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3 sm:p-4 shadow-xs">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+            {/* Search Bar */}
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <input
+                type="text"
+                placeholder="Buscar por recibo, beneficiário, CPF ou motivo..."
+                value={reciboSearchTerm}
+                onChange={e => setReciboSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white placeholder:text-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-[#0085db]/40"
+              />
+              {reciboSearchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setReciboSearchTerm('')}
+                  aria-label="Limpar busca"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 text-xs cursor-pointer"
+                >
+                  <XIcon className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Worker Dropdown Filter */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-zinc-500 shrink-0">Trabalhador:</span>
+              <select
+                value={reciboWorkerFilter}
+                onChange={e => setReciboWorkerFilter(e.target.value)}
+                className="px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white font-medium focus:outline-hidden focus:ring-2 focus:ring-[#0085db]/40 cursor-pointer"
+              >
+                <option value="all">Todos os Trabalhadores</option>
+                {reciboWorkerOptions.map(nome => (
+                  <option key={nome} value={nome}>
+                    {nome}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Clear / Reset Filters */}
+            {(reciboSearchTerm || reciboWorkerFilter !== 'all') && (
+              <button
+                type="button"
+                onClick={() => {
+                  setReciboSearchTerm('');
+                  setReciboWorkerFilter('all');
+                }}
+                className="px-3.5 py-2 text-xs font-semibold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db]/20 dark:bg-[#0085db]/20 dark:hover:bg-[#0085db]/30 rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                title="Limpar todos os filtros"
+                aria-label="Limpar todos os filtros"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Limpar</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+          {/* Corporate Data Table matching Permissões & Solicitações */}
+          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    className="border-b border-[#e6ecf1] dark:border-[#333f55] bg-zinc-50/70 dark:bg-[#162232]/50 text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider"
+                    style={{ height: '52.5px' }}
+                  >
+                    <th className="py-2 px-5 sm:px-6 align-middle" style={{ height: '52.5px' }}>
+                      Recibo
+                    </th>
+                    <th className="py-2 px-4 sm:px-6 align-middle" style={{ height: '52.5px' }}>
+                      Trabalhador
+                    </th>
+                    <th className="py-2 px-4 sm:px-6 align-middle" style={{ height: '52.5px' }}>
+                      Período / Motivo
+                    </th>
+                    <th className="py-2 px-4 sm:px-6 align-middle" style={{ height: '52.5px' }}>
+                      Valor
+                    </th>
+                    <th className="py-2 px-5 sm:px-6 text-right align-middle" style={{ height: '52.5px' }}>
+                      Ações
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#e6ecf1] dark:divide-[#333f55] text-xs">
+                  {filteredRecibos.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-zinc-400">
+                        {recibos.length === 0
+                          ? 'Nenhum recibo emitido até o momento.'
+                          : 'Nenhum recibo encontrado com os filtros selecionados.'}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredRecibos.map(rec => (
+                      <tr
+                        key={rec.id}
+                        className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors"
+                        style={{ height: '53px' }}
+                      >
+                        {/* Recibo Identificador & Data Emissão */}
+                        <td className="py-1.5 px-5 sm:px-6 align-middle" style={{ height: '53px' }}>
+                          <div className="flex flex-col items-start gap-1">
+                            <span className="font-bold text-xs text-[#0085db] bg-[#0085db]/10 px-2.5 py-1 rounded-lg border border-[#0085db]/20 whitespace-nowrap">
+                              {rec.numeroRecibo}
+                            </span>
+                            <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] tabular-nums whitespace-nowrap">
+                              {formatDateBR(rec.dataEmissao)}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Trabalhador com avatar e função */}
+                        <td className="py-1.5 px-4 sm:px-6 align-middle" style={{ height: '53px' }}>
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-[#0085db] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                              {rec.trabalhadorNome.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white uppercase leading-none"
+                                  style={{ textTransform: 'uppercase' }}
+                                >
+                                  {rec.trabalhadorNome.toUpperCase()}
+                                </span>
+                                {rec.trabalhadorFuncao && (
+                                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] border border-[#e6ecf1] dark:border-[#333f55] whitespace-nowrap">
+                                    {rec.trabalhadorFuncao}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block leading-none mt-1">
+                                CPF: {rec.trabalhadorCpf || 'Não informado'}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Período / Motivo */}
+                        <td className="py-1.5 px-4 sm:px-6 align-middle max-w-xs sm:max-w-md" style={{ height: '53px' }}>
+                          <div className="space-y-0.5">
+                            <span className="text-xs font-semibold text-[#111c2d] dark:text-white tabular-nums block">
+                              {formatDateBR(rec.periodoInicio)} a {formatDateBR(rec.periodoFim)}
+                            </span>
+                            <p className="text-[11px] text-[#707a82] dark:text-[#7c8fac] truncate cursor-pointer hover:text-[#0085db]" title={rec.motivo}>
+                              {rec.motivo}
+                            </p>
+                          </div>
+                        </td>
+
+                        {/* Valor Total */}
+                        <td className="py-1.5 px-4 sm:px-6 align-middle" style={{ height: '53px' }}>
+                          <span className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white tabular-nums whitespace-nowrap">
+                            {formatBRL(rec.valorTotal)}
+                          </span>
+                        </td>
+
+                        {/* Ações (Compact Icon-Only Buttons padronizados com Permissões, Relatórios e Materiais) */}
+                        <td className="py-1.5 px-5 sm:px-6 text-right align-middle" style={{ height: '53px' }}>
+                          <div className="inline-flex items-center justify-end gap-1.5">
+                            {/* Visualizar */}
+                            <button
+                              type="button"
+                              onClick={() => handleVisualizarRecibo(rec)}
+                              title="Visualizar modelo oficial"
+                              aria-label="Visualizar modelo oficial"
+                              className="w-7 h-7 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
+                            >
+                              <Eye size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
+                            </button>
+
+                            {/* Editar */}
+                            <button
+                              type="button"
+                              onClick={() => handleOpenFullEdit(rec)}
+                              title="Editar dados do recibo"
+                              aria-label="Editar dados do recibo"
+                              className="w-7 h-7 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
+                            >
+                              <Pencil size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
+                            </button>
+
+                            {/* Excluir */}
+                            <button
+                              type="button"
+                              onClick={() => handleOpenDelete(rec)}
+                              title="Excluir recibo"
+                              aria-label="Excluir recibo"
+                              className="w-7 h-7 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer inline-flex items-center justify-center shrink-0"
+                            >
+                              <Trash2 size={16} width={16} height={16} className="w-4 h-4 shrink-0" style={{ width: '16px', height: '16px' }} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
       {/* QUICK EDIT NOME MODAL (Edit name after generating) */}
       <Modal
