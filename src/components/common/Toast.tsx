@@ -70,33 +70,38 @@ export const Toast: React.FC = () => {
     <div
       role="alert"
       aria-live="assertive"
-      className="fixed top-4 right-4 sm:right-6 z-[9999] max-w-sm w-[calc(100%-2rem)] sm:w-96 animate-in slide-in-from-top-3 fade-in duration-200 shadow-2xl rounded-2xl overflow-hidden border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white"
+      className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-[9999] max-w-sm w-[calc(100%-2rem)] sm:w-96 animate-in slide-in-from-bottom-3 fade-in duration-200 shadow-2xl rounded-2xl overflow-hidden border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#162232] text-[#111c2d] dark:text-white"
     >
-      <div className="p-4 flex items-start gap-3.5">
+      <div className="p-3.5 sm:p-4 flex items-center gap-3">
         <div
           className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${config.bgIcon}`}
         >
           {config.icon}
         </div>
 
-        <div className="flex-1 min-w-0 pt-0.5">
-          <div className="flex items-center gap-2">
-            <span
-              className={`w-2 h-2 rounded-full ${config.badge} shrink-0 animate-pulse`}
-            />
-            <h4 className="text-xs font-bold text-[#111c2d] dark:text-white tracking-tight">
-              {toast.title || 'Notificação'}
-            </h4>
-          </div>
-          <p className="text-xs text-[#707a82] dark:text-[#7c8fac] mt-1 leading-relaxed break-words font-medium">
-            {toast.message}
-          </p>
+        <div className="flex-1 min-w-0">
+          {toast.title ? (
+            <>
+              <div className="flex items-center gap-2">
+                <h4 className="text-xs font-bold text-[#111c2d] dark:text-white tracking-tight">
+                  {toast.title}
+                </h4>
+              </div>
+              <p className="text-xs text-[#707a82] dark:text-[#7c8fac] mt-0.5 leading-relaxed break-words font-medium">
+                {toast.message}
+              </p>
+            </>
+          ) : (
+            <p className="text-xs sm:text-sm font-semibold text-[#111c2d] dark:text-white leading-snug break-words">
+              {toast.message}
+            </p>
+          )}
         </div>
 
         <button
           type="button"
           onClick={hideToast}
-          className="p-1 -mr-1 -mt-1 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+          className="p-1 -mr-1 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer shrink-0"
           aria-label="Fechar notificação"
         >
           <X className="w-4 h-4" />

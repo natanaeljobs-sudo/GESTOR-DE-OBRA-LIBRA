@@ -1415,17 +1415,17 @@ export const UsuariosView: React.FC = () => {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] bg-zinc-50/70 dark:bg-[#162232]/50 text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                    <th className="py-4 px-5 sm:px-6">Solicitante</th>
-                    <th className="py-4 px-4 sm:px-6">Justificativa</th>
-                    <th className="py-4 px-4 sm:px-6">Status</th>
-                    <th className="py-4 px-4 sm:px-6">Data</th>
-                    <th className="py-4 px-5 sm:px-6 text-right">Ações</th>
+                    <th className="py-2.5 px-5 sm:px-6">Solicitante</th>
+                    <th className="py-2.5 px-4 sm:px-6">Justificativa</th>
+                    <th className="py-2.5 px-4 sm:px-6">Status</th>
+                    <th className="py-2.5 px-4 sm:px-6">Data</th>
+                    <th className="py-2.5 px-5 sm:px-6 text-right">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#e6ecf1] dark:divide-[#333f55] text-xs">
                   {filteredSolicitacoes.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-zinc-400">
+                      <td colSpan={5} className="py-8 text-center text-zinc-400">
                         Nenhuma solicitação encontrada com os filtros selecionados.
                       </td>
                     </tr>
@@ -1439,76 +1439,59 @@ export const UsuariosView: React.FC = () => {
                           key={solic.id}
                           className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors"
                         >
-                          {/* Solicitante Column */}
-                          <td className="py-4 px-5 sm:px-6">
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-[#0085db] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
-                                {solic.nome.charAt(0).toUpperCase()}
-                              </div>
-                              <div>
-                                <span
-                                  className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white uppercase block"
-                                  style={{ textTransform: 'uppercase' }}
-                                >
-                                  {solic.nome?.toUpperCase()}
-                                </span>
-                                <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block">
-                                  {solic.email}
-                                </span>
-                              </div>
-                            </div>
+                          {/* Solicitante Column - sem ícone e sem e-mail */}
+                          <td className="py-2.5 px-5 sm:px-6">
+                            <span
+                              className="font-bold text-xs text-[#111c2d] dark:text-white uppercase tracking-tight block"
+                              style={{ textTransform: 'uppercase' }}
+                            >
+                              {solic.nome?.toUpperCase()}
+                            </span>
                           </td>
 
-                          {/* Justificativa Column */}
-                          <td className="py-4 px-4 sm:px-6 max-w-xs sm:max-w-md">
-                            <div className="space-y-1">
-                              <p className="text-xs text-[#111c2d] dark:text-zinc-200 line-clamp-2 leading-relaxed">
-                                &ldquo;{solic.mensagem}&rdquo;
-                              </p>
-                              {solic.mensagem.length > 80 && (
-                                <button
-                                  type="button"
-                                  onClick={() => setViewingSolic(solic)}
-                                  className="text-[11px] font-semibold text-[#0085db] hover:underline cursor-pointer inline-flex items-center gap-1"
-                                >
-                                  Ver completa
-                                </button>
-                              )}
-                            </div>
+                          {/* Justificativa Column - menos texto, linha única e mais fino */}
+                          <td className="py-2.5 px-4 sm:px-6 max-w-xs sm:max-w-md">
+                            <p
+                              className="text-xs text-zinc-600 dark:text-zinc-300 truncate cursor-pointer hover:text-[#0085db]"
+                              title={solic.mensagem}
+                              onClick={() => setViewingSolic(solic)}
+                            >
+                              {solic.mensagem}
+                            </p>
                           </td>
 
                           {/* Status Column */}
-                          <td className="py-4 px-4 sm:px-6">
+                          <td className="py-2.5 px-4 sm:px-6">
                             {isPendente ? (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60 whitespace-nowrap">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60 whitespace-nowrap">
                                 Pendente
                               </span>
                             ) : isAprovado ? (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60 whitespace-nowrap">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60 whitespace-nowrap">
                                 Aprovado
                               </span>
                             ) : (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/60 whitespace-nowrap">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/60 whitespace-nowrap">
                                 Recusado
                               </span>
                             )}
                           </td>
 
                           {/* Data Column */}
-                          <td className="py-4 px-4 sm:px-6 text-zinc-600 dark:text-zinc-400 tabular-nums whitespace-nowrap">
+                          <td className="py-2.5 px-4 sm:px-6 text-zinc-500 dark:text-zinc-400 tabular-nums whitespace-nowrap text-[11px]">
                             {formatSolicData(solic.data)}
                           </td>
 
                           {/* Actions Column */}
-                          <td className="py-4 px-5 sm:px-6 text-right">
-                            <div className="inline-flex items-center justify-end gap-1.5">
+                          <td className="py-2.5 px-5 sm:px-6 text-right">
+                            <div className="inline-flex items-center justify-end gap-1">
                               {/* Visualizar Mensagem Completa */}
                               <button
                                 onClick={() => setViewingSolic(solic)}
                                 title="Ver mensagem completa"
-                                className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer"
+                                className="p-1 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-[#0085db] hover:bg-zinc-100 dark:hover:bg-[#1f2d42] transition-all cursor-pointer"
                               >
-                                <Eye className="w-4 h-4" />
+                                <Eye className="w-3.5 h-3.5" />
                               </button>
 
                               {/* Ações para Pendente */}
@@ -1517,17 +1500,17 @@ export const UsuariosView: React.FC = () => {
                                   <button
                                     onClick={() => handleStartAprovarSolicitacao(solic)}
                                     title="Aprovar e cadastrar usuário"
-                                    className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all cursor-pointer"
+                                    className="p-1 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all cursor-pointer"
                                   >
-                                    <UserPlus className="w-4 h-4" />
+                                    <UserPlus className="w-3.5 h-3.5" />
                                   </button>
 
                                   <button
                                     onClick={() => atualizarStatusSolicitacao(solic.id, 'recusado')}
                                     title="Recusar solicitação"
-                                    className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                                    className="p-1 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
                                   >
-                                    <Ban className="w-4 h-4" />
+                                    <Ban className="w-3.5 h-3.5" />
                                   </button>
                                 </>
                               )}
@@ -1537,9 +1520,9 @@ export const UsuariosView: React.FC = () => {
                                 <button
                                   onClick={() => atualizarStatusSolicitacao(solic.id, 'pendente')}
                                   title="Reabrir solicitação como pendente"
-                                  className="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-all cursor-pointer"
+                                  className="p-1 rounded-lg text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-all cursor-pointer"
                                 >
-                                  <RotateCcw className="w-4 h-4" />
+                                  <RotateCcw className="w-3.5 h-3.5" />
                                 </button>
                               )}
 
@@ -1547,9 +1530,9 @@ export const UsuariosView: React.FC = () => {
                               <button
                                 onClick={() => setSolicToDelete(solic)}
                                 title="Excluir solicitação"
-                                className="p-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+                                className="p-1 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
                           </td>

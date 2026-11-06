@@ -13,6 +13,10 @@ import {
   FileText,
   Clock,
   CheckCircle2,
+  UserCheck,
+  Pencil,
+  AlertCircle,
+  Filter,
 } from 'lucide-react';
 
 export const RecibosView: React.FC = () => {
@@ -23,28 +27,63 @@ export const RecibosView: React.FC = () => {
     emitirRecibo,
     activeObra,
     activeUser,
+    showToast,
   } = useApp();
 
+  // Mode for worker: manual input vs select registered worker
+  const [isManualWorker, setIsManualWorker] = useState(false);
   const [selectedTrabId, setSelectedTrabId] = useState<string>(trabalhadores[0]?.id || '');
+  const [manualNome, setManualNome] = useState('');
+  const [manualCpf, setManualCpf] = useState('');
+  const [manualFuncao, setManualFuncao] = useState('Serviços Gerais');
+
+  // Days filtering mode: default to 'todos_abertos' as requested by user
+  const [filtroModoDias, setFiltroModoDias] = useState<'todos_abertos' | 'trabalhador' | 'todas'>('todos_abertos');
   const [selectedWeekKey, setSelectedWeekKey] = useState<string>('all');
   const [selectedDiariasIds, setSelectedDiariasIds] = useState<string[]>([]);
+
+  // Receipt meta
   const [motivo, setMotivo] = useState(`Pagamento referente a serviços de mão de obra prestados na ${activeObra.nome}`);
   const [responsavelNome, setResponsavelNome] = useState(`${activeUser.nome} (Responsável Técnico / Obra)`);
   const [localCidade, setLocalCidade] = useState('Goiânia - GO');
   const [marcarComoPagas, setMarcarComoPagas] = useState(true);
 
+  // Preview & feedback
   const [previewRecibo, setPreviewRecibo] = useState<ReciboPagamento | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const workerDiarias = useMemo(() => {
-    return diarias
-      .filter(d => d.trabalhadorId === selectedTrabId)
-      .sort((a, b) => b.data.localeCompare(a.data));
-  }, [diarias, selectedTrabId]);
+  // Selected registered worker object
+  const currentWorker = useMemo(() => {
+    return trabalhadores.find(t => t.id === selectedTrabId);
+  }, [trabalhadores, selectedTrabId]);
 
+  // Count of pending (open) diarias
+  const countDiasAbertos = useMemo(() => {
+    return diarias.filter(d => d.statusPagamento === 'pendente').length;
+  }, [diarias]);
+
+  // Diarias list depending on filter mode
+  const diasDisponiveis = useMemo(() => {
+    let list = [...diarias];
+
+    if (filtroModoDias === 'todos_abertos') {
+      // Shows all open days across all workers
+      list = list.filter(d => d.statusPagamento === 'pendente');
+    } else if (filtroModoDias === 'trabalhador') {
+      // If worker selected, show that worker's days
+      if (selectedTrabId) {
+        list = list.filter(d => d.trabalhadorId === selectedTrabId);
+      }
+    }
+    // 'todas' mode shows all without status filter
+
+    return list.sort((a, b) => b.data.localeCompare(a.data));
+  }, [diarias, filtroModoDias, selectedTrabId]);
+
+  // Weeks available in currently filtered list
   const availableWeeks = useMemo(() => {
     const weeks: Record<string, { label: string; start: string; end: string; count: number }> = {};
-    workerDiarias.forEach(d => {
+    diasDisponiveis.forEach(d => {
       const range = getWeekRange(d.data);
       const key = `${range.segunda}_${range.domingo}`;
       if (!weeks[key]) {
@@ -53,7 +92,14 @@ export const RecibosView: React.FC = () => {
       weeks[key].count++;
     });
     return weeks;
-  }, [workerDiarias]);
+  }, [diasDisponiveis]);
+
+  // Final filtered list based on week selection
+  const filteredDiarias = useMemo(() => {
+    if (selectedWeekKey === 'all') return diasDisponiveis;
+    const [start, end] = selectedWeekKey.split('_');
+    return diasDisponiveis.filter(d => d.data >= start && d.data <= end);
+  }, [diasDisponiveis, selectedWeekKey]);
 
   const toggleDiariaSelection = (id: string) => {
     setSelectedDiariasIds(prev =>
@@ -61,42 +107,67 @@ export const RecibosView: React.FC = () => {
     );
   };
 
-  const handleSelectWeek = (weekKey: string) => {
-    setSelectedWeekKey(weekKey);
-    if (weekKey === 'all') {
-      setSelectedDiariasIds(workerDiarias.map(d => d.id));
-    } else {
-      const [start, end] = weekKey.split('_');
-      const inWeek = workerDiarias
-        .filter(d => d.data >= start && d.data <= end)
-        .map(d => d.id);
-      setSelectedDiariasIds(inWeek);
-    }
+  const handleSelectAllVisible = () => {
+    const visibleIds = filteredDiarias.map(d => d.id);
+    setSelectedDiariasIds(prev => Array.from(new Set([...prev, ...visibleIds])));
+  };
+
+  const handleClearSelection = () => {
+    setSelectedDiariasIds([]);
   };
 
   const handleSelectOnlyPending = () => {
-    const pending = workerDiarias.filter(d => d.statusPagamento === 'pendente').map(d => d.id);
-    setSelectedDiariasIds(pending);
+    setFiltroModoDias('todos_abertos');
+    const pendingIds = diarias.filter(d => d.statusPagamento === 'pendente').map(d => d.id);
+    setSelectedDiariasIds(pendingIds);
   };
 
-  const selectedDiariasList = workerDiarias.filter(d => selectedDiariasIds.includes(d.id));
-  const totalReciboCalculado = selectedDiariasList.reduce((sum, d) => sum + d.valorTotal, 0);
+  const selectedDiariasList = useMemo(() => {
+    return diarias.filter(d => selectedDiariasIds.includes(d.id));
+  }, [diarias, selectedDiariasIds]);
+
+  const totalReciboCalculado = useMemo(() => {
+    return selectedDiariasList.reduce((sum, d) => sum + d.valorTotal, 0);
+  }, [selectedDiariasList]);
+
+  // Quick helper to fill manual inputs from a worker
+  const handleFillFromTrab = (trab: typeof trabalhadores[0]) => {
+    setManualNome(trab.nome);
+    setManualCpf(trab.cpf || '');
+    setManualFuncao(trab.funcao || 'Serviços Gerais');
+  };
 
   const handleGenerate = () => {
     if (selectedDiariasIds.length === 0) {
-      alert('Selecione ao menos um dia trabalhado para emitir o recibo.');
+      showToast('Selecione ao menos um dia trabalhado para emitir o recibo.', 'warning');
       return;
     }
 
-    const trab = trabalhadores.find(t => t.id === selectedTrabId);
-    if (!trab) return;
+    if (isManualWorker) {
+      if (!manualNome.trim()) {
+        showToast('Por favor, informe o nome do trabalhador.', 'warning');
+        return;
+      }
+    } else {
+      if (!selectedTrabId && !currentWorker) {
+        showToast('Selecione um trabalhador da lista ou ative a opção de digitar manualmente.', 'warning');
+        return;
+      }
+    }
 
     const dates = selectedDiariasList.map(d => d.data).sort();
     const startDate = dates[0] || getTodayISO();
     const endDate = dates[dates.length - 1] || getTodayISO();
 
     const novoRecibo = emitirRecibo({
-      trabalhadorId: trab.id,
+      trabalhadorId: isManualWorker ? undefined : selectedTrabId,
+      trabalhadorManual: isManualWorker
+        ? {
+            nome: manualNome.trim(),
+            cpf: manualCpf.trim() || 'Não informado',
+            funcao: manualFuncao.trim() || 'Serviços Gerais',
+          }
+        : undefined,
       diariasIds: selectedDiariasIds,
       periodoInicio: startDate,
       periodoFim: endDate,
@@ -107,6 +178,7 @@ export const RecibosView: React.FC = () => {
     });
 
     setPreviewRecibo(novoRecibo);
+    showToast(`Recibo ${novoRecibo.numeroRecibo} gerado com sucesso!`, 'success');
   };
 
   const handlePrint = () => {
@@ -121,6 +193,10 @@ OBRA: ${activeObra.nome}
 Recebi de ${rec.responsavelNome} a importância líquida de:
 VALOR: ${formatBRL(rec.valorTotal)} (${rec.valorPorExtenso})
 
+BENEFICIÁRIO: ${rec.trabalhadorNome}
+CPF: ${rec.trabalhadorCpf}
+FUNÇÃO: ${rec.trabalhadorFuncao}
+
 REFERENTE A:
 ${rec.motivo}
 Período: ${formatDateBR(rec.periodoInicio)} a ${formatDateBR(rec.periodoFim)}
@@ -128,7 +204,7 @@ Período: ${formatDateBR(rec.periodoInicio)} a ${formatDateBR(rec.periodoFim)}
 ${rec.localCidade}, ${formatDateBR(rec.dataEmissao)}
 
 _________________________________________
-Assinatura
+Assinatura do Recebedor: ${rec.trabalhadorNome}
     `.trim();
 
     navigator.clipboard.writeText(text);
@@ -138,133 +214,313 @@ Assinatura
 
   return (
     <div className="space-y-6 pb-20 lg:pb-8 animate-in fade-in duration-150">
-      
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white">
-            Gerador Automático de Recibos
+            Gerador de recibos
           </h1>
           <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-            Emita recibos oficiais de mão de obra com valor por extenso, dias específicos e modelo para impressão.
+            Emita recibos oficiais de mão de obra com dias em aberto de todos os trabalhadores ou digitação manual.
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 no-print">
-        
         {/* Left Column: Generator Form */}
         <div className="lg:col-span-5 space-y-4">
           <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4">
             <h2 className="text-sm font-bold text-[#111c2d] dark:text-white flex items-center gap-2 pb-2 border-b border-[#e6ecf1] dark:border-[#333f55]">
               <Users2 className="w-4 h-4 text-[#0085db]" />
-              1. Selecionar Trabalhador & Período
+              1. Identificação do Trabalhador
             </h2>
 
-            {/* Select worker */}
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Trabalhador
+            {/* Checkbox option to toggle manual typing vs selecting worker */}
+            <div className="bg-[#f6f9fc] dark:bg-[#1a2535] p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] transition-all">
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isManualWorker}
+                  onChange={e => {
+                    const checked = e.target.checked;
+                    setIsManualWorker(checked);
+                    if (checked && currentWorker && !manualNome) {
+                      setManualNome(currentWorker.nome);
+                      setManualCpf(currentWorker.cpf || '');
+                      setManualFuncao(currentWorker.funcao || 'Serviços Gerais');
+                    }
+                  }}
+                  className="w-4 h-4 rounded text-[#0085db] focus:ring-[#0085db] cursor-pointer"
+                />
+                <div className="flex-1">
+                  <span className="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-1.5">
+                    <Pencil className="w-3.5 h-3.5 text-[#0085db]" />
+                    Digitar trabalhador manualmente
+                  </span>
+                  <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block">
+                    Marque para digitar nome, CPF e função sem precisar selecionar do cadastro.
+                  </span>
+                </div>
               </label>
-              <select
-                value={selectedTrabId}
-                onChange={e => {
-                  setSelectedTrabId(e.target.value);
-                  setSelectedDiariasIds([]);
-                }}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold"
-              >
-                {trabalhadores.map(t => (
-                  <option key={t.id} value={t.id}>
-                    {t.nome} ({t.funcao} · CPF: {t.cpf || 'Não cadastrado'})
-                  </option>
-                ))}
-              </select>
             </div>
 
-            {/* Quick week filter */}
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Filtrar Semana de Trabalho
-              </label>
-              <div className="flex gap-2">
+            {/* Worker Selection (Dropdown or Manual Inputs) */}
+            {!isManualWorker ? (
+              <div>
+                <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                  Selecionar Trabalhador Cadastrado
+                </label>
+                <select
+                  value={selectedTrabId}
+                  onChange={e => {
+                    setSelectedTrabId(e.target.value);
+                  }}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold focus:border-[#0085db] focus:outline-none"
+                >
+                  <option value="">-- Selecione o trabalhador --</option>
+                  {trabalhadores.map(t => (
+                    <option key={t.id} value={t.id}>
+                      {t.nome} ({t.funcao} · CPF: {t.cpf || 'Não cadastrado'})
+                    </option>
+                  ))}
+                </select>
+                {currentWorker && (
+                  <p className="text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-1 flex items-center gap-1">
+                    <UserCheck className="w-3 h-3 text-[#4bd08b]" />
+                    {currentWorker.funcao} · CPF: {currentWorker.cpf || 'Não cadastrado'} · Diária Base: {formatBRL(currentWorker.valorDiariaPadrao)}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-3 p-3 rounded-xl border border-[#0085db]/25 bg-[#0085db]/5 animate-in fade-in duration-150">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-[#0085db] uppercase tracking-wider">
+                    Dados Manuais do Trabalhador
+                  </span>
+                  {trabalhadores.length > 0 && (
+                    <div className="text-[10px]">
+                      <span className="text-[#707a82] mr-1">Preencher com:</span>
+                      <select
+                        onChange={e => {
+                          const trab = trabalhadores.find(t => t.id === e.target.value);
+                          if (trab) handleFillFromTrab(trab);
+                        }}
+                        defaultValue=""
+                        className="text-[10px] bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded px-1.5 py-0.5 text-[#111c2d] dark:text-white"
+                      >
+                        <option value="" disabled>
+                          Copiar de...
+                        </option>
+                        {trabalhadores.map(t => (
+                          <option key={t.id} value={t.id}>
+                            {t.nome}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                    Nome Completo do Trabalhador / Beneficiário *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ex: José Carlos de Oliveira"
+                    value={manualNome}
+                    onChange={e => setManualNome(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold focus:border-[#0085db] focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                      CPF (opcional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="000.000.000-00"
+                      value={manualCpf}
+                      onChange={e => setManualCpf(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white focus:border-[#0085db] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                      Função / Especialidade
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ex: Pedreiro, Carpinteiro"
+                      value={manualFuncao}
+                      onChange={e => setManualFuncao(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white focus:border-[#0085db] focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Days Section Header & Filter Modes */}
+            <div className="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-[#0085db]" />
+                  2. Selecionar Dias Trabalhados
+                </label>
+                <span className="text-[11px] font-bold text-[#0085db] bg-[#0085db]/10 px-2 py-0.5 rounded-full">
+                  {selectedDiariasIds.length} selecionado(s)
+                </span>
+              </div>
+
+              {/* View options pills: Default is all open days */}
+              <div className="flex flex-wrap gap-1.5 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => setFiltroModoDias('todos_abertos')}
+                  className={`px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer ${
+                    filtroModoDias === 'todos_abertos'
+                      ? 'bg-[#0085db] text-white shadow-sm'
+                      : 'bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white border border-[#e6ecf1] dark:border-[#333f55]'
+                  }`}
+                >
+                  Todos em Aberto ({countDiasAbertos})
+                </button>
+
+                {!isManualWorker && selectedTrabId && (
+                  <button
+                    type="button"
+                    onClick={() => setFiltroModoDias('trabalhador')}
+                    className={`px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer ${
+                      filtroModoDias === 'trabalhador'
+                        ? 'bg-[#0085db] text-white shadow-sm'
+                        : 'bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white border border-[#e6ecf1] dark:border-[#333f55]'
+                    }`}
+                  >
+                    Apenas deste Trabalhador
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setFiltroModoDias('todas')}
+                  className={`px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer ${
+                    filtroModoDias === 'todas'
+                      ? 'bg-[#0085db] text-white shadow-sm'
+                      : 'bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white border border-[#e6ecf1] dark:border-[#333f55]'
+                  }`}
+                >
+                  Todas ({diarias.length})
+                </button>
+              </div>
+
+              {/* Week filter and fast selectors */}
+              <div className="flex items-center gap-2 pt-1">
                 <select
                   value={selectedWeekKey}
-                  onChange={e => handleSelectWeek(e.target.value)}
-                  className="flex-1 px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                  onChange={e => setSelectedWeekKey(e.target.value)}
+                  className="flex-1 px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
                 >
-                  <option value="all">Todas as semanas</option>
+                  <option value="all">Todas as semanas ({diasDisponiveis.length} diárias)</option>
                   {Object.entries(availableWeeks).map(([key, w]) => (
                     <option key={key} value={key}>
                       Semana: {w.label} ({w.count} diárias)
                     </option>
                   ))}
                 </select>
+
                 <button
                   type="button"
-                  onClick={handleSelectOnlyPending}
-                  className="px-3 py-1 text-[11px] font-bold text-[#0085db] bg-[#0085db]/10 rounded-xl border border-[#0085db]/20 hover:bg-[#0085db]/20 whitespace-nowrap cursor-pointer"
-                  title="Seleciona apenas as diárias ainda não pagas"
+                  onClick={handleSelectAllVisible}
+                  className="px-2.5 py-1.5 text-[11px] font-bold text-[#0085db] bg-[#0085db]/10 rounded-xl border border-[#0085db]/20 hover:bg-[#0085db]/20 whitespace-nowrap cursor-pointer"
+                  title="Seleciona todas as diárias visíveis na lista abaixo"
                 >
-                  Apenas Pendentes
+                  Marcar Visíveis
                 </button>
-              </div>
-            </div>
 
-            {/* Days Selection Checklist */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-bold text-[#111c2d] dark:text-white">
-                  Dias incluídos no recibo ({selectedDiariasIds.length} selecionados)
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setSelectedDiariasIds(workerDiarias.map(d => d.id))}
-                  className="text-[11px] font-semibold text-[#0085db] hover:underline cursor-pointer"
-                >
-                  Marcar todos
-                </button>
+                {selectedDiariasIds.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearSelection}
+                    className="px-2.5 py-1.5 text-[11px] font-bold text-[#e46a76] hover:bg-[#e46a76]/10 rounded-xl transition-colors cursor-pointer"
+                  >
+                    Limpar
+                  </button>
+                )}
               </div>
 
-              <div className="max-h-52 overflow-y-auto space-y-1.5 pr-1 border border-[#e6ecf1] dark:border-[#333f55] rounded-xl p-2.5 bg-[#f6f9fc] dark:bg-[#1a2535]">
-                {workerDiarias.length === 0 ? (
-                  <p className="text-xs text-[#707a82] py-3 text-center">
-                    Nenhuma diária registrada para este trabalhador.
-                  </p>
+              {/* Days Selection Checklist */}
+              <div className="max-h-64 overflow-y-auto space-y-1.5 pr-1 border border-[#e6ecf1] dark:border-[#333f55] rounded-xl p-2.5 bg-[#f6f9fc] dark:bg-[#1a2535]">
+                {filteredDiarias.length === 0 ? (
+                  <div className="text-center py-6 px-3">
+                    <p className="text-xs text-[#707a82] dark:text-[#7c8fac]">
+                      {filtroModoDias === 'todos_abertos'
+                        ? 'Nenhuma diária em aberto no momento. Todas as diárias estão pagas!'
+                        : 'Nenhuma diária encontrada com os filtros selecionados.'}
+                    </p>
+                    {filtroModoDias === 'todos_abertos' && diarias.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setFiltroModoDias('todas')}
+                        className="mt-2 text-[11px] font-bold text-[#0085db] hover:underline cursor-pointer"
+                      >
+                        Ver todas as diárias (incluindo pagas)
+                      </button>
+                    )}
+                  </div>
                 ) : (
-                  workerDiarias.map(dia => {
+                  filteredDiarias.map(dia => {
                     const isSelected = selectedDiariasIds.includes(dia.id);
+                    const isPending = dia.statusPagamento === 'pendente';
+
                     return (
                       <label
                         key={dia.id}
-                        className={`flex items-center justify-between p-2 rounded-lg text-xs cursor-pointer transition-colors ${
+                        className={`flex items-center justify-between p-2 rounded-xl text-xs cursor-pointer transition-all border ${
                           isSelected
-                            ? 'bg-[#0085db]/15 text-[#0085db] font-bold'
-                            : 'hover:bg-white dark:hover:bg-[#111c2d] text-[#111c2d] dark:text-[#7c8fac]'
+                            ? 'bg-[#0085db]/10 border-[#0085db]/40 text-[#0085db]'
+                            : 'bg-white dark:bg-[#111c2d] border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-[#7c8fac] hover:border-[#0085db]/30'
                         }`}
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0 pr-2">
                           <input
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => toggleDiariaSelection(dia.id)}
-                            className="w-4 h-4 rounded text-[#0085db] focus:ring-[#0085db]"
+                            className="w-4 h-4 rounded text-[#0085db] focus:ring-[#0085db] cursor-pointer"
                           />
-                          <div>
-                            <span>{formatDateBR(dia.data)}</span>
-                            <span className="text-[10px] text-[#707a82] ml-1.5">
-                              ({dia.fracao === 1 ? 'Integral' : `${dia.fracao} diária`})
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold text-[#111c2d] dark:text-white truncate">
+                                {dia.trabalhadorNome}
+                              </span>
+                              <span className="text-[10px] text-[#707a82]">·</span>
+                              <span className="font-semibold text-[#0085db]">
+                                {formatDateBR(dia.data)}
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-[#707a82] block truncate">
+                              {dia.fracao === 1 ? 'Integral' : `${dia.fracao} diária`}
+                              {dia.valorAdicional > 0 ? ` (+ ${formatBRL(dia.valorAdicional)})` : ''}
+                              {dia.descricaoAdicional ? ` - ${dia.descricaoAdicional}` : ''}
                             </span>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <span className="font-bold tabular-nums">{formatBRL(dia.valorTotal)}</span>
+
+                        <div className="text-right shrink-0">
+                          <span className="font-bold tabular-nums text-xs text-[#111c2d] dark:text-white block">
+                            {formatBRL(dia.valorTotal)}
+                          </span>
                           <span
-                            className={`block text-[9px] font-bold ${
-                              dia.statusPagamento === 'pago' ? 'text-[#4bd08b]' : 'text-[#f8c076]'
+                            className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                              isPending
+                                ? 'bg-[#f8c076]/20 text-[#d88924] dark:text-[#f8c076]'
+                                : 'bg-[#4bd08b]/20 text-[#2fa868] dark:text-[#4bd08b]'
                             }`}
                           >
-                            {dia.statusPagamento === 'pago' ? 'Pago' : 'A Pagar'}
+                            {isPending ? 'Em Aberto' : 'Pago'}
                           </span>
                         </div>
                       </label>
@@ -284,7 +540,7 @@ Assinatura
                   type="text"
                   value={motivo}
                   onChange={e => setMotivo(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:border-[#0085db] focus:outline-none"
                 />
               </div>
 
@@ -297,7 +553,7 @@ Assinatura
                     type="text"
                     value={responsavelNome}
                     onChange={e => setResponsavelNome(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:border-[#0085db] focus:outline-none"
                   />
                 </div>
                 <div>
@@ -308,7 +564,7 @@ Assinatura
                     type="text"
                     value={localCidade}
                     onChange={e => setLocalCidade(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:border-[#0085db] focus:outline-none"
                   />
                 </div>
               </div>
@@ -318,7 +574,7 @@ Assinatura
                   type="checkbox"
                   checked={marcarComoPagas}
                   onChange={e => setMarcarComoPagas(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#0085db] focus:ring-[#0085db]"
+                  className="w-4 h-4 rounded text-[#0085db] focus:ring-[#0085db] cursor-pointer"
                 />
                 <span className="font-semibold text-[#111c2d] dark:text-white">
                   Marcar automaticamente as diárias como pagas ao emitir
@@ -354,9 +610,14 @@ Assinatura
             <div className="space-y-3">
               {/* Toolbar */}
               <div className="flex items-center justify-between gap-2 bg-white dark:bg-[#111c2d] p-3.5 rounded-[18px] border border-[#e6ecf1] dark:border-[#333f55]">
-                <span className="text-xs font-bold text-[#111c2d] dark:text-white">
-                  Recibo #{previewRecibo.numeroRecibo}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-[#111c2d] dark:text-white">
+                    Recibo #{previewRecibo.numeroRecibo}
+                  </span>
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#4bd08b]/15 text-[#4bd08b] font-bold">
+                    {previewRecibo.trabalhadorNome}
+                  </span>
+                </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleCopyText(previewRecibo)}
@@ -400,10 +661,26 @@ Assinatura
                   </span>
                 </div>
 
+                {/* Beneficiary Badge */}
+                <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs flex flex-wrap justify-between gap-2">
+                  <div>
+                    <span className="text-[#707a82] font-semibold">Beneficiário: </span>
+                    <strong className="text-[#111c2d]">{previewRecibo.trabalhadorNome}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[#707a82] font-semibold">Função: </span>
+                    <strong className="text-[#111c2d]">{previewRecibo.trabalhadorFuncao || 'Serviços Gerais'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[#707a82] font-semibold">CPF: </span>
+                    <strong className="text-[#111c2d]">{previewRecibo.trabalhadorCpf || 'Não informado'}</strong>
+                  </div>
+                </div>
+
                 {/* Legal body prose */}
                 <div className="space-y-4 text-justify">
                   <p>
-                    Recebi(emos) de <strong>{previewRecibo.responsavelNome}</strong> a importância de{' '}
+                    Recebi(emos) de <strong>{previewRecibo.responsavelNome}</strong> a importância líquida de{' '}
                     <strong>{formatBRL(previewRecibo.valorTotal)}</strong> (
                     <span className="italic underline">{previewRecibo.valorPorExtenso}</span>), referente a:{' '}
                     <strong>{previewRecibo.motivo}</strong>, no período de{' '}
@@ -415,18 +692,19 @@ Assinatura
                 {/* Discriminative Table */}
                 <div className="mt-6 pt-4 border-t border-slate-200">
                   <p className="text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Discriminação dos Dias Trabalhados
+                    Discriminação dos Dias Trabalhados ({selectedDiariasList.length})
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {selectedDiariasList.map(dia => (
-                      <div key={dia.id} className="p-2 rounded border border-slate-200 bg-slate-50 text-[11px]">
+                      <div key={dia.id} className="p-2 rounded-lg border border-slate-200 bg-slate-50 text-[11px]">
                         <div className="flex justify-between font-semibold">
                           <span>{formatDateBR(dia.data)}</span>
-                          <span className="tabular-nums">{formatBRL(dia.valorTotal)}</span>
+                          <span className="tabular-nums font-bold text-[#0085db]">{formatBRL(dia.valorTotal)}</span>
                         </div>
-                        <span className="text-[10px] text-[#707a82] block">
-                          {dia.fracao === 1 ? 'Integral' : `${dia.fracao} diária`} {dia.valorAdicional > 0 ? `(+ ${formatBRL(dia.valorAdicional)})` : ''}
-                        </span>
+                        <div className="text-[10px] text-[#707a82] mt-0.5 flex justify-between">
+                          <span className="truncate max-w-[120px] font-medium">{dia.trabalhadorNome}</span>
+                          <span>{dia.fracao === 1 ? 'Integral' : `${dia.fracao} d.`}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -440,11 +718,16 @@ Assinatura
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-end">
                     <div className="text-center pt-8 border-t border-slate-400">
-                      <p className="text-xs text-[#707a82]">Assinatura</p>
+                      <p className="font-bold text-slate-800">{previewRecibo.responsavelNome}</p>
+                      <p className="text-xs text-[#707a82]">Responsável Técnico / Pagador</p>
                     </div>
 
                     <div className="text-center pt-8 border-t border-slate-400">
-                      <p className="text-xs text-[#707a82]">Assinatura</p>
+                      <p className="font-bold text-slate-800">{previewRecibo.trabalhadorNome}</p>
+                      <p className="text-xs text-[#707a82]">
+                        CPF: {previewRecibo.trabalhadorCpf || 'Não informado'}
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Assinatura do Recebedor</p>
                     </div>
                   </div>
                 </div>
@@ -457,12 +740,11 @@ Assinatura
                 Nenhum recibo em visualização
               </h3>
               <p className="text-xs text-[#707a82] dark:text-[#7c8fac] max-w-sm mt-1">
-                Selecione o trabalhador e os dias trabalhados ao lado e clique em <strong>Gerar Recibo Oficial</strong> para visualizar o documento pronto para impressão e assinatura.
+                Selecione os dias em aberto na lista ao lado (de todos os trabalhadores ou filtrado) ou informe os dados manualmente e clique em <strong>Gerar Recibo Oficial</strong>.
               </p>
             </div>
           )}
         </div>
-
       </div>
 
       {/* Emission History Section */}
@@ -487,6 +769,11 @@ Assinatura
                     <span className="font-semibold text-[#707a82] dark:text-[#7c8fac]">
                       {rec.trabalhadorNome}
                     </span>
+                    {rec.trabalhadorFuncao && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82]">
+                        {rec.trabalhadorFuncao}
+                      </span>
+                    )}
                   </div>
                   <p className="text-[11px] text-[#707a82] mt-0.5">
                     Emitido em {formatDateBR(rec.dataEmissao)} · Período {formatDateBR(rec.periodoInicio)} a {formatDateBR(rec.periodoFim)}
@@ -508,7 +795,6 @@ Assinatura
           </div>
         </div>
       )}
-
     </div>
   );
 };

@@ -123,7 +123,12 @@ interface AppContextType {
   // Recibos
   recibos: ReciboPagamento[];
   emitirRecibo: (dados: {
-    trabalhadorId: string;
+    trabalhadorId?: string;
+    trabalhadorManual?: {
+      nome: string;
+      cpf?: string;
+      funcao?: string;
+    };
     diariasIds: string[];
     periodoInicio: string;
     periodoFim: string;
@@ -142,7 +147,13 @@ interface AppContextType {
 
   // Produção
   producao: ProducaoItem[];
+  produtosProducao: string[];
+  addProdutoProducao: (nome: string) => boolean;
+  updateProdutoProducao: (oldNome: string, newNome: string) => boolean;
+  deleteProdutoProducao: (nome: string) => void;
   addProducao: (item: Omit<ProducaoItem, 'id'>) => void;
+  updateProducao: (item: ProducaoItem) => void;
+  deleteProducao: (id: string) => void;
 
   // Cartões & Parcelas
   cartoes: CartaoConta[];
@@ -164,6 +175,7 @@ interface AppContextType {
   totalAPagar: number;
   totalTrilhosProduzidos: number;
   totalPlacasProduzidas: number;
+  totalMetrosBatidos: number;
   custoIndicativoTrilho: number;
 
   // Auth
@@ -227,6 +239,12 @@ export const DEFAULT_CATEGORIAS_MATERIAIS = [
   'Abastecimento',
   'Equipamentos',
   'Estrutural',
+];
+
+export const DEFAULT_PRODUTOS_PRODUCAO = [
+  'Trilho de Laje',
+  'Placa de Concreto',
+  'Outro artefato de cimento',
 ];
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -329,12 +347,39 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   });
   const [activeUserId, setActiveUserId] = useState<string>(() => usuarios[0]?.id || 'user-natanael');
   const [cartoes, setCartoes] = useState<CartaoConta[]>(() => getStoredOrDefault('cartoes', INITIAL_CARTOES));
-  const [materiais, setMateriais] = useState<Material[]>(() => getStoredOrDefault('materiais', INITIAL_MATERIAIS));
+  const [materiais, setMateriais] = useState<Material[]>(() => {
+    const loaded = getStoredOrDefault('materiais', INITIAL_MATERIAIS);
+    return loaded.map((m: Material) =>
+      m.id === 'mat-brita' || m.nome?.trim().toLowerCase() === 'brita 1'
+        ? { ...m, nome: 'BRITA 1' }
+        : m
+    );
+  });
   const [trabalhadores, setTrabalhadores] = useState<Trabalhador[]>(() => getStoredOrDefault('trabalhadores', INITIAL_TRABALHADORES));
-  const [despesas, setDespesas] = useState<Despesa[]>(() => getStoredOrDefault('despesas', INITIAL_DESPESAS));
+  const [despesas, setDespesas] = useState<Despesa[]>(() => {
+    const loaded = getStoredOrDefault('despesas', INITIAL_DESPESAS);
+    return loaded.map((d: Despesa) => ({
+      ...d,
+      itens: (d.itens || []).map(it =>
+        it.materialId === 'mat-brita' || it.materialNome?.trim().toLowerCase() === 'brita 1'
+          ? { ...it, materialNome: 'BRITA 1' }
+          : it
+      ),
+    }));
+  });
   const [diarias, setDiarias] = useState<Diaria[]>(() => getStoredOrDefault('diarias', INITIAL_DIARIAS));
   const [recibos, setRecibos] = useState<ReciboPagamento[]>(() => getStoredOrDefault('recibos', []));
-  const [orcamentos, setOrcamentos] = useState<Orcamento[]>(() => getStoredOrDefault('orcamentos', INITIAL_ORCAMENTOS));
+  const [orcamentos, setOrcamentos] = useState<Orcamento[]>(() => {
+    const loaded = getStoredOrDefault('orcamentos', INITIAL_ORCAMENTOS);
+    return loaded.map((orc: Orcamento) => ({
+      ...orc,
+      itens: (orc.itens || []).map(it =>
+        it.materialId === 'mat-brita' || it.materialNome?.trim().toLowerCase() === 'brita 1'
+          ? { ...it, materialNome: 'BRITA 1' }
+          : it
+      ),
+    }));
+  });
   const [producao, setProducao] = useState<ProducaoItem[]>(() => getStoredOrDefault('producao', INITIAL_PRODUCAO));
   const [parcelas, setParcelas] = useState<Parcela[]>(() => getStoredOrDefault('parcelas', INITIAL_PARCELAS));
   const [alertas, setAlertas] = useState<AlertaPendencia[]>(() => getStoredOrDefault('alertas', INITIAL_ALERTAS));
@@ -343,6 +388,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   );
   const [categoriasMateriais, setCategoriasMateriais] = useState<string[]>(() =>
     getStoredOrDefault('categorias_materiais', DEFAULT_CATEGORIAS_MATERIAIS)
+  );
+  const [produtosProducao, setProdutosProducao] = useState<string[]>(() =>
+    getStoredOrDefault('produtos_producao', DEFAULT_PRODUTOS_PRODUCAO)
   );
   const [masterEmail, setMasterEmail] = useState<string>(() => getStoredOrDefault('master_email', 'natanaeljobs@gmail.com'));
   const [solicitacoesAcesso, setSolicitacoesAcesso] = useState<SolicitacaoAcesso[]>(() => {
@@ -406,6 +454,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => setStored('recibos', recibos), [recibos]);
   useEffect(() => setStored('orcamentos', orcamentos), [orcamentos]);
   useEffect(() => setStored('producao', producao), [producao]);
+  useEffect(() => setStored('produtos_producao', produtosProducao), [produtosProducao]);
   useEffect(() => setStored('parcelas', parcelas), [parcelas]);
   useEffect(() => setStored('alertas', alertas), [alertas]);
   useEffect(() => setStored('master_email', masterEmail), [masterEmail]);
@@ -489,14 +538,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const totalTrilhosProduzidos = useMemo(() => {
     return producao
-      .filter(p => p.obraId === activeObra.id && p.produto === 'trilho')
+      .filter(p => p.obraId === activeObra.id && (p.produto === 'trilho' || p.produto.toLowerCase().includes('trilho')))
       .reduce((sum, p) => sum + p.quantidade, 0);
   }, [producao, activeObra.id]);
 
   const totalPlacasProduzidas = useMemo(() => {
     return producao
-      .filter(p => p.obraId === activeObra.id && p.produto === 'placa_cimento')
+      .filter(p => p.obraId === activeObra.id && (p.produto === 'placa_cimento' || p.produto.toLowerCase().includes('placa')))
       .reduce((sum, p) => sum + p.quantidade, 0);
+  }, [producao, activeObra.id]);
+
+  const totalMetrosBatidos = useMemo(() => {
+    return producao
+      .filter(p => p.obraId === activeObra.id)
+      .reduce((sum, p) => sum + (p.quantidade * (p.comprimentoMetros || 0)), 0);
   }, [producao, activeObra.id]);
 
   const custoIndicativoTrilho = useMemo(() => {
@@ -590,7 +645,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const mat = materiais.find(m => m.id === id);
     setMateriais(prev => prev.filter(m => m.id !== id));
     if (mat) {
-      showToast(`O material "${mat.nome}" foi excluído com sucesso do catálogo.`, 'success', 'Material excluído');
+      showToast(`Material "${mat.nome}" foi excluído`, 'success');
     }
   };
 
@@ -653,6 +708,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const deleteCategoriaMaterial = (nome: string) => {
     setCategoriasMateriais(prev => prev.filter(c => c.toLowerCase() !== nome.toLowerCase()));
+  };
+
+  const addProdutoProducao = (nome: string): boolean => {
+    const trimmed = nome.trim();
+    if (!trimmed) return false;
+    if (produtosProducao.some(p => p.toLowerCase() === trimmed.toLowerCase())) return false;
+    setProdutosProducao(prev => [...prev, trimmed]);
+    return true;
+  };
+
+  const updateProdutoProducao = (oldNome: string, newNome: string): boolean => {
+    const trimmedNew = newNome.trim();
+    if (!trimmedNew || oldNome.toLowerCase() === trimmedNew.toLowerCase()) return false;
+    setProdutosProducao(prev => prev.map(p => (p.toLowerCase() === oldNome.toLowerCase() ? trimmedNew : p)));
+    setProducao(prev =>
+      prev.map(item =>
+        item.produto.toLowerCase() === oldNome.toLowerCase() ||
+        (oldNome === 'Trilho de Laje' && item.produto === 'trilho') ||
+        (oldNome === 'Placa de Concreto' && item.produto === 'placa_cimento')
+          ? { ...item, produto: trimmedNew }
+          : item
+      )
+    );
+    return true;
+  };
+
+  const deleteProdutoProducao = (nome: string) => {
+    setProdutosProducao(prev => prev.filter(p => p.toLowerCase() !== nome.toLowerCase()));
   };
 
   const addDespesa = (despesaData: Omit<Despesa, 'id' | 'criadoEm'>) => {
@@ -772,7 +855,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const emitirRecibo = (dados: {
-    trabalhadorId: string;
+    trabalhadorId?: string;
+    trabalhadorManual?: {
+      nome: string;
+      cpf?: string;
+      funcao?: string;
+    };
     diariasIds: string[];
     periodoInicio: string;
     periodoFim: string;
@@ -781,18 +869,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     localCidade?: string;
     marcarComoPagas?: boolean;
   }): ReciboPagamento => {
-    const trabalhador = trabalhadores.find(t => t.id === dados.trabalhadorId);
+    const trabalhador = dados.trabalhadorId ? trabalhadores.find(t => t.id === dados.trabalhadorId) : undefined;
     const selecionadas = diarias.filter(d => dados.diariasIds.includes(d.id));
     const total = selecionadas.reduce((sum, d) => sum + d.valorTotal, 0);
+
+    const nomeTrabalhador = dados.trabalhadorManual?.nome || trabalhador?.nome || 'Trabalhador';
+    const cpfTrabalhador = dados.trabalhadorManual?.cpf || trabalhador?.cpf || 'Não informado';
+    const funcaoTrabalhador = dados.trabalhadorManual?.funcao || trabalhador?.funcao || 'Serviços Gerais';
 
     const novoRecibo: ReciboPagamento = {
       id: `rec-${Date.now()}`,
       obraId: activeObra.id,
       numeroRecibo: `REC-${new Date().getFullYear()}-${String(recibos.length + 1).padStart(3, '0')}`,
-      trabalhadorId: dados.trabalhadorId,
-      trabalhadorNome: trabalhador?.nome || 'Trabalhador',
-      trabalhadorCpf: trabalhador?.cpf || 'Não informado',
-      trabalhadorFuncao: trabalhador?.funcao || 'Serviços Gerais',
+      trabalhadorId: dados.trabalhadorId || 'manual',
+      trabalhadorNome: nomeTrabalhador,
+      trabalhadorCpf: cpfTrabalhador,
+      trabalhadorFuncao: funcaoTrabalhador,
       responsavelNome: dados.responsavelNome || activeUser.nome || 'Natanael (Responsável)',
       periodoInicio: dados.periodoInicio,
       periodoFim: dados.periodoFim,
@@ -807,7 +899,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     setRecibos(prev => [novoRecibo, ...prev]);
 
-    if (dados.marcarComoPagas) {
+    if (dados.marcarComoPagas && dados.diariasIds.length > 0) {
       marcarDiariasPagas(dados.diariasIds);
     }
 
@@ -896,6 +988,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       id: `prod-${Date.now()}`,
     };
     setProducao(prev => [novo, ...prev]);
+    showToast('Lote de produção registrado com sucesso!', 'success', 'Produção registrada');
+  };
+
+  const updateProducao = (item: ProducaoItem) => {
+    setProducao(prev => prev.map(p => (p.id === item.id ? item : p)));
+    showToast('Registro de produção atualizado com sucesso!', 'success', 'Produção atualizada');
+  };
+
+  const deleteProducao = (id: string) => {
+    setProducao(prev => prev.filter(p => p.id !== id));
+    showToast('Registro de produção excluído com sucesso.', 'success', 'Produção excluída');
   };
 
   const addCartao = (cartao: Omit<CartaoConta, 'id'>) => {
@@ -937,6 +1040,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setAlertas(INITIAL_ALERTAS);
     setUnidadesMedida(DEFAULT_UNIDADES_MEDIDA);
     setCategoriasMateriais(DEFAULT_CATEGORIAS_MATERIAIS);
+    setProdutosProducao(DEFAULT_PRODUTOS_PRODUCAO);
   };
 
   return (
@@ -1001,7 +1105,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         deleteOrcamento,
         converterOrcamentoEmDespesa,
         producao,
+        produtosProducao,
+        addProdutoProducao,
+        updateProdutoProducao,
+        deleteProdutoProducao,
         addProducao,
+        updateProducao,
+        deleteProducao,
         cartoes,
         parcelas,
         addCartao,
@@ -1017,6 +1127,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         totalAPagar,
         totalTrilhosProduzidos,
         totalPlacasProduzidas,
+        totalMetrosBatidos,
         custoIndicativoTrilho,
         resetToSampleData,
         isAuthenticated,

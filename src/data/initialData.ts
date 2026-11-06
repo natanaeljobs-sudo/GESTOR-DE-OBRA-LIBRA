@@ -182,7 +182,7 @@ export const INITIAL_CARTOES: CartaoConta[] = [
 export const INITIAL_MATERIAIS: Material[] = [
   { id: 'mat-cimento', nome: 'Cimento CP II 50kg', unidadePadrao: 'saco', categoriaSugerida: 'Alvenaria', dataCadastro: '2026-09-02' },
   { id: 'mat-areia', nome: 'Areia Média Lavada', unidadePadrao: 'm³', categoriaSugerida: 'Alvenaria', dataCadastro: '2026-09-02' },
-  { id: 'mat-brita', nome: 'Brita 1', unidadePadrao: 'm³', categoriaSugerida: 'Sapata', dataCadastro: '2026-09-02' },
+  { id: 'mat-brita', nome: 'BRITA 1', unidadePadrao: 'm³', categoriaSugerida: 'Sapata', dataCadastro: '2026-09-02' },
   { id: 'mat-tijolo', nome: 'Tijolo Baiano 8 Furos', unidadePadrao: 'milheiro', categoriaSugerida: 'Alvenaria', dataCadastro: '2026-09-03' },
   { id: 'mat-ferro-38', nome: 'Ferro CA-50 3/8" (10mm)', unidadePadrao: 'barra 12m', categoriaSugerida: 'Sapata', dataCadastro: '2026-09-03' },
   { id: 'mat-ferro-516', nome: 'Ferro CA-60 5/16" (8mm)', unidadePadrao: 'barra 12m', categoriaSugerida: 'Sapata', dataCadastro: '2026-09-04' },
@@ -371,7 +371,7 @@ export const INITIAL_DESPESAS: Despesa[] = [
       {
         id: 'item-01-3',
         materialId: 'mat-brita',
-        materialNome: 'Brita 1',
+        materialNome: 'BRITA 1',
         quantidade: 7,
         unidade: 'm³',
         valorUnitario: 95.07,
@@ -1565,7 +1565,7 @@ export const INITIAL_ORCAMENTOS: Orcamento[] = [
       {
         id: 'orc-item-3',
         materialId: 'mat-brita',
-        materialNome: 'Brita 1',
+        materialNome: 'BRITA 1',
         quantidade: 6,
         unidade: 'm³',
         precoUnitarioCotado: 101.66,
@@ -1607,7 +1607,7 @@ export const INITIAL_ORCAMENTOS: Orcamento[] = [
       {
         id: 'orc-item-6',
         materialId: 'mat-brita',
-        materialNome: 'Brita 1',
+        materialNome: 'BRITA 1',
         quantidade: 6,
         unidade: 'm³',
         precoUnitarioCotado: 73.33,
@@ -1649,7 +1649,7 @@ export const INITIAL_ORCAMENTOS: Orcamento[] = [
       {
         id: 'orc-item-9',
         materialId: 'mat-brita',
-        materialNome: 'Brita 1',
+        materialNome: 'BRITA 1',
         quantidade: 6,
         unidade: 'm³',
         precoUnitarioCotado: 106.66,

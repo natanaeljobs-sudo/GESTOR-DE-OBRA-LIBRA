@@ -621,37 +621,37 @@ export const RelatoriosView: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           
           {/* Card 1: TOTAL APURADO */}
-          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-between">
-            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider block">
+          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col items-center justify-center text-center">
+            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider block text-center">
               TOTAL APURADO
             </span>
-            <div className="mt-3">
-              <span className="text-sm font-bold text-[#0085db] block leading-none">R$</span>
-              <span className="text-2xl sm:text-3xl font-black text-[#0085db] tabular-nums tracking-tight block mt-0.5">
+            <div className="mt-3 flex items-baseline justify-center gap-1.5">
+              <span className="text-sm font-bold text-[#0085db]">R$</span>
+              <span className="text-2xl sm:text-3xl font-black text-[#0085db] tabular-nums tracking-tight">
                 {formatBRL(categoryStats.total).replace('R$', '').trim()}
               </span>
             </div>
           </div>
 
           {/* Card 2: LANÇAMENTOS */}
-          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-between">
-            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider block">
+          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col items-center justify-center text-center">
+            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider block text-center">
               LANÇAMENTOS
             </span>
-            <div className="mt-3">
-              <span className="text-2xl sm:text-3xl font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight block">
+            <div className="mt-3 flex items-center justify-center">
+              <span className="text-2xl sm:text-3xl font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight block text-center">
                 {categoryStats.count}
               </span>
             </div>
           </div>
 
           {/* Card 3: MAIOR CATEGORIA */}
-          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-between">
-            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider block">
+          <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col items-center justify-center text-center">
+            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider block text-center">
               MAIOR CATEGORIA
             </span>
-            <div className="mt-3">
-              <span className="text-lg sm:text-xl font-bold text-[#111c2d] dark:text-white tracking-tight block">
+            <div className="mt-3 flex items-center justify-center">
+              <span className="text-lg sm:text-xl font-bold text-[#111c2d] dark:text-white tracking-tight block text-center">
                 {categoryStats.maiorCategoria
                   ? `${categoryStats.maiorCategoria.tabLabel} · ${categoryStats.maiorCategoria.percentual.toFixed(1).replace('.', ',')}%`
                   : 'Nenhum lançamento'}

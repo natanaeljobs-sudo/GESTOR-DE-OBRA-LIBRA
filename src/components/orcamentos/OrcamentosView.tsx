@@ -401,7 +401,7 @@ export const OrcamentosView: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#e6ecf1] dark:border-[#333f55]">
                   <div>
                     <h3 className="text-sm font-extrabold text-[#111c2d] dark:text-white">
-                      {group.materialNome}
+                      {group.materialNome.trim().toLowerCase() === 'brita 1' ? 'BRITA 1' : group.materialNome}
                     </h3>
                     <span className="text-xs text-[#707a82]">
                       Unidade de cotação: {group.unidade}

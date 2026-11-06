@@ -235,7 +235,7 @@ export const DashboardView: React.FC = () => {
               <Hammer className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111c2d] dark:text-white tabular-nums">
+          <div className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0085db] tabular-nums">
             {totalTrilhosProduzidos} <span className="text-sm font-normal text-[#707a82]">trilhos</span>
           </div>
           <div className="mt-2 space-y-1 text-xs text-[#707a82] dark:text-[#7c8fac]">

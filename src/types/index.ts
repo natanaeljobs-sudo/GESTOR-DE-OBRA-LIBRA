@@ -173,7 +173,7 @@ export interface Orcamento {
 export interface ProducaoItem {
   id: string;
   obraId: string;
-  produto: 'trilho' | 'placa_cimento' | 'outro';
+  produto: string; // Ex: 'Trilho de Laje', 'Placa de Concreto', ou produto personalizado
   quantidade: number;
   comprimentoMetros?: number; // Ex: 1.5, 2.5, 3.2, 4.0 metros (trilhos)
   especificacao?: string;

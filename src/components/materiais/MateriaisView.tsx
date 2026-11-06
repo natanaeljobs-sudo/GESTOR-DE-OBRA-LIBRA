@@ -85,16 +85,6 @@ export const MateriaisView: React.FC = () => {
   const [deletingCategoria, setDeletingCategoria] = useState<string | null>(null);
   const [categoriaFeedback, setCategoriaFeedback] = useState<{ type: 'success' | 'warning'; message: string } | null>(null);
 
-  // Deleted material notification state
-  const [deletedMaterialNotice, setDeletedMaterialNotice] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!deletedMaterialNotice) return;
-    const timer = setTimeout(() => {
-      setDeletedMaterialNotice(null);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [deletedMaterialNotice]);
 
   // Purchase stats calculation from real despesas
   const materialStats = useMemo(() => {
@@ -429,15 +419,8 @@ export const MateriaisView: React.FC = () => {
   // Handle Delete Material
   const handleConfirmDelete = () => {
     if (!materialToDelete) return;
-    const nomeExcluido = materialToDelete.nome;
     deleteMaterial(materialToDelete.id);
     setMaterialToDelete(null);
-    setDeletedMaterialNotice(nomeExcluido);
-    showToast(
-      `O material "${nomeExcluido}" foi excluído com sucesso do catálogo.`,
-      'success',
-      'Material excluído'
-    );
   };
 
   const formatCadastroData = (dataStr?: string) => {
@@ -473,35 +456,6 @@ export const MateriaisView: React.FC = () => {
         </button>
       </div>
 
-      {/* Notification banner when a material is deleted */}
-      {deletedMaterialNotice && (
-        <div
-          role="status"
-          className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/70 text-emerald-900 dark:text-emerald-100 text-xs shadow-xs flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-200"
-        >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="font-bold text-emerald-950 dark:text-emerald-100">
-                Material excluído com sucesso!
-              </p>
-              <p className="text-emerald-700 dark:text-emerald-300 text-[11px] mt-0.5 truncate">
-                O produto <strong className="uppercase font-bold">&quot;{deletedMaterialNotice}&quot;</strong> foi removido do catálogo.
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setDeletedMaterialNotice(null)}
-            className="p-1.5 rounded-lg text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer shrink-0"
-            title="Fechar aviso"
-          >
-            <XIcon className="w-4 h-4" />
-          </button>
-        </div>
-      )}
 
       {/* Filter Toolbar matching Permissões view */}
       <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3 sm:p-4 shadow-xs">
@@ -1057,8 +1011,8 @@ export const MateriaisView: React.FC = () => {
         <Modal
           isOpen={!!selectedMaterial}
           onClose={() => setSelectedMaterial(null)}
-          title={`Histórico: ${selectedMaterial.nome}`}
-          subtitle={`Registro das últimas compras, fornecedores e valores pagos na obra.`}
+          title={selectedMaterial.nome}
+          subtitle="Registro das últimas compras, fornecedores e valores pagos."
           maxWidth="2xl"
         >
           {(() => {
@@ -1166,7 +1120,7 @@ export const MateriaisView: React.FC = () => {
                     }}
                     className="w-full sm:w-auto px-3.5 py-2 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-[#0085db] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                   >
-                    <span>Ver notas em Despesas</span>
+                    <span>Ver despesas</span>
                   </button>
 
                   <button
@@ -1178,7 +1132,7 @@ export const MateriaisView: React.FC = () => {
                     className="w-full sm:w-auto px-4 py-2 text-xs font-bold bg-[#0085db] text-white rounded-xl hover:bg-[#0071ba] shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <ShoppingCart className="w-3.5 h-3.5" />
-                    <span>Comparar Cotações deste Material</span>
+                    <span>Comparar cotação</span>
                   </button>
                 </div>
               </div>
