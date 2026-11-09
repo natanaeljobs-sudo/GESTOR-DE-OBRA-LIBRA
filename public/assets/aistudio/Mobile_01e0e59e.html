@@ -1,0 +1,856 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diárias — Mobile — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[884px] font-body antialiased flex flex-col pb-24" data-stitch-vh="min-h-[884px]===min-h-screen">
+
+  <!-- Header Superior Mobile -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-14 px-4 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+        N
+      </div>
+      <div>
+        <span class="block text-xs font-bold leading-tight uppercase">NATANAEL</span>
+        <span class="block text-[10px] text-[#707a82] leading-none">Master</span>
+      </div>
+    </div>
+
+    <!-- Canteiro Badge -->
+    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+      <span class="material-symbols-outlined text-[14px] text-[#0085db]">apartment</span>
+      <span class="text-[10px] font-bold uppercase truncate max-w-[130px]">Juscelino Mola</span>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal Mobile -->
+  <main class="p-4 space-y-4 flex-1">
+    
+    <!-- Título & Subtítulo -->
+    <div class="space-y-0.5">
+      <h1 class="text-xl font-bold text-[#111c2d] dark:text-white">
+        Diárias
+      </h1>
+      <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+        Controle semanal e pagamentos de mão de obra.
+      </p>
+    </div>
+
+    <!-- Botões Principais de Ação (Empilhados ou 2 colunas) -->
+    <div class="grid grid-cols-2 gap-2.5">
+      <button type="button" onclick="openTrabModal()" class="h-10 px-3 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[16px] text-[#0085db]">person_add</span>
+        <span>Novo Trab.</span>
+      </button>
+      <button type="button" onclick="openDiariaModal()" class="h-10 px-3 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[16px]">add</span>
+        <span>Lançar Diária</span>
+      </button>
+    </div>
+
+    <!-- Card de Controle do Teto (Otimizado para Mobile) -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] space-y-3.5">
+      <div>
+        <span class="text-[10px] font-bold text-[#0085db] uppercase tracking-wider block">
+          Teto de Mão de Obra
+        </span>
+        <div class="flex items-baseline gap-1.5 mt-0.5">
+          <span class="text-2xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
+            R$ 13.450,00
+          </span>
+          <span class="text-xs text-[#707a82]">/ R$ 32.000</span>
+        </div>
+      </div>
+
+      <!-- Métricas em 3 Colunas Centralizadas -->
+      <div class="grid grid-cols-3 gap-2 py-2 border-y border-[#e6ecf1] dark:border-[#333f55] text-center">
+        <div>
+          <span class="text-[#707a82] dark:text-[#7c8fac] block text-[9px] font-bold uppercase tracking-wider">TOTAL PAGO</span>
+          <span class="font-bold text-[#4bd08b] text-xs tabular-nums block mt-0.5">R$ 12.120</span>
+        </div>
+        <div class="border-x border-[#e6ecf1] dark:border-[#333f55]">
+          <span class="text-[#707a82] dark:text-[#7c8fac] block text-[9px] font-bold uppercase tracking-wider">A PAGAR</span>
+          <span class="font-bold text-[#f8c076] text-xs tabular-nums block mt-0.5">R$ 1.330</span>
+        </div>
+        <div>
+          <span class="text-[#707a82] dark:text-[#7c8fac] block text-[9px] font-bold uppercase tracking-wider">SALDO</span>
+          <span class="font-bold text-[#111c2d] dark:text-white text-xs tabular-nums block mt-0.5">R$ 18.550</span>
+        </div>
+      </div>
+
+      <!-- Barra de Progresso Mobile -->
+      <div class="space-y-1.5">
+        <div class="w-full bg-[#f0f5f9] dark:bg-[#15263a] rounded-full h-2.5 overflow-hidden flex">
+          <div class="bg-[#4bd08b] h-2.5" style="width: 37.8%"></div>
+          <div class="bg-[#f8c076] h-2.5" style="width: 4.2%"></div>
+        </div>
+        <div class="flex justify-between text-[10px] text-[#707a82]">
+          <span class="font-bold text-[#111c2d] dark:text-white uppercase">42% DO TETO UTILIZADO</span>
+          <span class="font-bold text-[#4bd08b] uppercase">SALDO: R$ 18.550,00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros Rápidos Mobile -->
+    <div class="space-y-2">
+      <select id="mobile-filter-worker" onchange="applyMobileFilters()" class="w-full h-10 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-semibold cursor-pointer">
+        <option value="todos">Todos os Trabalhadores (4)</option>
+        <option value="JOSÉ CARLOS DE OLIVEIRA">José Carlos (Pedreiro)</option>
+        <option value="RAIMUNDO NONATO">Raimundo (Ajudante)</option>
+        <option value="MANOEL SILVA">Manoel Silva (Carpinteiro)</option>
+      </select>
+
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center h-9 p-1 bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl text-xs flex-1">
+          <button type="button" id="m-btn-todos" onclick="setMobileStatusFilter(&#39;todos&#39;)" class="flex-1 h-7 rounded-lg bg-[#0085db] text-white font-bold text-[11px] transition-all cursor-pointer">Todos</button>
+          <button type="button" id="m-btn-pendente" onclick="setMobileStatusFilter(&#39;pendente&#39;)" class="flex-1 h-7 rounded-lg text-[#707a82] text-[11px] transition-all cursor-pointer">A Pagar</button>
+          <button type="button" id="m-btn-pago" onclick="setMobileStatusFilter(&#39;pago&#39;)" class="flex-1 h-7 rounded-lg text-[#707a82] text-[11px] transition-all cursor-pointer">Pagos</button>
+        </div>
+
+        <button type="button" onclick="window.location.href=&#39;../recibos/Recibos.html&#39;" class="h-9 px-3 inline-flex items-center gap-1.5 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:text-[#0085db] rounded-xl shadow-xs shrink-0 cursor-pointer active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-[16px] text-[#0085db]">receipt_long</span>
+          <span>Recibos</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Paginação Compacta Acima da Semana -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl px-3.5 py-2.5 flex items-center justify-between shadow-xs">
+      <span class="text-xs text-[#707a82]">Semana <strong id="m-week-num" class="text-[#111c2d] dark:text-white">1</strong> de <strong>3</strong></span>
+      
+      <div class="flex items-center gap-1">
+        <button type="button" id="m-btn-prev" onclick="changeMobileWeek(-1)" disabled class="w-7 h-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] opacity-40 flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+        </button>
+        <button type="button" id="m-pill-1" onclick="goMobileWeek(1)" class="w-7 h-7 rounded-lg bg-[#0085db] text-white font-bold text-xs flex items-center justify-center cursor-pointer">1</button>
+        <button type="button" id="m-pill-2" onclick="goMobileWeek(2)" class="w-7 h-7 rounded-lg text-[#707a82] text-xs flex items-center justify-center cursor-pointer">2</button>
+        <button type="button" id="m-pill-3" onclick="goMobileWeek(3)" class="w-7 h-7 rounded-lg text-[#707a82] text-xs flex items-center justify-center cursor-pointer">3</button>
+        <button type="button" id="m-btn-next" onclick="changeMobileWeek(1)" class="w-7 h-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Card da Semana Atual com Lista de Cards Mobile -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] space-y-3">
+      
+      <!-- Cabeçalho da Semana -->
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px] text-[#0085db]">calendar_today</span>
+          <span class="text-xs font-bold text-[#111c2d] dark:text-white">03/11 a 09/11/2026</span>
+        </div>
+        <div class="text-right">
+          <span class="text-[9px] font-bold text-[#707a82] block uppercase">TOTAL</span>
+          <span class="text-sm font-black text-[#111c2d] dark:text-white tabular-nums">R$ 555,00</span>
+        </div>
+      </div>
+
+      <!-- Lista de Diárias em Cards Individuais no Mobile -->
+      <div id="m-diarias-list" class="space-y-2.5">
+        
+        <!-- Card Registro 1 -->
+        <div class="m-card-diaria p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-3" data-worker="JOSÉ CARLOS DE OLIVEIRA" data-status="pendente">
+          <div class="min-w-0 space-y-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] text-[#707a82]">09/11 · Seg</span>
+              <span class="m-badge-status px-2 py-0.2 rounded-full text-[9px] font-bold bg-[#f8c076]/20 text-[#d9941a]">A Pagar</span>
+            </div>
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">
+              JOSÉ CARLOS DE OLIVEIRA
+            </h4>
+            <div class="text-[11px] text-[#707a82]">
+              1.0 Diária · <strong class="text-[#111c2d] dark:text-white tabular-nums font-extrabold">R$ 195,00</strong>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="openEditarModalMobile(&#39;JOSÉ CARLOS DE OLIVEIRA&#39;, &#39;09/11/2026&#39;, &#39;1.0&#39;, 195)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">edit</span>
+            </button>
+            <button type="button" onclick="openDeleteModalMobile(this, &#39;JOSÉ CARLOS DE OLIVEIRA&#39;, &#39;09/11/2026&#39;, &#39;R$ 195,00&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card Registro 2 -->
+        <div class="m-card-diaria p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-3" data-worker="RAIMUNDO NONATO" data-status="pendente">
+          <div class="min-w-0 space-y-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] text-[#707a82]">09/11 · Seg</span>
+              <span class="m-badge-status px-2 py-0.2 rounded-full text-[9px] font-bold bg-[#f8c076]/20 text-[#d9941a]">A Pagar</span>
+            </div>
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">
+              RAIMUNDO NONATO
+            </h4>
+            <div class="text-[11px] text-[#707a82]">
+              1.0 Diária · <strong class="text-[#111c2d] dark:text-white tabular-nums font-extrabold">R$ 120,00</strong>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="openEditarModalMobile(&#39;RAIMUNDO NONATO&#39;, &#39;09/11/2026&#39;, &#39;1.0&#39;, 120)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">edit</span>
+            </button>
+            <button type="button" onclick="openDeleteModalMobile(this, &#39;RAIMUNDO NONATO&#39;, &#39;09/11/2026&#39;, &#39;R$ 120,00&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card Registro 3 -->
+        <div class="m-card-diaria p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-3" data-worker="MANOEL SILVA" data-status="pago">
+          <div class="min-w-0 space-y-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] text-[#707a82]">08/11 · Dom</span>
+              <span class="m-badge-status px-2 py-0.2 rounded-full text-[9px] font-bold bg-[#4bd08b]/15 text-[#4bd08b]">Pago</span>
+            </div>
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">
+              MANOEL SILVA
+            </h4>
+            <div class="text-[11px] text-[#707a82]">
+              1.0 Diária · <strong class="text-[#111c2d] dark:text-white tabular-nums font-extrabold">R$ 240,00</strong>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="openEditarModalMobile(&#39;MANOEL SILVA&#39;, &#39;08/11/2026&#39;, &#39;1.0&#39;, 240)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">edit</span>
+            </button>
+            <button type="button" onclick="openDeleteModalMobile(this, &#39;MANOEL SILVA&#39;, &#39;08/11/2026&#39;, &#39;R$ 240,00&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">delete</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Barra de Navegação Inferior Fixa Mobile -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-t border-[#e6ecf1] dark:border-[#333f55] h-16 flex items-center justify-around px-2 z-40">
+    <a href="../dashboard/Dashboard.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">grid_view</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Dashboard</span>
+    </a>
+
+    <a href="../despesas/Despesas.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">receipt</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Despesas</span>
+    </a>
+
+    <a href="#" class="flex flex-col items-center justify-center flex-1 py-1 text-[#0085db]">
+      <span class="material-symbols-outlined text-[24px] font-semibold">group</span>
+      <span class="text-[11px] font-bold tracking-tight mt-0.5 text-[#0085db]">Diárias</span>
+    </a>
+
+    <a href="#" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">balance</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Orçamentos</span>
+    </a>
+
+    <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.remove(&#39;hidden&#39;)" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors relative">
+      <div class="relative flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+        <span class="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#fb977d] border-2 border-white dark:border-[#111c2d]"></span>
+      </div>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Mais</span>
+    </button>
+  </nav>
+
+  <!-- Bottom Sheet Menu Mais (Módulos do Sistema) -->
+  <div id="bottom-sheet-menu" class="hidden fixed inset-0 z-50 flex flex-col justify-end">
+    <!-- Backdrop com desfoque -->
+    <div onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+
+    <!-- Gaveta / Bottom Sheet Card -->
+    <aside class="relative z-10 bg-white dark:bg-[#111c2d] rounded-t-[28px] border-t border-[#e6ecf1] dark:border-[#333f55] shadow-2xl p-5 pt-3 animate-in slide-in-from-bottom duration-200">
+      
+      <!-- Puxador (Handle bar) -->
+      <div class="w-12 h-1.5 rounded-full bg-[#dbe4ec] dark:bg-[#333f55] mx-auto mb-4"></div>
+
+      <!-- Cabeçalho do Bottom Sheet -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#f0f4f8] dark:border-[#223147] mb-4">
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#526b84] dark:text-[#8fa3ba]">
+          Módulos do Sistema
+        </h2>
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Grade com os 7 Módulos (2 colunas) -->
+      <div class="grid grid-cols-2 gap-2.5 mb-5">
+        
+        <!-- 1. Recibos -->
+        <a href="../recibos/Recibos.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[22px]">assignment_turned_in</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Recibos
+          </span>
+        </a>
+
+        <!-- 2. Materiais -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[22px]">package_2</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Materiais
+          </span>
+        </a>
+
+        <!-- 3. Produção -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[22px]">build</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Produção
+          </span>
+        </a>
+
+        <!-- 4. Cartões -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[22px]">credit_card</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Cartões
+          </span>
+        </a>
+
+        <!-- 5. Pendências (com Badge 3) -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[22px]">warning</span>
+          </div>
+          <div class="min-w-0 flex flex-col justify-center">
+            <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+              Pendências
+            </span>
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#f87171] text-white text-[10px] font-bold leading-none mt-0.5">
+              3
+            </span>
+          </div>
+        </a>
+
+        <!-- 6. Relatórios -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[22px]">description</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Relatórios
+          </span>
+        </a>
+
+        <!-- 7. Permissões -->
+        <a href="../usuarios/Central-Permissoes.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[22px]">verified_user</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Permissões
+          </span>
+        </a>
+
+      </div>
+
+      <!-- Linha Inferior: Sair & Fechar -->
+      <div class="pt-3 border-t border-[#f0f4f8] dark:border-[#223147] flex items-center justify-between">
+        <button type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#fb977d] hover:text-[#fa7a58] transition-colors">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span>Sair</span>
+        </button>
+
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="h-10 px-6 inline-flex items-center justify-center rounded-xl bg-[#0085db] hover:bg-[#0074bf] text-white text-sm font-bold shadow-sm transition-colors active:scale-95">
+          Fechar
+        </button>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- MODAIS MOBILE INTEGRADOS -->
+
+  <!-- 1. Modal: Lançar Diária Mobile -->
+  <div id="modal-diaria" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeDiariaModal()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="px-5 py-4 border-b border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-bold text-[#111c2d] dark:text-white">Lançar Diária</h2>
+          <p class="text-[10px] text-[#707a82]">Registre o dia trabalhado.</p>
+        </div>
+        <button type="button" onclick="closeDiariaModal()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveDiariaMobile(event)" class="p-4 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">Trabalhador *</label>
+          <select id="modal-select-worker" onchange="handleSelectWorkerChange(this.value)" required class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-medium">
+            <option value="JOSÉ CARLOS DE OLIVEIRA" data-base="195">José Carlos de Oliveira (R$ 195,00)</option>
+            <option value="RAIMUNDO NONATO" data-base="120">Raimundo Nonato (R$ 120,00)</option>
+            <option value="MANOEL SILVA" data-base="190">Manoel Silva (R$ 190,00)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">Data</label>
+            <input type="date" id="modal-diaria-date" value="2026-11-09" required class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">Fração</label>
+            <select id="modal-diaria-fracao" onchange="recalcTotalMobile()" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+              <option value="1.0">1.0 (Integral)</option>
+              <option value="0.5">0.5 (Meio)</option>
+              <option value="1.5">1.5 (Diária e Meia)</option>
+              <option value="2.0">2.0 (Dupla)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-3 bg-[#f6f9fc] dark:bg-[#1a2535] rounded-xl text-xs flex justify-between items-center border border-[#e6ecf1] dark:border-[#333f55]">
+          <span class="text-[#707a82]">Total calculado:</span>
+          <span id="modal-diaria-total-val" class="text-sm font-extrabold text-[#0085db] tabular-nums">R$ 195,00</span>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeDiariaModal()" class="px-3 py-1.5 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] rounded-xl">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs">Salvar Diária</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Modal: Novo Trabalhador Mobile -->
+  <div id="modal-worker" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeTrabModal()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="px-5 py-4 border-b border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-bold text-[#111c2d] dark:text-white">Novo Trabalhador</h2>
+          <p class="text-[10px] text-[#707a82]">Cadastre na equipe de obra.</p>
+        </div>
+        <button type="button" onclick="closeTrabModal()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveTrabMobile(event)" class="p-4 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">Nome Completo *</label>
+          <input type="text" id="modal-trab-nome" required placeholder="Ex: Carlos Andrade" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">Função</label>
+            <select id="modal-trab-funcao" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+              <option value="Pedreiro">Pedreiro</option>
+              <option value="Ajudante">Ajudante</option>
+              <option value="Carpinteiro">Carpinteiro</option>
+              <option value="Eletricista">Eletricista</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">Valor Diária (R$)</label>
+            <input type="number" id="modal-trab-valor" value="180" min="0" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-bold">
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeTrabModal()" class="px-3 py-1.5 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] rounded-xl">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs">Cadastrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Modal: Editar Diária Mobile -->
+  <div id="modal-edit" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeEditModalMobile()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-5 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div>
+          <h2 class="text-sm font-bold text-[#111c2d] dark:text-white">Editar Diária</h2>
+          <p class="text-[10px] text-[#707a82]" id="edit-worker-subtitle">Ajuste os dados do apontamento</p>
+        </div>
+        <button type="button" onclick="closeEditModalMobile()" class="w-8 h-8 rounded-full text-[#707a82] flex items-center justify-center">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveEditMobile(event)" class="py-3 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">Status</label>
+          <select id="edit-status-select" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold">
+            <option value="pendente">A Pagar (Pendente)</option>
+            <option value="pago">Pago (Quitado)</option>
+          </select>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeEditModalMobile()" class="px-3 py-1.5 text-xs font-semibold text-[#707a82]">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-bold text-white bg-[#0085db] rounded-xl shadow-xs">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Modal: Excluir Diária Mobile -->
+  <div id="modal-delete" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeDeleteModalMobile()"></div>
+    <div class="relative z-50 w-full max-w-xs bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-5 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center gap-2.5 pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[18px]">delete_forever</span>
+        </div>
+        <div>
+          <h2 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">Excluir Diária</h2>
+          <p class="text-[10px] text-[#707a82]">Ação irreversível</p>
+        </div>
+      </div>
+
+      <div class="py-3 space-y-2">
+        <p class="text-xs text-[#707a82]">
+          Deseja remover o lançamento de <strong id="m-del-worker-name" class="text-[#111c2d] dark:text-white uppercase">JOSÉ CARLOS</strong>?
+        </p>
+        <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs flex justify-between">
+          <span id="m-del-date" class="text-[#707a82]">09/11/2026</span>
+          <span id="m-del-val" class="font-extrabold text-[#111c2d] dark:text-white">R$ 195,00</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" onclick="closeDeleteModalMobile()" class="px-3 py-1.5 text-xs font-semibold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmDeleteMobile()" class="px-4 py-1.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificação Compacta Flutuante Mobile -->
+  <div id="m-toast" class="hidden fixed bottom-20 right-4 left-4 z-50 animate-in slide-in-from-bottom-2 fade-in">
+    <div class="inline-flex w-full items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#111c2d] text-white shadow-xl border border-zinc-700">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="material-symbols-outlined text-[16px] text-[#4bd08b] shrink-0">check_circle</span>
+        <span id="m-toast-text" class="text-xs font-semibold truncate">Ação realizada com sucesso</span>
+      </div>
+      <button onclick="hideMobileToast()" class="text-zinc-400 p-1 cursor-pointer">
+        <span class="material-symbols-outlined text-[14px]">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS MOBILE -->
+  <script>
+    let activeMobileStatus = 'todos';
+    let currentMobileWeek = 1;
+    let cardPendingDelete = null;
+    let cardPendingEdit = null;
+
+    function showMobileToast(msg) {
+      const toast = document.getElementById('m-toast');
+      document.getElementById('m-toast-text').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+    }
+    function hideMobileToast() {
+      document.getElementById('m-toast').classList.add('hidden');
+    }
+
+    // Modais
+    function openDiariaModal() { document.getElementById('modal-diaria').classList.remove('hidden'); }
+    function closeDiariaModal() { document.getElementById('modal-diaria').classList.add('hidden'); }
+
+    function openTrabModal() { document.getElementById('modal-worker').classList.remove('hidden'); }
+    function closeTrabModal() { document.getElementById('modal-worker').classList.add('hidden'); }
+
+    function recalcTotalMobile() {
+      const sel = document.getElementById('modal-select-worker');
+      const base = parseFloat(sel.options[sel.selectedIndex].getAttribute('data-base')) || 180;
+      const fracao = parseFloat(document.getElementById('modal-diaria-fracao').value) || 1.0;
+      const total = base * fracao;
+      document.getElementById('modal-diaria-total-val').innerText = 
+        new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
+    }
+    function handleSelectWorkerChange() { recalcTotalMobile(); }
+
+    function handleSaveDiariaMobile(e) {
+      e.preventDefault();
+      const sel = document.getElementById('modal-select-worker');
+      const workerName = sel.value;
+      const date = document.getElementById('modal-diaria-date').value;
+      const fracao = document.getElementById('modal-diaria-fracao').value;
+      const base = parseFloat(sel.options[sel.selectedIndex].getAttribute('data-base')) || 180;
+      const total = base * parseFloat(fracao);
+      const totalFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
+
+      const list = document.getElementById('m-diarias-list');
+      const newCard = document.createElement('div');
+      newCard.className = "m-card-diaria p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-3 animate-in fade-in";
+      newCard.setAttribute('data-worker', workerName);
+      newCard.setAttribute('data-status', 'pendente');
+      newCard.innerHTML = `
+        <div class="min-w-0 space-y-1">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] text-[#707a82]">09/11 · Seg</span>
+            <span class="m-badge-status px-2 py-0.2 rounded-full text-[9px] font-bold bg-[#f8c076]/20 text-[#d9941a]">A Pagar</span>
+          </div>
+          <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">${workerName}</h4>
+          <div class="text-[11px] text-[#707a82]">${fracao} Diária · <strong class="text-[#111c2d] dark:text-white tabular-nums font-extrabold">${totalFormatted}</strong></div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" onclick="openEditarModalMobile('${workerName}', '09/11/2026', '${fracao}', ${total})" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[16px]">edit</span>
+          </button>
+          <button type="button" onclick="openDeleteModalMobile(this, '${workerName}', '09/11/2026', '${totalFormatted}')" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-rose-500 hover:bg-rose-50 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[16px]">delete</span>
+          </button>
+        </div>
+      `;
+      list.prepend(newCard);
+      closeDiariaModal();
+      showMobileToast(`Diária de ${workerName} salva com sucesso`);
+    }
+
+    function handleSaveTrabMobile(e) {
+      e.preventDefault();
+      const nome = document.getElementById('modal-trab-nome').value.trim();
+      const funcao = document.getElementById('modal-trab-funcao').value;
+      const valor = parseFloat(document.getElementById('modal-trab-valor').value) || 180;
+
+      const opt = document.createElement('option');
+      opt.value = nome.toUpperCase();
+      opt.setAttribute('data-base', valor);
+      opt.innerText = `${nome} (${funcao} · R$ ${valor})`;
+      document.getElementById('modal-select-worker').appendChild(opt);
+
+      const filterOpt = document.createElement('option');
+      filterOpt.value = nome.toUpperCase();
+      filterOpt.innerText = `${nome} (${funcao})`;
+      document.getElementById('mobile-filter-worker').appendChild(filterOpt);
+
+      closeTrabModal();
+      showMobileToast(`Trabalhador ${nome} cadastrado`);
+    }
+
+    // Edição e Exclusão Mobile
+    function openEditarModalMobile(worker, date, fracao, total) {
+      cardPendingEdit = event.target.closest('.m-card-diaria');
+      document.getElementById('edit-worker-subtitle').innerText = `${worker} · ${date}`;
+      document.getElementById('modal-edit').classList.remove('hidden');
+    }
+    function closeEditModalMobile() {
+      document.getElementById('modal-edit').classList.add('hidden');
+      cardPendingEdit = null;
+    }
+    function handleSaveEditMobile(e) {
+      e.preventDefault();
+      if (cardPendingEdit) {
+        const newStatus = document.getElementById('edit-status-select').value;
+        cardPendingEdit.setAttribute('data-status', newStatus);
+        const badge = cardPendingEdit.querySelector('.m-badge-status');
+        if (newStatus === 'pago') {
+          badge.className = "m-badge-status px-2 py-0.2 rounded-full text-[9px] font-bold bg-[#4bd08b]/15 text-[#4bd08b]";
+          badge.innerText = "Pago";
+        } else {
+          badge.className = "m-badge-status px-2 py-0.2 rounded-full text-[9px] font-bold bg-[#f8c076]/20 text-[#d9941a]";
+          badge.innerText = "A Pagar";
+        }
+        applyMobileFilters();
+        showMobileToast('Diária atualizada com sucesso');
+      }
+      closeEditModalMobile();
+    }
+
+    function openDeleteModalMobile(btn, worker, date, val) {
+      cardPendingDelete = btn.closest('.m-card-diaria');
+      document.getElementById('m-del-worker-name').innerText = worker;
+      document.getElementById('m-del-date').innerText = date;
+      document.getElementById('m-del-val').innerText = val;
+      document.getElementById('modal-delete').classList.remove('hidden');
+    }
+    function closeDeleteModalMobile() {
+      document.getElementById('modal-delete').classList.add('hidden');
+      cardPendingDelete = null;
+    }
+    function confirmDeleteMobile() {
+      if (cardPendingDelete) {
+        cardPendingDelete.remove();
+        showMobileToast('Diária excluída com sucesso');
+      }
+      closeDeleteModalMobile();
+    }
+
+    // Filtros Rápidos
+    function setMobileStatusFilter(status) {
+      activeMobileStatus = status;
+      const bTodos = document.getElementById('m-btn-todos');
+      const bPendente = document.getElementById('m-btn-pendente');
+      const bPago = document.getElementById('m-btn-pago');
+
+      [bTodos, bPendente, bPago].forEach(b => {
+        b.className = "flex-1 h-7 rounded-lg text-[#707a82] text-[11px] transition-all cursor-pointer";
+      });
+
+      if (status === 'todos') {
+        bTodos.className = "flex-1 h-7 rounded-lg bg-[#0085db] text-white font-bold text-[11px] transition-all cursor-pointer";
+      } else if (status === 'pendente') {
+        bPendente.className = "flex-1 h-7 rounded-lg bg-[#f8c076]/30 text-[#d9941a] font-bold text-[11px] transition-all cursor-pointer";
+      } else if (status === 'pago') {
+        bPago.className = "flex-1 h-7 rounded-lg bg-[#4bd08b]/20 text-[#4bd08b] font-bold text-[11px] transition-all cursor-pointer";
+      }
+      applyMobileFilters();
+    }
+
+    function applyMobileFilters() {
+      const selectedWorker = document.getElementById('mobile-filter-worker').value;
+      const cards = document.querySelectorAll('.m-card-diaria');
+
+      cards.forEach(card => {
+        const worker = card.getAttribute('data-worker');
+        const status = card.getAttribute('data-status');
+
+        const matchWorker = selectedWorker === 'todos' || worker === selectedWorker;
+        const matchStatus = activeMobileStatus === 'todos' || status === activeMobileStatus;
+
+        card.style.display = (matchWorker && matchStatus) ? '' : 'none';
+      });
+    }
+
+    // Paginação Semanal
+    function goMobileWeek(week) {
+      if (week < 1 || week > 3) return;
+      currentMobileWeek = week;
+      document.getElementById('m-week-num').innerText = week;
+
+      document.getElementById('m-btn-prev').disabled = week === 1;
+      document.getElementById('m-btn-next').disabled = week === 3;
+
+      for (let i = 1; i <= 3; i++) {
+        const p = document.getElementById(`m-pill-${i}`);
+        if (i === week) {
+          p.className = "w-7 h-7 rounded-lg bg-[#0085db] text-white font-bold text-xs flex items-center justify-center cursor-pointer";
+        } else {
+          p.className = "w-7 h-7 rounded-lg text-[#707a82] text-xs flex items-center justify-center cursor-pointer";
+        }
+      }
+      showMobileToast(`Exibindo Semana ${week} de 3`);
+    }
+    function changeMobileWeek(delta) { goMobileWeek(currentMobileWeek + delta); }
+  </script>
+
+
+
+</body></html>

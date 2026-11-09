@@ -1,90 +1,84 @@
-# Reprodução do Modal de Pré-Visualização A4 no Botão "Imprimir" de Recibos
+# Paginação da Página de Diárias (Mão de Obra)
 
-Implementar a abertura de um modal de pré-visualização em tela cheia formato A4 para o botão de ação **"Imprimir"** na tela de Recibos, reproduzindo com fidelidade a experiência, controles de zoom e fluxo de impressão do modal de relatórios (`RelatorioPreviewModal`).
+Implementação de paginação semana a semana na tela de Mão de Obra & Diárias com tabela unificada e rodapé de controle idêntico ao padrão da tela de Relatórios Financeiros, reduzindo a altura da página e mantendo todas as funcionalidades existentes de pagamento e exclusão.
 
----
-
-## Decisões Confirmadas pelo Usuário
+## User Review & Critical Decisions
 
 > [!IMPORTANT]
-> **Decisão Confirmada:** Ao clicar no botão **"Imprimir"** da barra de ferramentas do recibo em `RecibosView.tsx`, a aplicação abrirá um modal de pré-visualização em tela cheia do **próprio Recibo A4** (contendo a 1ª via de Contabilidade e a 2ª via do Beneficiário), com controles de zoom e botão de impressão nativa, em vez de disparar a caixa do navegador imediatamente.
+> Decisões alinhadas com o usuário via entrevista inicial:
+> - **Granularidade da Paginação**: 1 semana por página (`Paginar cada semana individualmente`).
+> - **Estrutura Visual**: Tabela unificada em container único com rodapé de paginação no padrão da tela de Relatórios, eliminando a rolagem vertical excessiva gerada pela repetição de vários cartões empilhados.
+
+- **Seleção de Período Semanal**: Cada página corresponde a uma semana ativa do projeto (ordenadas da mais recente para a mais antiga).
+- **Ações Preservadas**: Botão de lote "Pagar Semana" para trabalhadores com pendências na semana ativa, botões individuais de marcação de pagamento e modal de exclusão.
+- **Filtros Preservados**: Filtro por trabalhador e abas de status ("Todos", "A Pagar", "Pagos") operam em sincronia com a paginação.
 
 ---
 
-## 1. Visão Geral e Conceito Central
+### 1. Overview & Core Concept
 
-- **O que faz:** Transforma a ação do botão "Imprimir" do recibo em uma experiência rica de conferência antes da impressão física. O usuário visualiza o recibo completo de 2 vias em escala real A4, pode aplicar zoom ou ajustar à tela, e confirmar a impressão nativa ou download.
-- **Público e Contexto:** Gestores de obra, administradores e operadores responsáveis pelo acerto de contas com trabalhadores no canteiro.
-- **Valor Agregado:** Elimina impressões acidentais ou com corte incorreto, garante visualização antecipada idêntica ao que sairá no papel ou no PDF e unifica o padrão de UX do sistema com a tela de Relatórios.
-
----
-
-## 2. Experiência do Usuário e Design Visual
-
-### Fluxo de Interação
-1. O usuário gera ou seleciona um recibo na tela de **Recibos**.
-2. Na barra de ferramentas do recibo, clica no botão primário **"Imprimir"** (`button:nth-of-type(3)`).
-3. Em vez de disparar a janela de impressão diretamente, abre-se o modal em tela cheia (`ReciboPreviewModal`):
-   - **Backdrop:** Fundo escurecido translúcido (`bg-black/85 backdrop-blur-xs`).
-   - **Barra Superior (Header):**
-     - Identificação: Ícone, número do recibo (`REC-...`), nome do recebedor e nome da obra.
-     - Indicador central: Tag "Recibo A4 · 2 Vias (Contabilidade + Beneficiário)".
-     - Ações no canto direito:
-       - Botão primário **"Imprimir"** (que aciona `triggerReciboInPagePrint` / impressão nativa).
-       - Botão circular de fechar modal (`X` ou tecla `Esc`).
-   - **Área Central (Viewport de Pré-visualização):**
-     - Folha A4 centralizada com sombra realista (`0 10px 25px rgba(0, 0, 0, 0.22)`).
-     - Renderização de alta fidelidade: 1ª Via (Contabilidade/Pagador), linha de corte tracejada com tesoura central e 2ª Via (Trabalhador/Beneficiário).
-   - **Barra Flutuante de Zoom (Inferior Direita):**
-     - Botões Zoom Out (`-`), porcentagem atual (`85%`, `100%`), Zoom In (`+`) e Ajustar à Tela (Fit Screen).
-
-### Padrão Visual (Design System)
-- **Cores:** Fundo dark `#111c2d`, acento `#0085db` (hover `#0071ba`), bordas `#333f55`.
-- **Tipografia:** `Plus Jakarta Sans` para UI e textos contratuais; `JetBrains Mono` para identificadores numéricos.
-- **Bordas e Sombras:** `--radius-spike` (18px) para containers e 12px para controles de ação.
+- **O que faz**: Transforma a visualização da tela de diárias — que atualmente empilhava múltiplos cartões de semanas completas numa página longa — em um painel unificado com paginação estilo relatório (`< 1 2 3 ... 6 >` e `Semana X de Y · [data início] a [data fim]`).
+- **Público-alvo**: Gestor da obra e administradores financeiros acompanhando diárias semanais com agilidade.
+- **Valor agregado**: Navegação direta entre semanas sem rolagem excessiva, alinhando a experiência com o grid de alta densidade da tela de relatórios.
 
 ---
 
-## 3. Decisões Técnicas e Arquitetura
+### 2. User Experience & Visual Design
+
+- **Hierarquia Visual**:
+  1. **Cabeçalho de Página**: Título "Mão de Obra & Diárias", subtítulo descritivo e botões de ação ("Novo Trabalhador" e "Lançar Diária"). *Preservado intacto*.
+  2. **Card de Teto Fechado (R$ 32.000,00)**: Resumo consolidado do teto, total pago, pendente e saldo disponível com barra de progresso proporcional. *Preservado intacto*.
+  3. **Barra de Filtros & Ações**: Select de trabalhadores, segmented control ("Todos", "A Pagar", "Pagos") e botão para Gerador de Recibos. *Preservado intacto*.
+  4. **Container da Tabela Unificada (Estilo Relatório)**:
+     - Header da Semana com título da semana ativa (`Semana: 19/10/2026 a 25/10/2026`), contagem de diárias registradas, total financeiro da semana e botões de lote "Pagar Semana".
+     - Tabela limpa com altura padronizada (`53px` por linha), alinhamentos tipográficos rigorosos e tabular figures (`tabular-nums`).
+     - Rodapé com componente de paginação completo: contador textual (`Semana 1 de 6 · 12 registros nesta semana`), setas de navegação (`ChevronLeft` / `ChevronRight`) e botões numéricos com ellipsis inteligente (`1`, `2`, `3`, `...`, `6`).
+
+- **Cores & Tokens (Design System)**:
+  - Fundo do card: `bg-white dark:bg-[#111c2d]`
+  - Borda: `border-[#e6ecf1] dark:border-[#333f55]`
+  - Botão de página ativo: `bg-[#0085db]/15 text-[#0085db] border-[#0085db]/30 dark:bg-[#0085db]/30 dark:text-white`
+  - Botões inativos: `border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#162232]`
+
+---
+
+### 3. Key Product Decisions & Trade-Offs
+
+- **Decisão 1: Paginação por Semanas em Tabela Unificada**
+  - *Abordagem*: Cada página corresponde a uma semana de trabalho (`currentWeekIndex`), exibindo a tabela da respectiva semana com totalizador e lote de pagamento integrados.
+  - *Motivo*: Respeita a lógica de negócio da construção civil (fechamento e quitação semanal de segunda a domingo) e atende exatamente à solicitação de ter a paginação idêntica ao relatório sem esticar a página.
+
+- **Decisão 2: Preservação Estrita do Escopo**
+  - *Abordagem*: Alterações restritas a `src/components/maodeobra/MaoDeObraView.tsx`.
+  - *Motivo*: Cumprimento rigoroso das regras de escopo inegociáveis. Nenhuma outra tela ou componente externo será tocado.
+
+---
+
+### 4. Technical Architecture & Component Mapping
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                       RecibosView                           │
-│  [Dados do Recibo]  │  [Barra de Ferramentas: Imprimir]     │
-└─────────────────────────────────┬───────────────────────────┘
-                                  │ onClick
-                                  ▼
-                     setIsPreviewModalOpen(true)
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    ReciboPreviewModal                       │
-│ ┌─────────────────────────────────────────────────────────┐ │
-│ │ Header: [Obra/Recibo]    [2 Vias A4]    [Imprimir] [X]  │ │
-│ ├─────────────────────────────────────────────────────────┤ │
-│ │ Viewport:                                               │ │
-│ │   ┌───────────────────────────────────────────────────┐ │ │
-│ │   │ Folha A4 em Escala (transform: scale(zoom))       │ │ │
-│ │   │  • 1ª Via (Contabilidade / Pagador)               │ │ │
-│ │   │  - - - - - Linha de Corte Central - - - - -       │ │ │
-│ │   │  • 2ª Via (Trabalhador / Beneficiário)            │ │ │
-│ │   └───────────────────────────────────────────────────┘ │ │
-│ ├─────────────────────────────────────────────────────────┤ │
-│ │ Barra Flutuante de Zoom: [-] [85%] [+] [Ajustar à tela] │ │
-│ └─────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────┬───────────────────────────┘
-                                  │ Clique "Imprimir"
-                                  ▼
-                     triggerReciboInPagePrint()
+┌────────────────────────────────────────────────────────────────────────┐
+│ MaoDeObraView.tsx                                                      │
+│                                                                        │
+│ ┌────────────────────────────────────────────────────────────────────┐ │
+│ │ Header (Título, "Novo Trabalhador", "Lançar Diária")                │ │
+│ └────────────────────────────────────────────────────────────────────┘ │
+│ ┌────────────────────────────────────────────────────────────────────┐ │
+│ │ Teto Fechado Tracker (R$ 32.000,00)                                │ │
+│ └────────────────────────────────────────────────────────────────────┘ │
+│ ┌────────────────────────────────────────────────────────────────────┐ │
+│ │ Barra de Filtros (Trabalhador, Status, Link Recibos)                │ │
+│ └────────────────────────────────────────────────────────────────────┘ │
+│ ┌────────────────────────────────────────────────────────────────────┐ │
+│ │ Container Unificado (Paginado)                                     │ │
+│ │ ├─ Header da Semana Ativa + Total + Botões "Pagar Semana"          │ │
+│ │ ├─ Tabela de Diárias (53px row-height, tabular-nums)               │ │
+│ │ └─ Rodapé de Paginação (Estilo RelatóriosView)                     │ │
+│ │    [ "Semana 1 de 6" ] ────────────── [ < ] [ 1 ] [ 2 ] ... [ > ]  │ │
+│ └────────────────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Novo Componente:** `src/components/recibos/ReciboPreviewModal.tsx`
-  - Reutiliza a mesma estrutura testada e segura de viewport, zoom e teclas de atalho de `RelatorioPreviewModal.tsx`.
-  - Encapsula a renderização das 2 vias e a comunicação com o serviço de impressão.
-- **Modificação em `RecibosView.tsx`:**
-  - Adiciona o estado `const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);`.
-  - Atualiza o clique do botão alvo (`button:nth-of-type(3)`) para acionar `setIsPreviewModalOpen(true)`.
-  - Renderiza o `<ReciboPreviewModal />` no final da view passando `previewRecibo` e `activeObra`.
-- **Isolamento de Escopo:**
-  - Nenhuma outra tela ou componente do sistema é modificado.
-  - A geração de recibo, dados e histórico de pagamentos permanecem idênticos.
+### Arquivos Envolvidos
+- **Modificado**: `src/components/maodeobra/MaoDeObraView.tsx`
+- **Não alterados**: Todas as outras telas, componentes globais, contextos e dados.

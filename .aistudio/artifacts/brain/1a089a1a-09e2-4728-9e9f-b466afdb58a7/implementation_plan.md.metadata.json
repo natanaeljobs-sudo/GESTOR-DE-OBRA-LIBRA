@@ -1,6 +1,6 @@
 {
-  "summary":  "Plano de implementação para reproduzir o comportamento de pré-visualização A4 no botão Imprimir da tela de Recibos, criando o componente ReciboPreviewModal e conectando o fluxo de visualização e impressão nativa.",
-  "updatedAt":  "2026-11-09T13:47:55.594741626Z",
+  "summary":  "Plano de implementação para a paginação da tela de Mão de Obra & Diárias, estruturando os lançamentos em tabela unificada com controle de navegação semana a semana idêntico ao modelo da página de relatórios.",
+  "updatedAt":  "2026-11-09T14:04:54.234128279Z",
   "requestFeedback":  true,
   "userFacing":  true
 }
