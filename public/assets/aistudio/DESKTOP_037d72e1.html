@@ -1,0 +1,1235 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mão de Obra &amp; Diárias — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[1024px] font-body antialiased flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Header Superior Oficial -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-16 shrink-0 flex items-center justify-between px-6">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-transparent hover:border-[#e6ecf1] dark:hover:border-[#333f55] transition-all cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+          N
+        </div>
+        <div class="text-left">
+          <span class="block text-xs font-bold text-[#111c2d] dark:text-white leading-tight uppercase">NATANAEL</span>
+          <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac] leading-none">Master</span>
+        </div>
+        <span class="material-symbols-outlined text-[16px] text-[#707a82]">expand_more</span>
+      </div>
+
+      <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer ml-1" aria-label="Alternar tema">
+        <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+      </button>
+
+      <button type="button" class="relative w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer" aria-label="3 notificações">
+        <span class="material-symbols-outlined text-[18px]">notifications</span>
+        <span class="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#fb977d] text-white text-[9px] font-bold flex items-center justify-center">3</span>
+      </button>
+    </div>
+
+    <!-- Seletor de Canteiro Ativo -->
+    
+  </header>
+
+  <!-- Área de Trabalho: Sidebar + Conteúdo Principal -->
+  <div class="flex flex-1 min-h-[calc(1024px-4rem)]" data-stitch-vh="min-h-[calc(1024px-4rem)]===min-h-[calc(100vh-4rem)]">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="hidden lg:flex flex-col w-[265px] shrink-0 bg-white dark:bg-[#111c2d] border-r border-[#e6ecf1] dark:border-[#333f55] p-4 justify-between sticky top-16 h-[calc(1024px-4rem)] overflow-y-auto" data-stitch-vh="h-[calc(1024px-4rem)]===h-[calc(100vh-4rem)]">
+      <div class="space-y-4">
+        
+        <div class="pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="w-full flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white border border-[#e6ecf1] dark:border-[#333f55]">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">apartment</span>
+              </div>
+              <div class="text-left min-w-0">
+                <span class="block text-xs font-bold text-[#111c2d] dark:text-white truncate uppercase">OBRA JUSCELINO MOLA</span>
+                <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac] uppercase font-semibold">Canteiro Ativo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="space-y-1">
+          <!-- Diárias Ativa -->
+          <a href="#" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-[18px]">group</span>
+              <span>Diárias</span>
+            </div>
+          </a>
+        </nav>
+      </div>
+
+      <div class="pt-4 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#fb977d] hover:bg-[#fb977d]/10 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span class>Sair</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Conteúdo Principal Exatamente do Componente MaoDeObraView.tsx -->
+    <main class="flex-1 p-6 lg:p-8 space-y-6 overflow-y-auto pb-20 lg:pb-8 animate-in fade-in duration-150">
+
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white">
+            Diárias
+          </h1>
+          <p class="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+            Controle semanal e pagamentos de mão de obra.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <button type="button" onclick="openTrabModal()" class="inline-flex items-center justify-center gap-2 h-10 px-4 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#0085db] rounded-xl transition-all shadow-xs cursor-pointer active:scale-95">
+            <span class="material-symbols-outlined text-[18px] text-[#0085db]">person_add</span>
+            <span class="leading-none">Novo Trabalhador</span>
+          </button>
+          <button type="button" onclick="openDiariaModal()" class="inline-flex items-center justify-center gap-2 h-10 px-5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span class="leading-none">Lançar Diária</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Ceiling Tracker Bar (R$ 32.000,00) -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <div>
+            <span class="text-xs font-bold text-[#0085db] uppercase tracking-wider">
+              Controle do Teto Fechado de Mão de Obra
+            </span>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span id="stat-total-maodeobra" class="text-2xl sm:text-3xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
+                R$ 13.450,00
+              </span>
+              <span class="text-xs text-[#707a82]">
+                de <strong class="text-[#111c2d] dark:text-white tabular-nums">R$ 32.000,00</strong>
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 text-xs">
+            <div class="text-center">
+              <span class="text-[#707a82] dark:text-[#7c8fac] block text-[10px] font-bold uppercase tracking-wider">TOTAL PAGO</span>
+              <span id="stat-total-pago" class="font-bold text-[#4bd08b] text-sm tabular-nums block">
+                R$ 12.120,00
+              </span>
+            </div>
+            <div class="border-l border-[#e6ecf1] dark:border-[#333f55] pl-4 text-center">
+              <span class="text-[#707a82] dark:text-[#7c8fac] block text-[10px] font-bold uppercase tracking-wider">A PAGAR (PENDENTE)</span>
+              <span id="stat-total-pendente" class="font-bold text-[#f8c076] text-sm tabular-nums block">
+                R$ 1.330,00
+              </span>
+            </div>
+            <div class="border-l border-[#e6ecf1] dark:border-[#333f55] pl-4 text-center">
+              <span class="text-[#707a82] dark:text-[#7c8fac] block text-[10px] font-bold uppercase tracking-wider">SALDO DISPONÍVEL</span>
+              <span id="stat-saldo-teto" class="font-bold text-[#111c2d] dark:text-white text-sm tabular-nums block">
+                R$ 18.550,00
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mt-4">
+          <div class="w-full bg-[#f0f5f9] dark:bg-[#15263a] rounded-full h-3 overflow-hidden flex">
+            <div id="progress-pago" class="bg-[#4bd08b] h-3 transition-all duration-300" style="width: 37.8%" title="Pago: R$ 12.120,00"></div>
+            <div id="progress-pendente" class="bg-[#f8c076] h-3 transition-all duration-300" style="width: 4.2%" title="A Pagar: R$ 1.330,00"></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-2">
+            <span id="progress-percent" class="font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">42% DO TETO UTILIZADO</span>
+            <span class="font-bold text-[#4bd08b] uppercase tracking-wider" id="progress-restante">
+              SALDO DISPONÍVEL: R$ 18.550,00
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workers Filter & Status Filter Bar -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div class="flex items-center gap-3 w-full sm:w-auto flex-wrap">
+          <select id="filter-worker-select" onchange="applyFilters()" class="h-10 px-3.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer focus:ring-2 focus:ring-[#0085db]/40">
+            <option value="todos">Todos os Trabalhadores (4)</option>
+            <option value="trab-1">José Carlos de Oliveira (Pedreiro · R$ 195,00)</option>
+            <option value="trab-2">Raimundo Nonato (Ajudante · R$ 120,00)</option>
+            <option value="trab-3">Manoel Silva (Carpinteiro · R$ 190,00)</option>
+            <option value="trab-4">Antonio Pereira (Eletricista · R$ 220,00)</option>
+          </select>
+
+          <div class="flex items-center h-10 p-1 bg-[#f0f5f9] dark:bg-[#15263a] rounded-xl text-xs">
+            <button type="button" id="filter-btn-todos" onclick="setStatusFilter(&#39;todos&#39;)" class="h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs leading-none">
+              Todos
+            </button>
+            <button type="button" id="filter-btn-pendente" onclick="setStatusFilter(&#39;pendente&#39;)" class="h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer text-[#707a82] leading-none">
+              A Pagar
+            </button>
+            <button type="button" id="filter-btn-pago" onclick="setStatusFilter(&#39;pago&#39;)" class="h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer text-[#707a82] leading-none">
+              Pagos
+            </button>
+          </div>
+        </div>
+
+        <button type="button" onclick="window.location.href=&#39;../recibos/Recibos.html&#39;" class="w-full sm:w-auto h-10 inline-flex items-center justify-center gap-2 px-4 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#0085db] rounded-xl transition-all shadow-xs cursor-pointer active:scale-95 shrink-0">
+          <span class="material-symbols-outlined text-[18px] text-[#0085db]">receipt_long</span>
+          <span class="leading-none">Gerar recibo</span>
+        </button>
+      </div>
+
+      <!-- Barra de Paginação Semanal Alinhada ao Design System (Até 5 páginas visíveis com transição deslizante) -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+        <div class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+          Semana <strong id="pagination-current-text" class="text-[#111c2d] dark:text-white">1</strong> de <strong id="pagination-total-text" class="text-[#111c2d] dark:text-white">8</strong>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button type="button" id="btn-prev-page" onclick="changeWeekPage(-1)" disabled title="Semana Anterior" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+          </button>
+
+          <!-- Janela visível de 5 pílulas com transição suave -->
+          <div id="pagination-window-container" class="flex items-center gap-1 px-1 transition-all duration-300">
+            <button type="button" data-page="1" onclick="goToWeekPage(1)" class="w-8 h-8 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-xs transition-all duration-200 cursor-pointer transform scale-105">1</button>
+            <button type="button" data-page="2" onclick="goToWeekPage(2)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer">2</button>
+            <button type="button" data-page="3" onclick="goToWeekPage(3)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer">3</button>
+            <button type="button" data-page="4" onclick="goToWeekPage(4)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer">4</button>
+            <button type="button" data-page="5" onclick="goToWeekPage(5)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer">5</button>
+            <span class="text-[#707a82] text-xs px-0.5 select-none">···</span>
+          </div>
+
+          <button type="button" id="btn-next-page" onclick="changeWeekPage(1)" title="Semana Seguinte" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Weekly Accordions / Groups -->
+      <div class="space-y-6" id="weeks-container">
+        
+        <!-- Semana 1: Atual -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4 week-block">
+          <!-- Week Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-[#0085db]">calendar_today</span>
+              <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white">
+                Semana: 03/11 a 09/11/2026
+              </h2>
+            </div>
+
+            <div class="text-center sm:text-right">
+              <span class="text-[#707a82] dark:text-[#7c8fac] block text-[11px] font-bold uppercase tracking-wider">TOTAL DA SEMANA</span>
+              <span class="text-base sm:text-lg font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight">
+                R$ 555,00
+              </span>
+            </div>
+          </div>
+
+          <!-- Day by Day Log Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] font-bold text-[11px] uppercase tracking-wider">
+                  <th class="pb-3">Data / Dia</th>
+                  <th class="pb-3">Trabalhador</th>
+                  <th class="pb-3">Fração</th>
+                  <th class="pb-3">Valor Diária</th>
+                  <th class="pb-3 text-right">Valor Total</th>
+                  <th class="pb-3 text-center">Status</th>
+                  <th class="pb-3 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#e6ecf1] dark:divide-[#333f55]" id="diarias-tbody-w1">
+                
+                <!-- Registro 1 -->
+                <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] diaria-row" data-worker-id="trab-1" data-status="pendente">
+                  <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                    <span class>09/11/2026</span>
+                    <span class="block text-[10px] text-[#707a82]">Segunda-feira</span>
+                  </td>
+                  <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">
+                    José Carlos de Oliveira
+                  </td>
+                  <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                    1.0 (Integral)
+                  </td>
+                  <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                    R$ 195,00
+                  </td>
+                  <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 195,00
+                  </td>
+                  <td class="py-3 text-center">
+                    <span class="status-badge inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076]">
+                      <span class="material-symbols-outlined text-[12px]">schedule</span>
+                      <span class>A Pagar</span>
+                    </span>
+                  </td>
+                  <td class="py-3 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" onclick="showToastMsg(&#39;Editar Diária&#39;, &#39;Modo de edição habilitado para José Carlos.&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer" title="Editar lançamento">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openDeleteDiariaModal(this, &#39;José Carlos de Oliveira&#39;, &#39;09/11/2026&#39;, &#39;R$ 195,00&#39;, &#39;pendente&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer" title="Excluir lançamento">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Registro 2 -->
+                <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] diaria-row" data-worker-id="trab-2" data-status="pendente">
+                  <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                    <span class>09/11/2026</span>
+                    <span class="block text-[10px] text-[#707a82]">Segunda-feira</span>
+                  </td>
+                  <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">
+                    Raimundo Nonato
+                  </td>
+                  <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                    1.0 (Integral)
+                  </td>
+                  <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                    R$ 120,00
+                  </td>
+                  <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 120,00
+                  </td>
+                  <td class="py-3 text-center">
+                    <span class="status-badge inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076]">
+                      <span class="material-symbols-outlined text-[12px]">schedule</span>
+                      <span class>A Pagar</span>
+                    </span>
+                  </td>
+                  <td class="py-3 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" onclick="showToastMsg(&#39;Editar Diária&#39;, &#39;Modo de edição habilitado para Raimundo Nonato.&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer" title="Editar lançamento">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openDeleteDiariaModal(this, &#39;Raimundo Nonato&#39;, &#39;09/11/2026&#39;, &#39;R$ 120,00&#39;, &#39;pendente&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer" title="Excluir lançamento">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Registro 3 -->
+                <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] diaria-row" data-worker-id="trab-3" data-status="pago">
+                  <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                    <span class>08/11/2026</span>
+                    <span class="block text-[10px] text-[#707a82]">Domingo</span>
+                  </td>
+                  <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">
+                    Manoel Silva
+                  </td>
+                  <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                    1.0 (Integral)
+                  </td>
+                  <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                    R$ 190,00
+                  </td>
+                  <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 240,00
+                  </td>
+                  <td class="py-3 text-center">
+                    <span class="status-badge inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4bd08b]/15 text-[#4bd08b]">
+                      <span class="material-symbols-outlined text-[12px]">check_circle</span>
+                      <span class>Pago</span>
+                    </span>
+                  </td>
+                  <td class="py-3 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" onclick="showToastMsg(&#39;Editar Diária&#39;, &#39;Modo de edição habilitado para Manoel Silva.&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer" title="Editar lançamento">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openDeleteDiariaModal(this, &#39;Manoel Silva&#39;, &#39;08/11/2026&#39;, &#39;R$ 240,00&#39;, &#39;pago&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer" title="Excluir lançamento">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Semana 2: Semana Anterior (Página 2) -->
+        <div id="week-page-2" class="hidden bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4 week-block">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">calendar_today</span>
+                <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white">
+                  Semana: 27/10 a 02/11/2026
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#ecfdf5] text-[#10bd9d]">Concluída &amp; Paga</span>
+              </div>
+              <p class="text-xs text-[#707a82] mt-0.5">
+                Segunda a Domingo · 5 diárias registradas · 100% quitadas
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="text-center sm:text-right">
+                <span class="text-[#707a82] dark:text-[#7c8fac] block text-[11px] font-bold uppercase tracking-wider">TOTAL DA SEMANA</span>
+                <span class="text-base sm:text-lg font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight">
+                  R$ 940,00
+                </span>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#ecfdf5] text-[#10bd9d] border border-[#4bd08b]/30">
+                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                <span class>Semana Quitada</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] font-bold text-[11px] uppercase tracking-wider">
+                  <th class="pb-3">Data / Dia</th>
+                  <th class="pb-3">Trabalhador</th>
+                  <th class="pb-3">Fração</th>
+                  <th class="pb-3">Valor Diária</th>
+                  <th class="pb-3 text-right">Valor Total</th>
+                  <th class="pb-3 text-center">Status</th>
+                  <th class="pb-3 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
+                <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]">
+                  <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                    <span class>31/10/2026</span>
+                    <span class="block text-[10px] text-[#707a82]">Sexta-feira</span>
+                  </td>
+                  <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">José Carlos de Oliveira</td>
+                  <td class="py-3 text-[#707a82] tabular-nums">1.0 (Integral)</td>
+                  <td class="py-3 text-[#707a82] tabular-nums">R$ 195,00</td>
+                  <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">R$ 195,00</td>
+                  <td class="py-3 text-center">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4bd08b]/15 text-[#4bd08b]">
+                      <span class="material-symbols-outlined text-[12px]">check_circle</span>
+                      <span class>Pago</span>
+                    </span>
+                  </td>
+                  <td class="py-3 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" onclick="showToastMsg(&#39;Editar Diária&#39;, &#39;Modo de edição habilitado para José Carlos.&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer" title="Editar lançamento">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openDeleteDiariaModal(this, &#39;José Carlos de Oliveira&#39;, &#39;31/10/2026&#39;, &#39;R$ 195,00&#39;, &#39;pago&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer" title="Excluir lançamento">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]">
+                  <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                    <span class>31/10/2026</span>
+                    <span class="block text-[10px] text-[#707a82]">Sexta-feira</span>
+                  </td>
+                  <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">Raimundo Nonato</td>
+                  <td class="py-3 text-[#707a82] tabular-nums">1.0 (Integral)</td>
+                  <td class="py-3 text-[#707a82] tabular-nums">R$ 120,00</td>
+                  <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">R$ 120,00</td>
+                  <td class="py-3 text-center">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4bd08b]/15 text-[#4bd08b]">
+                      <span class="material-symbols-outlined text-[12px]">check_circle</span>
+                      <span class>Pago</span>
+                    </span>
+                  </td>
+                  <td class="py-3 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" onclick="showToastMsg(&#39;Editar Diária&#39;, &#39;Modo de edição habilitado para Raimundo Nonato.&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer" title="Editar lançamento">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openDeleteDiariaModal(this, &#39;Raimundo Nonato&#39;, &#39;31/10/2026&#39;, &#39;R$ 120,00&#39;, &#39;pago&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer" title="Excluir lançamento">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Semana 3: Semana Anterior 2 (Página 3) -->
+        <div id="week-page-3" class="hidden bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4 week-block">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">calendar_today</span>
+                <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white">
+                  Semana: 20/10 a 26/10/2026
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#ecfdf5] text-[#10bd9d]">Concluída &amp; Paga</span>
+              </div>
+              <p class="text-xs text-[#707a82] mt-0.5">
+                Segunda a Domingo · 6 diárias registradas · 100% quitadas
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="text-center sm:text-right">
+                <span class="text-[#707a82] dark:text-[#7c8fac] block text-[11px] font-bold uppercase tracking-wider">TOTAL DA SEMANA</span>
+                <span class="text-base sm:text-lg font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight">
+                  R$ 1.150,00
+                </span>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#ecfdf5] text-[#10bd9d] border border-[#4bd08b]/30">
+                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                <span class>Semana Quitada</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] font-bold text-[11px] uppercase tracking-wider">
+                  <th class="pb-3">Data / Dia</th>
+                  <th class="pb-3">Trabalhador</th>
+                  <th class="pb-3">Fração</th>
+                  <th class="pb-3">Valor Diária</th>
+                  <th class="pb-3 text-right">Valor Total</th>
+                  <th class="pb-3 text-center">Status</th>
+                  <th class="pb-3 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
+                <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]">
+                  <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                    <span class>24/10/2026</span>
+                    <span class="block text-[10px] text-[#707a82]">Sexta-feira</span>
+                  </td>
+                  <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">Antonio Pereira</td>
+                  <td class="py-3 text-[#707a82] tabular-nums">1.0 (Integral)</td>
+                  <td class="py-3 text-[#707a82] tabular-nums">R$ 220,00</td>
+                  <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">R$ 220,00</td>
+                  <td class="py-3 text-center">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4bd08b]/15 text-[#4bd08b]">
+                      <span class="material-symbols-outlined text-[12px]">check_circle</span>
+                      <span class>Pago</span>
+                    </span>
+                  </td>
+                  <td class="py-3 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" onclick="showToastMsg(&#39;Editar Diária&#39;, &#39;Modo de edição habilitado para Antonio Pereira.&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer" title="Editar lançamento">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openDeleteDiariaModal(this, &#39;Antonio Pereira&#39;, &#39;24/10/2026&#39;, &#39;R$ 220,00&#39;, &#39;pago&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer" title="Excluir lançamento">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: New Diária (Modal.tsx fiel) -->
+  <div id="modal-diaria" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeDiariaModal()"></div>
+
+    <div class="relative z-50 w-full max-w-md bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="px-6 py-5 border-b border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-[#111c2d] dark:text-white">Lançar Diária de Trabalho</h2>
+          <p class="text-xs text-[#707a82]">Registre o dia trabalhado, fração da diária e eventuais adicionais ou justificativas.</p>
+        </div>
+        <button type="button" onclick="closeDiariaModal()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveDiaria(event)" class="p-6 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+            Trabalhador *
+          </label>
+          <select id="modal-select-worker" onchange="handleSelectWorkerChange(this.value)" required class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-medium">
+            <option value="trab-1" data-base="195">José Carlos de Oliveira — Pedreiro (Ref: R$ 195,00)</option>
+            <option value="trab-2" data-base="120">Raimundo Nonato — Ajudante (Ref: R$ 120,00)</option>
+            <option value="trab-3" data-base="190">Manoel Silva — Carpinteiro (Ref: R$ 190,00)</option>
+            <option value="trab-4" data-base="220">Antonio Pereira — Eletricista (Ref: R$ 220,00)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Data do Trabalho
+            </label>
+            <input type="date" id="modal-diaria-date" value="2026-11-09" required class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Fração Trabalhada
+            </label>
+            <select id="modal-diaria-fracao" onchange="recalculateDiariaTotal()" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer">
+              <option value="1.0">1.0 — Diária Integral</option>
+              <option value="0.5">0.5 — Meio Período</option>
+              <option value="1.5">1.5 — Diária e Meia</option>
+              <option value="2.0">2.0 — Dupla</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Valor Base da Diária (R$)
+            </label>
+            <input type="number" id="modal-diaria-base" value="195" step="any" oninput="recalculateDiariaTotal()" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Valor Adicional / Extra (R$)
+            </label>
+            <input type="number" id="modal-diaria-extra" value="0" step="any" oninput="toggleExtraDescription(this.value); recalculateDiariaTotal();" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+        </div>
+
+        <div id="container-extra-desc" class="hidden">
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+            Descrição do Adicional &amp; Justificativa *
+          </label>
+          <input type="text" id="modal-diaria-extra-desc" placeholder="Ex: Horas extras para concretagem da viga..." class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+            Etapa Vinculada
+          </label>
+          <select id="modal-diaria-etapa" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer">
+            <option value="etapa-1">1 - Sapata</option>
+            <option value="etapa-2" selected>2 - Alvenaria</option>
+            <option value="etapa-3">3 - Laje</option>
+            <option value="etapa-4">4 - Hidráulico</option>
+            <option value="etapa-5">5 - Elétrico</option>
+          </select>
+        </div>
+
+        <div class="p-3.5 bg-[#f6f9fc] dark:bg-[#1a2535] rounded-xl text-xs flex justify-between items-center font-semibold border border-[#e6ecf1] dark:border-[#333f55]">
+          <span class="text-[#707a82] dark:text-[#7c8fac]">Total a pagar por este dia:</span>
+          <span id="modal-diaria-total-preview" class="text-base font-extrabold text-[#0085db] tabular-nums">
+            R$ 195,00
+          </span>
+        </div>
+
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeDiariaModal()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer">
+            Salvar Diária
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: New Worker (Modal.tsx fiel) -->
+  <div id="modal-worker" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeTrabModal()"></div>
+
+    <div class="relative z-50 w-full max-w-md bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="px-6 py-5 border-b border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-[#111c2d] dark:text-white">Cadastrar Trabalhador</h2>
+          <p class="text-xs text-[#707a82]">Mantenha o histórico e diária de referência por período.</p>
+        </div>
+        <button type="button" onclick="closeTrabModal()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveTrab(event)" class="p-6 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+            Nome Completo *
+          </label>
+          <input type="text" id="modal-trab-nome" required placeholder="Ex: João Ferreira da Silva" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Função
+            </label>
+            <select id="modal-trab-funcao" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer">
+              <option value="Pedreiro">Pedreiro</option>
+              <option value="Servente">Servente</option>
+              <option value="Carpinteiro">Carpinteiro</option>
+              <option value="Armador">Armador</option>
+              <option value="Eletricista">Eletricista</option>
+              <option value="Encanador">Encanador</option>
+              <option value="Encarregado de Obra">Encarregado de Obra</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Valor Diária Padrão (R$)
+            </label>
+            <input type="number" id="modal-trab-valor" value="180" min="0" step="any" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              CPF
+            </label>
+            <input type="text" id="modal-trab-cpf" placeholder="000.000.000-00" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Chave PIX
+            </label>
+            <input type="text" id="modal-trab-pix" placeholder="CPF, celular ou e-mail" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeTrabModal()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer">
+            Cadastrar Trabalhador
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Confirm Delete Diária (Resumido) -->
+  <div id="modal-delete" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeDeleteDiariaModal()"></div>
+
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center gap-3 pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[20px]">delete_forever</span>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+            Excluir Diária
+          </h2>
+          <p class="text-[11px] text-[#707a82]">Ação irreversível no sistema</p>
+        </div>
+      </div>
+
+      <div class="py-4 space-y-3">
+        <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+          Deseja remover a diária de <strong id="delete-modal-worker-name" class="text-[#111c2d] dark:text-white uppercase">JOSÉ CARLOS DE OLIVEIRA</strong>?
+        </p>
+
+        <div class="flex items-center justify-between p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs">
+          <span id="delete-modal-date-val" class="text-[#707a82]">09/11/2026 · 1.0 Diária</span>
+          <span id="delete-modal-total-val" class="font-black text-[#111c2d] dark:text-white tabular-nums">R$ 195,00</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" onclick="closeDeleteDiariaModal()" class="h-9 px-3.5 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-all cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" onclick="confirmExecuteDeleteDiaria()" class="h-9 px-4 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">delete</span>
+          <span>Excluir</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificação Compacta no Canto Inferior Direito (Texto Curto) -->
+  <div id="toast-notification" class="hidden fixed bottom-6 right-6 z-60 animate-in slide-in-from-bottom-3 fade-in duration-200">
+    <div class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#111c2d] dark:bg-white text-white dark:text-[#111c2d] shadow-xl border border-zinc-700/40 dark:border-zinc-300">
+      <span class="material-symbols-outlined text-[18px] text-[#4bd08b] shrink-0">check_circle</span>
+      <span id="toast-title" class="text-xs font-semibold tracking-wide whitespace-nowrap">Diária excluída com sucesso</span>
+      <button type="button" onclick="hideToast()" class="ml-1 text-zinc-400 hover:text-white dark:hover:text-black cursor-pointer flex items-center">
+        <span class="material-symbols-outlined text-[14px]">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts Interativos Conformes com a lógica do MaoDeObraView.tsx -->
+  <script>
+    let currentStatusFilter = 'todos';
+    let rowToDelete = null;
+
+    function openDiariaModal() {
+      document.getElementById('modal-diaria').classList.remove('hidden');
+    }
+    function closeDiariaModal() {
+      document.getElementById('modal-diaria').classList.add('hidden');
+    }
+
+    function openTrabModal() {
+      document.getElementById('modal-worker').classList.remove('hidden');
+    }
+    function closeTrabModal() {
+      document.getElementById('modal-worker').classList.add('hidden');
+    }
+
+    function handleSelectWorkerChange(val) {
+      const select = document.getElementById('modal-select-worker');
+      const opt = select.options[select.selectedIndex];
+      const baseVal = parseFloat(opt.getAttribute('data-base')) || 180;
+      document.getElementById('modal-diaria-base').value = baseVal;
+      recalculateDiariaTotal();
+    }
+
+    function toggleExtraDescription(extraVal) {
+      const num = parseFloat(extraVal) || 0;
+      const container = document.getElementById('container-extra-desc');
+      if (num > 0) {
+        container.classList.remove('hidden');
+      } else {
+        container.classList.add('hidden');
+      }
+    }
+
+    function recalculateDiariaTotal() {
+      const fracao = parseFloat(document.getElementById('modal-diaria-fracao').value) || 1.0;
+      const base = parseFloat(document.getElementById('modal-diaria-base').value) || 0;
+      const extra = parseFloat(document.getElementById('modal-diaria-extra').value) || 0;
+      const total = (fracao * base) + extra;
+
+      document.getElementById('modal-diaria-total-preview').innerText = 
+        new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
+    }
+
+    function handleSaveDiaria(e) {
+      e.preventDefault();
+      const select = document.getElementById('modal-select-worker');
+      const workerId = select.value;
+      const workerText = select.options[select.selectedIndex].text.split('—')[0].trim();
+      const date = document.getElementById('modal-diaria-date').value;
+      const fracao = parseFloat(document.getElementById('modal-diaria-fracao').value);
+      const base = parseFloat(document.getElementById('modal-diaria-base').value);
+      const extra = parseFloat(document.getElementById('modal-diaria-extra').value) || 0;
+      const extraDesc = document.getElementById('modal-diaria-extra-desc').value.trim();
+      const total = (fracao * base) + extra;
+
+      const dateParts = date.split('-');
+      const dateBR = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+      const tbody = document.getElementById('diarias-tbody-w1');
+      const tr = document.createElement('tr');
+      tr.className = "hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] diaria-row";
+      tr.setAttribute('data-worker-id', workerId);
+      tr.setAttribute('data-status', 'pendente');
+
+      const extraHTML = extra > 0 
+        ? `<div><span class="font-semibold text-[#0085db] tabular-nums">+${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(extra)}</span>${extraDesc ? `<span class="block text-[10px] text-[#707a82]">${extraDesc}</span>` : ''}</div>`
+        : `<span class="text-[#707a82]">-</span>`;
+
+      tr.innerHTML = `
+        <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+          <span>${dateBR}</span>
+          <span class="block text-[10px] text-[#707a82]">Apontamento</span>
+        </td>
+        <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">
+          ${workerText}
+        </td>
+        <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+          ${fracao === 1 ? '1.0 (Integral)' : `${fracao} diária`}
+        </td>
+        <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+          ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(base)}
+        </td>
+        <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">
+          ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
+        </td>
+        <td class="py-3 text-center">
+          <span class="status-badge inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076]">
+            <span class="material-symbols-outlined text-[12px]">schedule</span>
+            <span>A Pagar</span>
+          </span>
+        </td>
+        <td class="py-3 text-right">
+          <div class="flex items-center justify-end gap-1">
+            <button
+              type="button"
+              onclick="showToastMsg('Editar Diária', 'Modo de edição habilitado para ${workerText}.')"
+              class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer"
+              title="Editar lançamento"
+            >
+              <span class="material-symbols-outlined text-[16px]">edit</span>
+            </button>
+            <button
+              type="button"
+              onclick="openDeleteDiariaModal(this, '${workerText}', '${dateBR}', '${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}', 'pendente')"
+              class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer"
+              title="Excluir lançamento"
+            >
+              <span class="material-symbols-outlined text-[16px]">delete</span>
+            </button>
+          </div>
+        </td>
+      `;
+
+      tbody.prepend(tr);
+      closeDiariaModal();
+      showToastMsg('Diária Lançada', `Diária de ${workerText} registrada com sucesso.`);
+    }
+
+    function handleSaveTrab(e) {
+      e.preventDefault();
+      const nome = document.getElementById('modal-trab-nome').value.trim();
+      const funcao = document.getElementById('modal-trab-funcao').value;
+      const valor = parseFloat(document.getElementById('modal-trab-valor').value) || 180;
+      const newId = 'trab-' + Date.now();
+
+      const workerSelects = [document.getElementById('filter-worker-select'), document.getElementById('modal-select-worker')];
+      workerSelects.forEach(select => {
+        if (!select) return;
+        const opt = document.createElement('option');
+        opt.value = newId;
+        opt.setAttribute('data-base', valor);
+        opt.innerText = `${nome} (${funcao} · ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor)})`;
+        select.appendChild(opt);
+      });
+
+      closeTrabModal();
+      showToastMsg('Trabalhador Cadastrado', `${nome} adicionado com sucesso.`);
+    }
+
+    function handleExecutePagarSemana(trabalhadorTargetId, workerName, totalVal, btnEl) {
+      const rows = document.querySelectorAll(`#diarias-tbody-w1 tr[data-worker-id="${trabalhadorTargetId}"][data-status="pendente"]`);
+      if (rows.length === 0) {
+        alert('Não há diárias pendentes para este trabalhador nesta semana.');
+        return;
+      }
+
+      rows.forEach(r => {
+        r.setAttribute('data-status', 'pago');
+        const badge = r.querySelector('.status-badge');
+        if (badge) {
+          badge.className = "status-badge inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4bd08b]/15 text-[#4bd08b]";
+          badge.innerHTML = `<span class="material-symbols-outlined text-[12px]">check_circle</span><span>Pago</span>`;
+        }
+        const markBtn = r.querySelector('.btn-mark-paid');
+        if (markBtn) markBtn.remove();
+      });
+
+      if (btnEl) btnEl.remove();
+      showToastMsg('Pagamento Confirmado', `Diárias de ${workerName} foram marcadas como pagas.`);
+    }
+
+    function marcarIndividualPaga(btn, workerName, val) {
+      const row = btn.closest('tr');
+      row.setAttribute('data-status', 'pago');
+      const badge = row.querySelector('.status-badge');
+      if (badge) {
+        badge.className = "status-badge inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4bd08b]/15 text-[#4bd08b]";
+        badge.innerHTML = `<span class="material-symbols-outlined text-[12px]">check_circle</span><span>Pago</span>`;
+      }
+      btn.remove();
+      showToastMsg('Diária Paga', `Diária de ${workerName} marcada como paga.`);
+    }
+
+    function openDeleteDiariaModal(btn, workerName, date, total, status) {
+      rowToDelete = btn.closest('tr');
+      document.getElementById('delete-modal-worker-name').innerText = `"${workerName}"`;
+      document.getElementById('delete-modal-worker-val').innerText = workerName;
+      document.getElementById('delete-modal-date-val').innerText = date;
+      document.getElementById('delete-modal-total-val').innerText = total;
+      const statusEl = document.getElementById('delete-modal-status-val');
+      statusEl.innerText = status;
+      statusEl.className = `font-semibold capitalize ${status === 'pago' ? 'text-[#4bd08b]' : 'text-[#fb977d]'}`;
+      document.getElementById('modal-delete').classList.remove('hidden');
+    }
+
+    function closeDeleteDiariaModal() {
+      document.getElementById('modal-delete').classList.add('hidden');
+      rowToDelete = null;
+    }
+
+    function confirmExecuteDeleteDiaria() {
+      if (rowToDelete) {
+        rowToDelete.remove();
+        showToastMsg('Diária Removida', 'O lançamento de diária foi excluído com sucesso.');
+      }
+      closeDeleteDiariaModal();
+    }
+
+    function setStatusFilter(status) {
+      currentStatusFilter = status;
+      const btnTodos = document.getElementById('filter-btn-todos');
+      const btnPendente = document.getElementById('filter-btn-pendente');
+      const btnPago = document.getElementById('filter-btn-pago');
+
+      [btnTodos, btnPendente, btnPago].forEach(btn => {
+        btn.className = "px-3 py-1 rounded-lg transition-colors cursor-pointer text-[#707a82]";
+      });
+
+      if (status === 'todos') {
+        btnTodos.className = "px-3 py-1 rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs";
+      } else if (status === 'pendente') {
+        btnPendente.className = "px-3 py-1 rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#d9941a] dark:text-[#f8c076] font-bold shadow-xs";
+      } else if (status === 'pago') {
+        btnPago.className = "px-3 py-1 rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#4bd08b] font-bold shadow-xs";
+      }
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const selectedWorker = document.getElementById('filter-worker-select').value;
+      const rows = document.querySelectorAll('.diaria-row');
+
+      rows.forEach(r => {
+        const workerId = r.getAttribute('data-worker-id');
+        const status = r.getAttribute('data-status');
+
+        const matchWorker = selectedWorker === 'todos' || workerId === selectedWorker;
+        const matchStatus = currentStatusFilter === 'todos' || status === currentStatusFilter;
+
+        if (matchWorker && matchStatus) {
+          r.style.display = '';
+        } else {
+          r.style.display = 'none';
+        }
+      });
+    }
+
+    // ================= CONTROLE DE PAGINAÇÃO SEMANAL (JANELA DE ATÉ 5 PÁGINAS) =================
+    let currentWeekPage = 1;
+    const totalWeekPages = 8; // Suporte a múltiplas semanas (mais de 5)
+    const maxVisiblePills = 5; // Limite fixo de 5 botões visíveis de cada vez
+
+    function getPaginationWindow(current, total, maxVisible) {
+      if (total <= maxVisible) {
+        return { start: 1, end: total };
+      }
+      // Janela que desliza para a direita conforme a página avança além da 5
+      let start = Math.max(1, current - Math.floor(maxVisible / 2));
+      let end = start + maxVisible - 1;
+
+      if (end > total) {
+        end = total;
+        start = end - maxVisible + 1;
+      }
+      return { start, end };
+    }
+
+    function renderPaginationPills() {
+      const container = document.getElementById('pagination-window-container');
+      if (!container) return;
+
+      const { start, end } = getPaginationWindow(currentWeekPage, totalWeekPages, maxVisiblePills);
+      container.innerHTML = '';
+
+      // Indicador de reticências à esquerda se a janela começar após a pág 1
+      if (start > 1) {
+        const dotLeft = document.createElement('span');
+        dotLeft.className = "text-[#707a82] text-xs px-0.5 select-none";
+        dotLeft.innerText = "···";
+        container.appendChild(dotLeft);
+      }
+
+      for (let i = start; i <= end; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('data-page', i);
+        btn.onclick = () => goToWeekPage(i);
+        btn.innerText = i;
+
+        if (i === currentWeekPage) {
+          btn.className = "w-8 h-8 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-xs transition-all duration-200 cursor-pointer transform scale-105";
+        } else {
+          btn.className = "w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer";
+        }
+        container.appendChild(btn);
+      }
+
+      // Indicador de reticências à direita se ainda houver páginas além da janela
+      if (end < totalWeekPages) {
+        const dotRight = document.createElement('span');
+        dotRight.className = "text-[#707a82] text-xs px-0.5 select-none";
+        dotRight.innerText = "···";
+        container.appendChild(dotRight);
+      }
+    }
+
+    function goToWeekPage(page) {
+      if (page < 1 || page > totalWeekPages) return;
+      currentWeekPage = page;
+
+      // Alternar visualização dos blocos de semana
+      const w1 = document.querySelector('.week-block:not([id^="week-page-"])');
+      const w2 = document.getElementById('week-page-2');
+      const w3 = document.getElementById('week-page-3');
+
+      if (w1) w1.classList.toggle('hidden', currentWeekPage !== 1 && currentWeekPage <= 3 ? true : (currentWeekPage > 3 ? false : false));
+      if (w2) w2.classList.toggle('hidden', currentWeekPage !== 2);
+      if (w3) w3.classList.toggle('hidden', currentWeekPage !== 3);
+
+      // Atualizar textos dos contadores
+      document.getElementById('pagination-current-text').innerText = currentWeekPage;
+      const totalTextEl = document.getElementById('pagination-total-text');
+      if (totalTextEl) totalTextEl.innerText = totalWeekPages;
+
+      // Atualizar botões Anterior / Próximo
+      const btnPrev = document.getElementById('btn-prev-page');
+      const btnNext = document.getElementById('btn-next-page');
+      if (btnPrev) btnPrev.disabled = currentWeekPage === 1;
+      if (btnNext) btnNext.disabled = currentWeekPage === totalWeekPages;
+
+      // Renderizar a janela deslizante de 5 pílulas
+      renderPaginationPills();
+
+      // Feedback animado sutil
+      showToastMsg(`Semana ${currentWeekPage}`, `Navegando para o registro da Semana ${currentWeekPage} de ${totalWeekPages}.`);
+    }
+
+    function changeWeekPage(delta) {
+      goToWeekPage(currentWeekPage + delta);
+    }
+
+    // Inicializar paginação na carga
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPaginationPills();
+    });
+    // Executa também de imediato caso já carregado
+    renderPaginationPills();
+
+    function showToastMsg(title, desc) {
+      const toast = document.getElementById('toast-notification');
+      if (!toast) return;
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-desc').innerText = desc;
+      toast.classList.remove('hidden');
+      setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('toast-notification');
+      if (toast) toast.classList.add('hidden');
+    }
+  </script>
+
+
+
+</body></html>

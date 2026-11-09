@@ -78,9 +78,9 @@ export const MobileNav: React.FC = () => {
 
   return (
     <>
-      {/* Fixed bottom navigation bar */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-t border-[#e6ecf1] dark:border-[#333f55] pb-safe transition-colors print:hidden">
-        <div className="grid grid-cols-5 items-center h-16 max-w-md mx-auto px-2">
+      {/* Fixed and floating bottom navigation bar */}
+      <nav className="lg:hidden fixed bottom-3 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 w-auto sm:w-[calc(100%-2rem)] max-w-2xl z-50 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl shadow-xl shadow-black/10 dark:shadow-black/40 h-16 px-2 sm:px-6 transition-all print:hidden">
+        <div className="grid grid-cols-5 items-center h-full w-full max-w-xl mx-auto">
           {primaryTabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;

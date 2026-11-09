@@ -1,0 +1,840 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartões — Tablet — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-headline { font-family: 'Outfit', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[1024px] font-body antialiased flex flex-col pb-24" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Header Superior Tablet Idêntico a Diarias-Tablet.html -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-16 px-6 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+        N
+      </div>
+      <div>
+        <span class="block text-xs font-bold leading-tight uppercase">NATANAEL</span>
+        <span class="block text-[10px] text-[#707a82] leading-none">Master</span>
+      </div>
+    </div>
+
+    <!-- Canteiro Ativo Centralizado -->
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+      <div class="w-7 h-7 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-[16px]">apartment</span>
+      </div>
+      <div class="text-left">
+        <span class="block text-xs font-bold truncate uppercase">OBRA JUSCELINO MOLA</span>
+        <span class="block text-[9px] text-[#707a82] uppercase font-semibold">Canteiro Ativo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Área Principal Tablet com Largura Máxima Confortável (max-w-4xl) -->
+  <main class="p-6 space-y-6 flex-1 max-w-4xl mx-auto w-full">
+    
+    <!-- Cabeçalho com Título & Ações Principais -->
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-[#111c2d] dark:text-white">
+          Cartões
+        </h1>
+        <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+          Controle de faturas, parcelas e contas bancárias da obra.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <button type="button" onclick="openCardModalTablet()" class="h-10 px-4 inline-flex items-center gap-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">add</span>
+          <span>Cadastrar Cartão / Conta</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Alerta de Compras Pendentes em Caixa Alta -->
+    <div class="bg-[#f8c076]/10 border border-[#f8c076]/30 rounded-[18px] px-4 py-3 flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="material-symbols-outlined text-[18px] text-[#d9941a] dark:text-[#f8c076] shrink-0">warning</span>
+        <p class="text-[#111c2d] dark:text-white uppercase tracking-wider text-[11px] truncate">
+          <strong class="font-extrabold">1 COMPRA PENDENTE</strong> DE VÍNCULO COM CARTÃO OU PARCELAMENTO
+        </p>
+      </div>
+      <a href="../despesas/Despesas.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#0085db] hover:text-white bg-[#0085db]/10 hover:bg-[#0085db] rounded-lg transition-all whitespace-nowrap active:scale-95 shrink-0">
+        <span>VER PENDÊNCIA</span>
+        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Barra de Filtro de Período da Obra Tablet -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.04)] flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <!-- Modo de Período -->
+        <div class="flex items-center h-10 p-1 bg-[#f0f5f9] dark:bg-[#15263a] rounded-xl text-xs">
+          <button type="button" id="t-filter-periodo-mes-btn" onclick="setTabletPeriodMode(&#39;mes&#39;)" class="h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs leading-none">
+            Mês / Ano
+          </button>
+          <button type="button" id="t-filter-periodo-todo-btn" onclick="setTabletPeriodMode(&#39;todo&#39;)" class="h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer text-[#707a82] dark:text-[#7c8fac] font-semibold hover:text-[#111c2d] dark:hover:text-white leading-none">
+            Todo o Período
+          </button>
+        </div>
+
+        <!-- Seletores de Mês e Ano -->
+        <div id="t-selectors-container" class="flex items-center gap-2">
+          <select id="t-filter-mes-select" onchange="applyTabletPeriodFilter()" class="h-10 pl-3 pr-8 text-xs font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer focus:ring-2 focus:ring-[#0085db]/40">
+            <option value="10">Outubro</option>
+            <option value="11" selected>Novembro (Atual)</option>
+            <option value="12">Dezembro</option>
+            <option value="01">Janeiro</option>
+          </select>
+
+          <select id="t-filter-ano-select" onchange="applyTabletPeriodFilter()" class="h-10 pl-3 pr-8 text-xs font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer focus:ring-2 focus:ring-[#0085db]/40">
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Resumo do Período -->
+      <div class="flex items-center gap-2 text-xs text-[#707a82] dark:text-[#7c8fac]">
+        <span class="material-symbols-outlined text-[16px] text-[#0085db]">date_range</span>
+        <span>Período: <strong id="t-period-summary-label" class="text-[#111c2d] dark:text-white font-bold">Novembro / 2026</strong></span>
+      </div>
+    </div>
+
+    <!-- Seção de Cartões Ativos (Grid Otimizado para Tablet com 2 a 3 Colunas) -->
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-[#707a82] dark:text-[#7c8fac] font-bold uppercase tracking-wider">
+          CARTÕES &amp; CONTAS ATIVAS (<span id="t-cards-count" class="text-[#111c2d] dark:text-white">3</span>)
+        </span>
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="scrollTabletCards(-1)" class="w-8 h-8 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#707a82] hover:text-[#111c2d] dark:hover:text-white flex items-center justify-center cursor-pointer shadow-2xs">
+            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+          </button>
+          <button type="button" onclick="scrollTabletCards(1)" class="w-8 h-8 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white hover:text-[#0085db] flex items-center justify-center cursor-pointer shadow-2xs">
+            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Carrossel de Cartões no Tablet -->
+      <div id="t-cards-slider" class="flex items-stretch gap-4 overflow-x-auto scroll-smooth no-scrollbar pb-1">
+        
+        <!-- Cartão 1: Nubank Natanael (Idêntico ao padrão da referência) -->
+        <div class="w-[340px] shrink-0 relative overflow-hidden rounded-[22px] p-5 shadow-lg border border-[#2b3544] bg-[#111927] text-white flex flex-col justify-between min-h-[180px]">
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-6 rounded-md bg-gradient-to-r from-[#eab308] to-[#facc15] shadow-xs"></div>
+                <span class="material-symbols-outlined text-[15px] text-zinc-400 rotate-90 leading-none">wifi</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-zinc-300 tracking-wider">•••• 4821</span>
+            </div>
+
+            <div class="mt-3.5">
+              <h2 class="text-sm font-extrabold text-white uppercase tracking-wide">
+                NUBANK NATANAEL
+              </h2>
+              <p class="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                Vence dia 05
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-zinc-800/80 flex items-baseline justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">FATURA</span>
+            <span id="t-card-val-nubank" class="text-lg font-black text-[#facc15] tabular-nums tracking-tight">
+              R$ 1.616,83
+            </span>
+          </div>
+        </div>
+
+        <!-- Cartão 2: Inter Obra PJ -->
+        <div class="w-[340px] shrink-0 relative overflow-hidden rounded-[22px] p-5 shadow-lg border border-[#2b3544] bg-[#111927] text-white flex flex-col justify-between min-h-[180px]">
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-6 rounded-md bg-gradient-to-r from-[#ea580c] to-[#f97316] shadow-xs"></div>
+                <span class="material-symbols-outlined text-[15px] text-zinc-400 rotate-90 leading-none">wifi</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-zinc-300 tracking-wider">•••• 9034</span>
+            </div>
+
+            <div class="mt-3.5">
+              <h2 class="text-sm font-extrabold text-white uppercase tracking-wide">
+                INTER OBRA PJ
+              </h2>
+              <p class="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                Vence dia 01
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-zinc-800/80 flex items-baseline justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">FATURA</span>
+            <span class="text-lg font-black text-emerald-400 tabular-nums tracking-tight">
+              R$ 0,00
+            </span>
+          </div>
+        </div>
+
+        <!-- Conta 3: Conta Bradesco Pix -->
+        <div class="w-[340px] shrink-0 relative overflow-hidden rounded-[22px] p-5 shadow-lg border border-[#0085db]/30 bg-gradient-to-br from-white to-[#f0f6fc] dark:from-[#111c2d] dark:to-[#16253b] text-[#111c2d] dark:text-white flex flex-col justify-between min-h-[180px]">
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">account_balance</span>
+                <span class="text-xs font-bold uppercase tracking-wide">Conta Corrente</span>
+              </div>
+              <span class="inline-flex items-center gap-0.5 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#10bd9d]/15 text-[#10bd9d]">
+                <span class="material-symbols-outlined text-[11px]">bolt</span>
+                <span>PIX</span>
+              </span>
+            </div>
+
+            <div class="mt-3.5">
+              <h2 class="text-sm font-extrabold uppercase tracking-wide">
+                CONTA BRADESCO PIX
+              </h2>
+              <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5 font-medium">
+                Chave Final 1289
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-baseline justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#707a82] dark:text-[#7c8fac]">
+              PREVISÃO DE SAÍDA
+            </span>
+            <span class="text-lg font-black text-[#0085db] tabular-nums tracking-tight">
+              R$ 0,00
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Barra de Paginação Solta e em Cima Idêntica a Diarias-Tablet.html -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-4 py-3 flex items-center justify-between shadow-xs">
+      <div class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+        Página <strong id="t-pag-current" class="text-[#111c2d] dark:text-white">1</strong> de <strong id="t-pag-total" class="text-[#111c2d] dark:text-white">3</strong>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button type="button" id="t-btn-prev" onclick="changeTabletPage(-1)" disabled class="w-8 h-8 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] opacity-40 flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+        </button>
+        <div id="t-pag-window" class="flex items-center gap-1 px-1 transition-all duration-300">
+          <button type="button" onclick="goTabletPage(1)" class="w-8 h-8 rounded-xl bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all duration-200 cursor-pointer transform scale-105">1</button>
+          <button type="button" onclick="goTabletPage(2)" class="w-8 h-8 rounded-xl text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] text-xs font-semibold transition-all duration-200 cursor-pointer">2</button>
+          <button type="button" onclick="goTabletPage(3)" class="w-8 h-8 rounded-xl text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] text-xs font-semibold transition-all duration-200 cursor-pointer">3</button>
+        </div>
+        <button type="button" id="t-btn-next" onclick="changeTabletPage(1)" class="w-8 h-8 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabela de Parcelas & Vencimentos Otimizada para Tablet -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] space-y-4">
+      
+      <!-- Cabeçalho da Tabela -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] text-[#0085db]">calendar_today</span>
+          <h2 class="text-sm font-bold text-[#111c2d] dark:text-white leading-none uppercase tracking-wider">
+            PARCELAS &amp; VENCIMENTOS
+          </h2>
+        </div>
+        <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider font-semibold">
+          TOTAL A VENCER: <strong class="text-[#fb977d] font-bold">R$ 3.233,67</strong> · TOTAL QUITADO: <strong class="text-[#4bd08b] font-bold">R$ 1.616,83</strong>
+        </p>
+      </div>
+
+      <!-- Tabela Tablet -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] font-bold text-[11px] uppercase tracking-wider">
+              <th class="pb-3 whitespace-nowrap">Vencimento</th>
+              <th class="pb-3">Descrição da Compra</th>
+              <th class="pb-3 whitespace-nowrap">Parcela</th>
+              <th class="pb-3 whitespace-nowrap">Cartão</th>
+              <th class="pb-3 text-right whitespace-nowrap">Valor da Parcela</th>
+              <th class="pb-3 text-center whitespace-nowrap">Status</th>
+              <th class="pb-3 text-right whitespace-nowrap">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="t-parcelas-tbody" class="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
+            
+            <!-- Linha 1 -->
+            <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors">
+              <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                <span>05/10/2026</span>
+                <span class="block text-[10px] text-[#707a82]">Segunda-feira</span>
+              </td>
+              <td class="py-3 font-bold text-[#111c2d] dark:text-white">
+                Compra inicial cimento e areia (1/3)
+              </td>
+              <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums whitespace-nowrap">
+                1 de 3
+              </td>
+              <td class="py-3 text-[#707a82] dark:text-[#7c8fac] font-medium whitespace-nowrap">
+                Nubank Natanael
+              </td>
+              <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums whitespace-nowrap">
+                R$ 1.616,83
+              </td>
+              <td class="py-3 text-center whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-[#4bd08b]/20 text-[#10bd9d] dark:text-[#4bd08b] whitespace-nowrap">
+                  <span class="material-symbols-outlined text-[13px] shrink-0">check_circle</span>
+                  <span class="whitespace-nowrap">Paga</span>
+                </span>
+              </td>
+              <td class="py-3 text-right whitespace-nowrap">
+                <div class="flex items-center justify-end gap-1">
+                  <button type="button" onclick="openEditarParcelaTablet(&#39;Compra inicial cimento e areia (1/3)&#39;, 1, 3, &#39;1616.83&#39;, &#39;2026-10-05&#39;, &#39;paga&#39;)" class="p-1.5 text-[#707a82] hover:text-[#0085db] rounded-lg hover:bg-[#0085db]/10 transition-colors cursor-pointer" title="Editar"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+                  <button type="button" onclick="openExcluirParcelaTablet(this, &#39;Compra inicial cimento e areia (1/3)&#39;, &#39;R$ 1.616,83&#39;, &#39;05/10/2026&#39;)" class="p-1.5 text-[#707a82] hover:text-rose-500 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer" title="Excluir"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Linha 2 -->
+            <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors">
+              <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                <span>05/11/2026</span>
+                <span class="block text-[10px] text-[#707a82]">Quinta-feira</span>
+              </td>
+              <td class="py-3 font-bold text-[#111c2d] dark:text-white">
+                Compra inicial cimento e areia (2/3)
+              </td>
+              <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums whitespace-nowrap">
+                2 de 3
+              </td>
+              <td class="py-3 text-[#707a82] dark:text-[#7c8fac] font-medium whitespace-nowrap">
+                Nubank Natanael
+              </td>
+              <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums whitespace-nowrap">
+                R$ 1.616,83
+              </td>
+              <td class="py-3 text-center whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076] whitespace-nowrap">
+                  <span class="material-symbols-outlined text-[13px] shrink-0">schedule</span>
+                  <span class="whitespace-nowrap">A Vencer</span>
+                </span>
+              </td>
+              <td class="py-3 text-right whitespace-nowrap">
+                <div class="flex items-center justify-end gap-1">
+                  <button type="button" onclick="openEditarParcelaTablet(&#39;Compra inicial cimento e areia (2/3)&#39;, 2, 3, &#39;1616.83&#39;, &#39;2026-11-05&#39;, &#39;avencer&#39;)" class="p-1.5 text-[#707a82] hover:text-[#0085db] rounded-lg hover:bg-[#0085db]/10 transition-colors cursor-pointer" title="Editar"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+                  <button type="button" onclick="openExcluirParcelaTablet(this, &#39;Compra inicial cimento e areia (2/3)&#39;, &#39;R$ 1.616,83&#39;, &#39;05/11/2026&#39;)" class="p-1.5 text-[#707a82] hover:text-rose-500 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer" title="Excluir"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Linha 3 -->
+            <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors">
+              <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                <span>05/12/2026</span>
+                <span class="block text-[10px] text-[#707a82]">Sábado</span>
+              </td>
+              <td class="py-3 font-bold text-[#111c2d] dark:text-white">
+                Compra inicial cimento e areia (3/3)
+              </td>
+              <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums whitespace-nowrap">
+                3 de 3
+              </td>
+              <td class="py-3 text-[#707a82] dark:text-[#7c8fac] font-medium whitespace-nowrap">
+                Nubank Natanael
+              </td>
+              <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums whitespace-nowrap">
+                R$ 1.616,84
+              </td>
+              <td class="py-3 text-center whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076] whitespace-nowrap">
+                  <span class="material-symbols-outlined text-[13px] shrink-0">schedule</span>
+                  <span class="whitespace-nowrap">A Vencer</span>
+                </span>
+              </td>
+              <td class="py-3 text-right whitespace-nowrap">
+                <div class="flex items-center justify-end gap-1">
+                  <button type="button" onclick="openEditarParcelaTablet(&#39;Compra inicial cimento e areia (3/3)&#39;, 3, 3, &#39;1616.84&#39;, &#39;2026-12-05&#39;, &#39;avencer&#39;)" class="p-1.5 text-[#707a82] hover:text-[#0085db] rounded-lg hover:bg-[#0085db]/10 transition-colors cursor-pointer" title="Editar"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+                  <button type="button" onclick="openExcluirParcelaTablet(this, &#39;Compra inicial cimento e areia (3/3)&#39;, &#39;R$ 1.616,84&#39;, &#39;05/12/2026&#39;)" class="p-1.5 text-[#707a82] hover:text-rose-500 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer" title="Excluir"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Barra de Navegação Inferior Fixa Tablet (Idêntica a Diarias-Tablet.html) -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-t border-[#e6ecf1] dark:border-[#333f55] h-16 flex items-center justify-around px-8 z-40 max-w-4xl mx-auto md:border-x">
+    <a href="../dashboard/Dashboard.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">grid_view</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Dashboard</span>
+    </a>
+
+    <a href="../despesas/Despesas.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">receipt</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Despesas</span>
+    </a>
+
+    <a href="../maodeobra/Diarias-Tablet.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">group</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Diárias</span>
+    </a>
+
+    <a href="#" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">balance</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Orçamentos</span>
+    </a>
+
+    <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.remove(&#39;hidden&#39;)" class="flex flex-col items-center justify-center flex-1 py-1 text-[#0085db] relative cursor-pointer">
+      <div class="relative flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+        <span class="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#fb977d] border-2 border-white dark:border-[#111c2d]"></span>
+      </div>
+      <span class="text-[11px] font-bold tracking-tight mt-0.5">Mais</span>
+    </button>
+  </nav>
+
+  <!-- Bottom Sheet Menu Mais (Módulos do Sistema) Tablet Centralizado -->
+  <div id="bottom-sheet-menu-tablet" class="fixed inset-0 z-50 flex flex-col justify-end hidden">
+    <div onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+
+    <aside class="relative z-10 bg-white dark:bg-[#111c2d] rounded-t-[28px] border-t border-[#e6ecf1] dark:border-[#333f55] shadow-2xl p-6 pt-3 animate-in slide-in-from-bottom duration-200 max-w-xl mx-auto w-full">
+      <div class="w-12 h-1.5 rounded-full bg-[#dbe4ec] dark:bg-[#333f55] mx-auto mb-4"></div>
+
+      <div class="flex items-center justify-between pb-3 border-b border-[#f0f4f8] dark:border-[#223147] mb-4">
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#526b84] dark:text-[#8fa3ba]">
+          Módulos do Sistema
+        </h2>
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Grade com os 7 Módulos -->
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <a href="../recibos/Recibos.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">fact_check</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Recibos</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Materiais</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">build</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Produção</span>
+        </a>
+
+        <!-- 4. Cartões (Ativo) -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#0085db]/10 dark:bg-[#0085db]/20 border border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">credit_card</span>
+          </div>
+          <span class="text-sm font-bold text-[#0085db] transition-colors truncate">Cartões</span>
+        </a>
+
+        <!-- 5. Pendências com Badge 3 -->
+        <a href="../despesas/Despesas.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">warning</span>
+          </div>
+          <div class="min-w-0 flex items-center gap-1.5">
+            <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Pendências</span>
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#f87171] text-white text-[10px] font-bold leading-none">3</span>
+          </div>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">description</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Relatórios</span>
+        </a>
+
+        <!-- 7. Permissões (1 Coluna) -->
+        <a href="../usuarios/Central-Permissoes.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">shield</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Permissões</span>
+        </a>
+      </div>
+
+      <!-- Rodapé: Sair & Fechar -->
+      <div class="pt-3 border-t border-[#f0f4f8] dark:border-[#223147] flex items-center justify-between">
+        <button type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#fb977d] hover:text-[#fa7a58] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span>Sair</span>
+        </button>
+
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="h-10 px-7 inline-flex items-center justify-center rounded-full bg-[#0085db] hover:bg-[#0074bf] text-white text-sm font-bold shadow-sm transition-colors active:scale-95 cursor-pointer">
+          Fechar
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- MODAIS INTEGRADOS PARA TABLET -->
+
+  <!-- Modal 1: Cadastrar Cartão / Conta Tablet -->
+  <div id="t-modal-cadastrar" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeCardModalTablet()"></div>
+    <div class="relative z-50 w-full max-w-md bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div>
+          <h2 class="text-base font-bold text-[#111c2d] dark:text-white">Cadastrar Cartão / Conta</h2>
+          <p class="text-xs text-[#707a82]">Adicione um novo meio de pagamento à obra.</p>
+        </div>
+        <button type="button" onclick="closeCardModalTablet()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleCadastrarTablet(event)" class="space-y-4 pt-4">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase mb-1.5">Apelido do Cartão / Conta *</label>
+          <input type="text" id="t-cad-apelido" required placeholder="Ex: Nubank Obra ou Bradesco Matriz" class="w-full h-11 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white uppercase font-bold">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase mb-1.5">Bandeira / Tipo *</label>
+            <select id="t-cad-tipo" class="w-full h-11 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold">
+              <option value="Mastercard">Mastercard</option>
+              <option value="Visa">Visa</option>
+              <option value="Elo">Elo</option>
+              <option value="Pix">Conta Corrente / Pix</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase mb-1.5">Últimos Dígitos</label>
+            <input type="text" id="t-cad-digitos" maxlength="4" placeholder="Ex: 4821" class="w-full h-11 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-mono font-bold">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" onclick="closeCardModalTablet()" class="h-10 px-4 text-xs font-semibold text-[#707a82] hover:text-[#111c2d] dark:hover:text-white rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="h-10 px-5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-sm transition-all cursor-pointer">
+            Salvar Cartão
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Editar Parcela Tablet -->
+  <div id="t-modal-editar" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeEditarModalTablet()"></div>
+    <div class="relative z-50 w-full max-w-md bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div>
+          <h2 class="text-base font-bold text-[#111c2d] dark:text-white">Editar Parcela</h2>
+          <p class="text-xs text-[#707a82]">Atualize o vencimento, valor ou status.</p>
+        </div>
+        <button type="button" onclick="closeEditarModalTablet()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSalvarEdicaoTablet(event)" class="space-y-4 pt-4">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase mb-1.5">Descrição da Compra</label>
+          <input type="text" id="t-edit-desc" required class="w-full h-11 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase mb-1.5">Vencimento</label>
+            <input type="date" id="t-edit-data" required class="w-full h-11 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-semibold">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase mb-1.5">Valor (R$)</label>
+            <input type="text" id="t-edit-valor" required class="w-full h-11 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold text-right">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase mb-1.5">Status da Parcela</label>
+          <select id="t-edit-status" class="w-full h-11 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-semibold">
+            <option value="avencer">A Vencer</option>
+            <option value="paga">Paga (Quitada)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" onclick="closeEditarModalTablet()" class="h-10 px-4 text-xs font-semibold text-[#707a82] hover:text-[#111c2d] dark:hover:text-white rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="h-10 px-5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-sm transition-all cursor-pointer">
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Excluir Parcela Tablet -->
+  <div id="t-modal-excluir" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeExcluirModalTablet()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 text-center overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 mx-auto flex items-center justify-center mb-3">
+        <span class="material-symbols-outlined text-[26px]">delete</span>
+      </div>
+      <h3 class="text-base font-bold text-[#111c2d] dark:text-white">Excluir Parcela?</h3>
+      <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mt-1 leading-relaxed">
+        Você tem certeza que deseja remover esta parcela? O registro financeiro será atualizado.
+      </p>
+
+      <div class="my-4 p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-left text-xs space-y-1">
+        <div class="font-bold text-[#111c2d] dark:text-white" id="t-del-desc">Compra cimento e areia</div>
+        <div class="text-[#707a82] flex items-center justify-between">
+          <span id="t-del-data">Vence: 05/10/2026</span>
+          <strong class="text-rose-500" id="t-del-val">R$ 1.616,83</strong>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5">
+        <button type="button" onclick="closeExcluirModalTablet()" class="h-10 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" onclick="confirmExcluirTablet()" class="h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-sm transition-all cursor-pointer">
+          Confirmar Exclusão
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let tabletPeriodMode = 'mes';
+    let tCurrentPage = 1;
+    let itemPendingDelete = null;
+
+    function setTabletPeriodMode(mode) {
+      tabletPeriodMode = mode;
+      const btnMes = document.getElementById('t-filter-periodo-mes-btn');
+      const btnTodo = document.getElementById('t-filter-periodo-todo-btn');
+      const selectors = document.getElementById('t-selectors-container');
+      const label = document.getElementById('t-period-summary-label');
+
+      if (mode === 'mes') {
+        btnMes.className = "h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs leading-none";
+        btnTodo.className = "h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer text-[#707a82] dark:text-[#7c8fac] font-semibold hover:text-[#111c2d] dark:hover:text-white leading-none";
+        selectors.classList.remove('hidden');
+        applyTabletPeriodFilter();
+      } else {
+        btnTodo.className = "h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs leading-none";
+        btnMes.className = "h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer text-[#707a82] dark:text-[#7c8fac] font-semibold hover:text-[#111c2d] dark:hover:text-white leading-none";
+        selectors.classList.add('hidden');
+        label.innerText = "Todo o Período";
+      }
+    }
+
+    function applyTabletPeriodFilter() {
+      if (tabletPeriodMode === 'todo') return;
+      const mesSelect = document.getElementById('t-filter-mes-select');
+      const anoSelect = document.getElementById('t-filter-ano-select');
+      const mesName = mesSelect.options[mesSelect.selectedIndex].text.replace(' (Atual)', '');
+      const ano = anoSelect.value;
+      document.getElementById('t-period-summary-label').innerText = `${mesName} / ${ano}`;
+    }
+
+    function scrollTabletCards(direction) {
+      const slider = document.getElementById('t-cards-slider');
+      if (slider) slider.scrollBy({ left: direction * 360, behavior: 'smooth' });
+    }
+
+    function goTabletPage(page) {
+      tCurrentPage = page;
+      document.getElementById('t-pag-current').innerText = page;
+      document.getElementById('t-btn-prev').disabled = page === 1;
+      document.getElementById('t-btn-next').disabled = page === 3;
+      const btns = document.querySelectorAll('#t-pag-window button');
+      btns.forEach((btn, idx) => {
+        if (idx + 1 === page) {
+          btn.className = "w-8 h-8 rounded-xl bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all duration-200 cursor-pointer transform scale-105";
+        } else {
+          btn.className = "w-8 h-8 rounded-xl text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] text-xs font-semibold transition-all duration-200 cursor-pointer";
+        }
+      });
+    }
+
+    function changeTabletPage(delta) {
+      const target = tCurrentPage + delta;
+      if (target >= 1 && target <= 3) goTabletPage(target);
+    }
+
+    // Modal Cadastrar
+    function openCardModalTablet() {
+      document.getElementById('t-modal-cadastrar').classList.remove('hidden');
+    }
+    function closeCardModalTablet() {
+      document.getElementById('t-modal-cadastrar').classList.add('hidden');
+    }
+    function handleCadastrarTablet(e) {
+      e.preventDefault();
+      closeCardModalTablet();
+      alert('Cartão cadastrado com sucesso!');
+    }
+
+    // Modal Editar
+    function openEditarParcelaTablet(desc, parc, total, valor, data, status) {
+      document.getElementById('t-edit-desc').value = desc;
+      document.getElementById('t-edit-valor').value = `R$ ${parseFloat(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      document.getElementById('t-edit-data').value = data;
+      document.getElementById('t-edit-status').value = status;
+      document.getElementById('t-modal-editar').classList.remove('hidden');
+    }
+    function closeEditarModalTablet() {
+      document.getElementById('t-modal-editar').classList.add('hidden');
+    }
+    function handleSalvarEdicaoTablet(e) {
+      e.preventDefault();
+      closeEditarModalTablet();
+      alert('Parcela atualizada com sucesso!');
+    }
+
+    // Modal Excluir
+    function openExcluirParcelaTablet(btn, desc, valor, data) {
+      itemPendingDelete = btn.closest('tr');
+      document.getElementById('t-del-desc').innerText = desc;
+      document.getElementById('t-del-data').innerText = `Vence: ${data}`;
+      document.getElementById('t-del-val').innerText = valor;
+      document.getElementById('t-modal-excluir').classList.remove('hidden');
+    }
+    function closeExcluirModalTablet() {
+      document.getElementById('t-modal-excluir').classList.add('hidden');
+      itemPendingDelete = null;
+    }
+    function confirmExcluirTablet() {
+      if (itemPendingDelete) {
+        itemPendingDelete.remove();
+      }
+      closeExcluirModalTablet();
+    }
+  </script>
+
+
+</body></html>

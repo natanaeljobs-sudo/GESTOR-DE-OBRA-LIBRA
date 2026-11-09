@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Trabalhador, Diaria } from '../../types';
+import { Diaria } from '../../types';
 import { formatBRL } from '../../utils/currency';
 import { formatDateBR, getTodayISO, getWeekRange, getDayOfWeekName } from '../../utils/date';
 import {
@@ -11,10 +11,8 @@ import {
   ChevronRight,
   Calendar,
   CheckCircle2,
-  Clock,
   Pencil,
   Trash2,
-  CheckCheck,
   X,
 } from 'lucide-react';
 
@@ -41,7 +39,7 @@ export const MaoDeObraView: React.FC = () => {
   const [diariaToDelete, setDiariaToDelete] = useState<Diaria | null>(null);
   const [editingDiaria, setEditingDiaria] = useState<Diaria | null>(null);
 
-  // Pagination state (1 week per page)
+  // Pagination state (1 week per page, up to 5 numbered buttons sliding window)
   const [currentWeekPage, setCurrentWeekPage] = useState<number>(1);
 
   // Toast feedback state
@@ -62,6 +60,7 @@ export const MaoDeObraView: React.FC = () => {
   const [valorAdicional, setValorAdicional] = useState<string>('0');
   const [descricaoAdicional, setDescricaoAdicional] = useState('');
   const [etapaId, setEtapaId] = useState(activeObra.etapaAtualId || 'etapa-2');
+  const [editStatus, setEditStatus] = useState<'pendente' | 'pago'>('pendente');
 
   // Form for Worker modal
   const [trabNome, setTrabNome] = useState('');
@@ -88,6 +87,7 @@ export const MaoDeObraView: React.FC = () => {
     setValorAdicional('0');
     setDescricaoAdicional('');
     setEtapaId(activeObra.etapaAtualId || 'etapa-2');
+    setEditStatus('pendente');
   };
 
   const handleOpenEditDiaria = (dia: Diaria) => {
@@ -99,6 +99,7 @@ export const MaoDeObraView: React.FC = () => {
     setValorAdicional(String(dia.valorAdicional || 0));
     setDescricaoAdicional(dia.descricaoAdicional || '');
     setEtapaId(dia.etapaId || activeObra.etapaAtualId || 'etapa-2');
+    setEditStatus(dia.statusPagamento);
     setIsDiariaModalOpen(true);
   };
 
@@ -147,7 +148,7 @@ export const MaoDeObraView: React.FC = () => {
     return Object.values(weeksMap).sort((a, b) => b.segunda.localeCompare(a.segunda));
   }, [diarias]);
 
-  // Overall totals
+  // Overall totals for Ceiling tracker
   const totalMaoDeObra = diarias.reduce((sum, d) => sum + d.valorTotal, 0);
   const totalPagas = diarias.filter(d => d.statusPagamento === 'pago').reduce((sum, d) => sum + d.valorTotal, 0);
   const totalPendentes = diarias.filter(d => d.statusPagamento === 'pendente').reduce((sum, d) => sum + d.valorTotal, 0);
@@ -185,6 +186,33 @@ export const MaoDeObraView: React.FC = () => {
   const safeCurrentPage = Math.min(Math.max(1, currentWeekPage), totalPages);
   const activeWeek = filteredWeeks[safeCurrentPage - 1];
 
+  // Sliding window pagination (up to 5 buttons max with ellipsis)
+  const paginationWindow = useMemo(() => {
+    const maxVisible = 5;
+    if (totalPages <= maxVisible) {
+      return {
+        pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+        hasLeftEllipsis: false,
+        hasRightEllipsis: false,
+      };
+    }
+    let start = Math.max(1, safeCurrentPage - Math.floor(maxVisible / 2));
+    let end = start + maxVisible - 1;
+    if (end > totalPages) {
+      end = totalPages;
+      start = end - maxVisible + 1;
+    }
+    const pages: number[] = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return {
+      pages,
+      hasLeftEllipsis: start > 1,
+      hasRightEllipsis: end < totalPages,
+    };
+  }, [safeCurrentPage, totalPages]);
+
   const handleSaveDiaria = (e: React.FormEvent) => {
     e.preventDefault();
     const trab = trabalhadores.find(t => t.id === trabalhadorId);
@@ -207,8 +235,9 @@ export const MaoDeObraView: React.FC = () => {
         descricaoAdicional: adicional > 0 ? descricaoAdicional : undefined,
         valorTotal: total,
         etapaId,
+        statusPagamento: editStatus,
       });
-      showToast('Diária Atualizada', `Lançamento de ${trab.nome} atualizado com sucesso.`);
+      showToast('Diária Atualizada', `Lançamento de ${trab.nome} atualizado.`);
     } else {
       addDiaria({
         obraId: activeObra.id,
@@ -253,17 +282,6 @@ export const MaoDeObraView: React.FC = () => {
     setTrabValorDiaria(180);
   };
 
-  const handleExecutePagarSemana = (trabalhadorTargetId: string, weekDiarias: Diaria[]) => {
-    const pendentes = weekDiarias
-      .filter(d => d.trabalhadorId === trabalhadorTargetId && d.statusPagamento === 'pendente')
-      .map(d => d.id);
-
-    if (pendentes.length === 0) return;
-
-    const trab = trabalhadores.find(t => t.id === trabalhadorTargetId);
-    marcarDiariasPagas(pendentes);
-    showToast('Pagamento Confirmado', `Diárias de ${trab?.nome || 'trabalhador'} marcadas como pagas.`);
-  };
 
   const getShortDayName = (isoDate: string) => {
     const fullName = getDayOfWeekName(isoDate);
@@ -283,10 +301,10 @@ export const MaoDeObraView: React.FC = () => {
   const previewTotal = fracao * valorDiariaBase + adicionalNum;
 
   return (
-    <div className="space-y-4 md:space-y-6 pb-20 lg:pb-8 animate-in fade-in duration-150 max-w-4xl mx-auto w-full">
+    <div className="space-y-4 md:space-y-6 pb-20 lg:pb-8 animate-in fade-in duration-150 w-full max-w-5xl mx-auto">
 
       {/* ============================================================== */}
-      {/* 1. CABEÇALHO & AÇÕES (MOBILE vs TABLET/DESKTOP)                 */}
+      {/* 1. CABEÇALHO & AÇÕES                                           */}
       {/* ============================================================== */}
       
       {/* Mobile: Título empilhado + Botões em Grid 2 Colunas */}
@@ -324,24 +342,24 @@ export const MaoDeObraView: React.FC = () => {
       </div>
 
       {/* Tablet / Desktop: Título à esquerda e Botões à direita */}
-      <div className="hidden md:flex items-center justify-between gap-4">
+      <div className="hidden md:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111c2d] dark:text-white">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white">
             Diárias
           </h1>
-          <p className="text-xs text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+          <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
             Controle semanal e pagamentos de mão de obra.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3 shrink-0">
           <button
             type="button"
             onClick={() => setIsTrabModalOpen(true)}
-            className="h-10 px-4 inline-flex items-center gap-2 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]"
+            className="inline-flex items-center justify-center gap-2 h-10 px-4 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#0085db] rounded-xl transition-all shadow-xs cursor-pointer active:scale-95"
           >
             <UserPlus className="w-4.5 h-4.5 text-[#0085db]" />
-            <span>Novo Trabalhador</span>
+            <span className="leading-none">Novo Trabalhador</span>
           </button>
           <button
             type="button"
@@ -349,16 +367,16 @@ export const MaoDeObraView: React.FC = () => {
               resetDiariaForm();
               setIsDiariaModalOpen(true);
             }}
-            className="h-10 px-4 inline-flex items-center gap-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 h-10 px-5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer"
           >
             <Plus className="w-4.5 h-4.5" />
-            <span>Lançar Diária</span>
+            <span className="leading-none">Lançar Diária</span>
           </button>
         </div>
       </div>
 
       {/* ============================================================== */}
-      {/* 2. CARD CONTROLE DO TETO (MOBILE vs TABLET/DESKTOP)             */}
+      {/* 2. CARD CONTROLE DO TETO FECHADO (MOBILE vs TABLET/DESKTOP)     */}
       {/* ============================================================== */}
 
       {/* Versão Mobile */}
@@ -427,42 +445,42 @@ export const MaoDeObraView: React.FC = () => {
       </div>
 
       {/* Versão Tablet / Desktop */}
-      <div className="hidden md:block bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+      <div className="hidden md:block bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] md:rounded-[20px] p-5 md:p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e6ecf1] dark:border-[#333f55]">
           <div>
             <span className="text-xs font-bold text-[#0085db] uppercase tracking-wider">
               Controle do Teto Fechado de Mão de Obra
             </span>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-2xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
                 {formatBRL(totalMaoDeObra)}
               </span>
               <span className="text-xs text-[#707a82]">
-                de <strong className="text-[#111c2d] dark:text-white">{formatBRL(teto)}</strong>
+                de <strong className="text-[#111c2d] dark:text-white tabular-nums">{formatBRL(teto)}</strong>
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-5 text-xs text-center">
-            <div>
-              <span className="text-[#707a82] block text-[10px] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-4 text-xs">
+            <div className="text-center">
+              <span className="text-[#707a82] dark:text-[#7c8fac] block text-[10px] font-bold uppercase tracking-wider">
                 TOTAL PAGO
               </span>
               <span className="font-bold text-[#4bd08b] text-sm tabular-nums block mt-0.5">
                 {formatBRL(totalPagas)}
               </span>
             </div>
-            <div className="border-l border-[#e6ecf1] dark:border-[#333f55] pl-5">
-              <span className="text-[#707a82] block text-[10px] font-bold uppercase tracking-wider">
-                A PAGAR
+            <div className="border-l border-[#e6ecf1] dark:border-[#333f55] pl-4 text-center">
+              <span className="text-[#707a82] dark:text-[#7c8fac] block text-[10px] font-bold uppercase tracking-wider">
+                A PAGAR (PENDENTE)
               </span>
               <span className="font-bold text-[#f8c076] text-sm tabular-nums block mt-0.5">
                 {formatBRL(totalPendentes)}
               </span>
             </div>
-            <div className="border-l border-[#e6ecf1] dark:border-[#333f55] pl-5">
-              <span className="text-[#707a82] block text-[10px] font-bold uppercase tracking-wider">
-                SALDO
+            <div className="border-l border-[#e6ecf1] dark:border-[#333f55] pl-4 text-center">
+              <span className="text-[#707a82] dark:text-[#7c8fac] block text-[10px] font-bold uppercase tracking-wider">
+                SALDO DISPONÍVEL
               </span>
               <span className="font-bold text-[#111c2d] dark:text-white text-sm tabular-nums block mt-0.5">
                 {formatBRL(saldoTeto)}
@@ -483,7 +501,7 @@ export const MaoDeObraView: React.FC = () => {
               style={{ width: `${Math.min(100, (totalPendentes / teto) * 100)}%` }}
             />
           </div>
-          <div className="flex justify-between text-[11px] text-[#707a82]">
+          <div className="flex justify-between text-[11px] text-[#707a82] dark:text-[#7c8fac]">
             <span className="font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
               {pctTeto}% DO TETO UTILIZADO
             </span>
@@ -574,20 +592,20 @@ export const MaoDeObraView: React.FC = () => {
       </div>
 
       {/* Filtros Tablet / Desktop */}
-      <div className="hidden md:flex bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3.5 items-center justify-between gap-3 shadow-xs">
-        <div className="flex items-center gap-3">
+      <div className="hidden md:flex bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3.5 md:p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex-col sm:flex-row gap-3 items-center justify-between">
+        <div className="flex items-center gap-3 w-full sm:w-auto flex-wrap">
           <select
             value={selectedTrabId}
             onChange={e => {
               setSelectedTrabId(e.target.value);
               setCurrentWeekPage(1);
             }}
-            className="h-10 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer"
+            className="h-10 px-3.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer focus:ring-2 focus:ring-[#0085db]/40"
           >
             <option value="todos">Todos os Trabalhadores ({trabalhadores.length})</option>
             {trabalhadores.map(t => (
               <option key={t.id} value={t.id}>
-                {t.nome} ({t.funcao})
+                {t.nome} ({t.funcao} · {formatBRL(t.valorDiariaPadrao)})
               </option>
             ))}
           </select>
@@ -599,7 +617,7 @@ export const MaoDeObraView: React.FC = () => {
                 setStatusFilter('todos');
                 setCurrentWeekPage(1);
               }}
-              className={`h-8 px-3 rounded-lg text-xs transition-all cursor-pointer ${
+              className={`h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer leading-none ${
                 statusFilter === 'todos'
                   ? 'bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs'
                   : 'text-[#707a82]'
@@ -613,7 +631,7 @@ export const MaoDeObraView: React.FC = () => {
                 setStatusFilter('pendente');
                 setCurrentWeekPage(1);
               }}
-              className={`h-8 px-3 rounded-lg text-xs transition-all cursor-pointer ${
+              className={`h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer leading-none ${
                 statusFilter === 'pendente'
                   ? 'bg-white dark:bg-[#111c2d] text-[#d9941a] dark:text-[#f8c076] font-bold shadow-xs'
                   : 'text-[#707a82]'
@@ -627,7 +645,7 @@ export const MaoDeObraView: React.FC = () => {
                 setStatusFilter('pago');
                 setCurrentWeekPage(1);
               }}
-              className={`h-8 px-3 rounded-lg text-xs transition-all cursor-pointer ${
+              className={`h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer leading-none ${
                 statusFilter === 'pago'
                   ? 'bg-white dark:bg-[#111c2d] text-[#4bd08b] font-bold shadow-xs'
                   : 'text-[#707a82]'
@@ -641,63 +659,22 @@ export const MaoDeObraView: React.FC = () => {
         <button
           type="button"
           onClick={() => navigateToTabWithFilter('recibos')}
-          className="h-10 px-4 inline-flex items-center gap-2 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:text-[#0085db] rounded-xl shadow-xs cursor-pointer active:scale-95 transition-all"
+          className="w-full sm:w-auto h-10 inline-flex items-center justify-center gap-2 px-4 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#0085db] rounded-xl transition-all shadow-xs cursor-pointer active:scale-95 shrink-0"
         >
           <Receipt className="w-4.5 h-4.5 text-[#0085db]" />
-          <span>Gerar recibo</span>
+          <span className="leading-none">Gerar recibo</span>
         </button>
       </div>
 
       {/* ============================================================== */}
-      {/* 4. PAGINAÇÃO SEMANAL (MOBILE vs TABLET/DESKTOP)                 */}
+      {/* 4. BARRA DE PAGINAÇÃO SEMANAL (JANELA DE ATÉ 5 BOTÕES)          */}
       {/* ============================================================== */}
 
       {/* Paginação Mobile */}
-      <div className="flex md:hidden bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl px-3.5 py-2.5 items-center justify-between shadow-xs">
-        <span className="text-xs text-[#707a82]">
+      <div className="flex md:hidden bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-3.5 py-2.5 items-center justify-between shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+        <div className="text-xs text-[#707a82] dark:text-[#7c8fac]">
           Semana <strong className="text-[#111c2d] dark:text-white">{safeCurrentPage}</strong> de{' '}
-          <strong>{totalPages}</strong>
-        </span>
-
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => setCurrentWeekPage(p => Math.max(1, p - 1))}
-            disabled={safeCurrentPage === 1}
-            className="w-7 h-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] disabled:opacity-40 flex items-center justify-center cursor-pointer"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-            <button
-              key={pageNum}
-              type="button"
-              onClick={() => setCurrentWeekPage(pageNum)}
-              className={`w-7 h-7 rounded-lg text-xs flex items-center justify-center cursor-pointer transition-all ${
-                pageNum === safeCurrentPage
-                  ? 'bg-[#0085db] text-white font-bold'
-                  : 'text-[#707a82]'
-              }`}
-            >
-              {pageNum}
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => setCurrentWeekPage(p => Math.min(totalPages, p + 1))}
-            disabled={safeCurrentPage === totalPages}
-            className="w-7 h-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white disabled:opacity-40 flex items-center justify-center cursor-pointer"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Paginação Tablet / Desktop */}
-      <div className="hidden md:flex bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-4 py-3 items-center justify-between shadow-xs">
-        <div className="text-xs text-[#707a82]">
-          Semana <strong className="text-[#111c2d] dark:text-white">{safeCurrentPage}</strong> de{' '}
-          <strong>{totalPages}</strong>
+          <strong className="text-[#111c2d] dark:text-white">{totalPages}</strong>
         </div>
 
         <div className="flex items-center gap-1.5">
@@ -705,29 +682,94 @@ export const MaoDeObraView: React.FC = () => {
             type="button"
             onClick={() => setCurrentWeekPage(p => Math.max(1, p - 1))}
             disabled={safeCurrentPage === 1}
-            className="w-8 h-8 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] disabled:opacity-40 flex items-center justify-center cursor-pointer"
+            title="Semana Anterior"
+            className="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
           >
             <ChevronLeft className="w-4.5 h-4.5" />
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-            <button
-              key={pageNum}
-              type="button"
-              onClick={() => setCurrentWeekPage(pageNum)}
-              className={`w-8 h-8 rounded-xl text-xs flex items-center justify-center cursor-pointer transition-all ${
-                pageNum === safeCurrentPage
-                  ? 'bg-[#0085db] text-white font-bold shadow-xs'
-                  : 'text-[#707a82]'
-              }`}
-            >
-              {pageNum}
-            </button>
-          ))}
+
+          <div className="flex items-center gap-1 px-1 transition-all duration-300">
+            {paginationWindow.hasLeftEllipsis && (
+              <span className="text-[#707a82] text-[10px] px-0.5 select-none">···</span>
+            )}
+            {paginationWindow.pages.map(pageNum => (
+              <button
+                key={pageNum}
+                type="button"
+                onClick={() => setCurrentWeekPage(pageNum)}
+                className={`w-8 h-8 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                  pageNum === safeCurrentPage
+                    ? 'font-bold bg-[#0085db] text-white shadow-xs transform scale-105'
+                    : 'text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white'
+                }`}
+              >
+                {pageNum}
+              </button>
+            ))}
+            {paginationWindow.hasRightEllipsis && (
+              <span className="text-[#707a82] text-[10px] px-0.5 select-none">···</span>
+            )}
+          </div>
+
           <button
             type="button"
             onClick={() => setCurrentWeekPage(p => Math.min(totalPages, p + 1))}
             disabled={safeCurrentPage === totalPages}
-            className="w-8 h-8 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white disabled:opacity-40 flex items-center justify-center cursor-pointer"
+            title="Semana Seguinte"
+            className="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          >
+            <ChevronRight className="w-4.5 h-4.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Paginação Tablet / Desktop */}
+      <div className="hidden md:flex bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-4 py-3 flex-col sm:flex-row items-center justify-between gap-3 shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+        <div className="text-xs text-[#707a82] dark:text-[#7c8fac]">
+          Semana <strong className="text-[#111c2d] dark:text-white">{safeCurrentPage}</strong> de{' '}
+          <strong className="text-[#111c2d] dark:text-white">{totalPages}</strong>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setCurrentWeekPage(p => Math.max(1, p - 1))}
+            disabled={safeCurrentPage === 1}
+            title="Semana Anterior"
+            className="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          >
+            <ChevronLeft className="w-4.5 h-4.5" />
+          </button>
+
+          <div className="flex items-center gap-1 px-1 transition-all duration-300">
+            {paginationWindow.hasLeftEllipsis && (
+              <span className="text-[#707a82] text-xs px-0.5 select-none">···</span>
+            )}
+            {paginationWindow.pages.map(pageNum => (
+              <button
+                key={pageNum}
+                type="button"
+                onClick={() => setCurrentWeekPage(pageNum)}
+                className={`w-8 h-8 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                  pageNum === safeCurrentPage
+                    ? 'font-bold bg-[#0085db] text-white shadow-xs transform scale-105'
+                    : 'text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white'
+                }`}
+              >
+                {pageNum}
+              </button>
+            ))}
+            {paginationWindow.hasRightEllipsis && (
+              <span className="text-[#707a82] text-xs px-0.5 select-none">···</span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setCurrentWeekPage(p => Math.min(totalPages, p + 1))}
+            disabled={safeCurrentPage === totalPages}
+            title="Semana Seguinte"
+            className="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
           >
             <ChevronRight className="w-4.5 h-4.5" />
           </button>
@@ -826,11 +868,11 @@ export const MaoDeObraView: React.FC = () => {
           </div>
 
           {/* MODO TABLET / DESKTOP: Tabela da Semana Completa */}
-          <div className="hidden md:block bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <div className="hidden md:block bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] md:rounded-[20px] p-5 md:p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4.5 h-4.5 text-[#0085db]" />
-                <h2 className="text-base font-bold text-[#111c2d] dark:text-white">
+                <h2 className="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white">
                   Semana: {activeWeek.weekLabel}
                 </h2>
                 {activeWeek.isQuitada && (
@@ -840,57 +882,20 @@ export const MaoDeObraView: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <span className="text-[#707a82] block text-[10px] font-bold uppercase tracking-wider">
-                    TOTAL DA SEMANA
-                  </span>
-                  <span className="text-base font-black text-[#111c2d] dark:text-white tabular-nums">
-                    {formatBRL(activeWeek.totalSemana)}
-                  </span>
-                </div>
-
-                {!activeWeek.isQuitada && (() => {
-                  const workersWithPending = Array.from(
-                    new Set(
-                      activeWeek.diarias
-                        .filter(d => d.statusPagamento === 'pendente')
-                        .map(d => d.trabalhadorId)
-                    )
-                  );
-                  if (workersWithPending.length === 0) return null;
-
-                  return (
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {workersWithPending.map(wId => {
-                        const trab = trabalhadores.find(t => t.id === wId);
-                        const trabPendingTotal = activeWeek.diarias
-                          .filter(d => d.trabalhadorId === wId && d.statusPagamento === 'pendente')
-                          .reduce((sum, d) => sum + d.valorTotal, 0);
-
-                        return (
-                          <button
-                            key={wId}
-                            type="button"
-                            onClick={() => handleExecutePagarSemana(wId, activeWeek.diarias)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] rounded-xl shadow-xs transition-colors cursor-pointer"
-                            title={`Marcar diárias pendentes de ${trab?.nome} como pagas`}
-                          >
-                            <CheckCheck className="w-3.5 h-3.5" />
-                            <span>Pagar: {trab?.nome?.split(' ')[0]} ({formatBRL(trabPendingTotal)})</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  );
-                })()}
+              <div className="text-right">
+                <span className="text-[#707a82] dark:text-[#7c8fac] block text-[10px] md:text-[11px] font-bold uppercase tracking-wider">
+                  TOTAL DA SEMANA
+                </span>
+                <span className="text-base sm:text-lg font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight">
+                  {formatBRL(activeWeek.totalSemana)}
+                </span>
               </div>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] font-bold text-[11px] uppercase tracking-wider">
+                  <tr className="border-b border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] font-bold text-[11px] uppercase tracking-wider">
                     <th className="pb-3">Data / Dia</th>
                     <th className="pb-3">Trabalhador</th>
                     <th className="pb-3">Fração</th>
@@ -906,11 +911,11 @@ export const MaoDeObraView: React.FC = () => {
                     const isPago = dia.statusPagamento === 'pago';
                     return (
                       <tr key={dia.id} className="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]">
-                        <td className="py-3 font-semibold whitespace-nowrap">
-                          {formatDateBR(dia.data)} · <span className="text-[#707a82] capitalize">{dayName}</span>
+                        <td className="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                          <span>{formatDateBR(dia.data)}</span> · <span className="text-[#707a82] capitalize">{dayName}</span>
                         </td>
-                        <td className="py-3 font-bold uppercase">{dia.trabalhadorNome}</td>
-                        <td className="py-3 text-[#707a82]">
+                        <td className="py-3 font-bold text-[#111c2d] dark:text-white uppercase">{dia.trabalhadorNome}</td>
+                        <td className="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
                           {dia.fracao === 1
                             ? '1.0 (Integral)'
                             : dia.fracao === 0.5
@@ -919,10 +924,10 @@ export const MaoDeObraView: React.FC = () => {
                             ? '1.5 (Diária e Meia)'
                             : `${dia.fracao} (Diária)`}
                         </td>
-                        <td className="py-3 text-[#707a82] tabular-nums">
+                        <td className="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
                           {formatBRL(dia.valorDiariaBase || 180)}
                         </td>
-                        <td className="py-3 text-right font-black tabular-nums">
+                        <td className="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">
                           {formatBRL(dia.valorTotal)}
                         </td>
                         <td className="py-3 text-center">
@@ -930,7 +935,7 @@ export const MaoDeObraView: React.FC = () => {
                             className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                               isPago
                                 ? 'bg-[#4bd08b]/15 text-[#4bd08b]'
-                                : 'bg-[#f8c076]/20 text-[#d9941a]'
+                                : 'bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076]'
                             }`}
                           >
                             {isPago ? 'Pago' : 'A Pagar'}
@@ -988,7 +993,7 @@ export const MaoDeObraView: React.FC = () => {
                   {editingDiaria ? 'Editar Diária de Trabalho' : 'Lançar Diária de Trabalho'}
                 </h2>
                 <p className="text-[10px] md:text-xs text-[#707a82]">
-                  Registre o dia trabalhado e fração.
+                  {editingDiaria ? 'Atualize o dia trabalhado, fração ou status.' : 'Registre o dia trabalhado e fração.'}
                 </p>
               </div>
               <button
@@ -1012,7 +1017,7 @@ export const MaoDeObraView: React.FC = () => {
                   required
                   value={trabalhadorId}
                   onChange={e => handleSelectWorker(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-medium"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-medium cursor-pointer"
                 >
                   {trabalhadores.map(t => (
                     <option key={t.id} value={t.id}>
@@ -1043,7 +1048,7 @@ export const MaoDeObraView: React.FC = () => {
                   <select
                     value={fracao}
                     onChange={e => setFracao(parseFloat(e.target.value))}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer"
                   >
                     <option value={1.0}>1.0 (Integral)</option>
                     <option value={0.5}>0.5 (Meio Período)</option>
@@ -1052,6 +1057,65 @@ export const MaoDeObraView: React.FC = () => {
                   </select>
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5">
+                    Valor Diária (R$)
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={valorDiariaBase}
+                    onChange={e => setValorDiariaBase(parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5">
+                    Adicional / Extra (R$)
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={valorAdicional}
+                    onChange={e => setValorAdicional(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                  />
+                </div>
+              </div>
+
+              {adicionalNum > 0 && (
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5">
+                    Justificativa do Adicional
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Horas extras para concretagem da viga..."
+                    value={descricaoAdicional}
+                    onChange={e => setDescricaoAdicional(e.target.value)}
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                  />
+                </div>
+              )}
+
+              {editingDiaria && (
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5">
+                    Status de Pagamento
+                  </label>
+                  <select
+                    value={editStatus}
+                    onChange={e => setEditStatus(e.target.value as 'pendente' | 'pago')}
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer"
+                  >
+                    <option value="pendente">A Pagar (Pendente)</option>
+                    <option value="pago">Pago (Quitado)</option>
+                  </select>
+                </div>
+              )}
 
               <div className="p-3.5 bg-[#f6f9fc] dark:bg-[#1a2535] rounded-xl text-xs flex justify-between items-center border border-[#e6ecf1] dark:border-[#333f55]">
                 <span className="text-[#707a82]">Total previsto a pagar:</span>
@@ -1073,7 +1137,7 @@ export const MaoDeObraView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs cursor-pointer"
+                  className="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs cursor-pointer active:scale-95 transition-all"
                 >
                   {editingDiaria ? 'Salvar Alterações' : 'Salvar Diária'}
                 </button>
@@ -1118,7 +1182,7 @@ export const MaoDeObraView: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Ex: Carlos Andrade"
+                  placeholder="Ex: Lucas Ferreira de Souza"
                   value={trabNome}
                   onChange={e => setTrabNome(e.target.value)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
@@ -1133,13 +1197,16 @@ export const MaoDeObraView: React.FC = () => {
                   <select
                     value={trabFuncao}
                     onChange={e => setTrabFuncao(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer"
                   >
                     <option value="Pedreiro">Pedreiro</option>
                     <option value="Ajudante">Ajudante</option>
                     <option value="Carpinteiro">Carpinteiro</option>
+                    <option value="Armador">Armador</option>
                     <option value="Eletricista">Eletricista</option>
+                    <option value="Encanador">Encanador</option>
                     <option value="Servente">Servente</option>
+                    <option value="Encarregado de Obra">Encarregado de Obra</option>
                   </select>
                 </div>
 
@@ -1158,6 +1225,34 @@ export const MaoDeObraView: React.FC = () => {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5">
+                    CPF
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="000.000.000-00"
+                    value={trabCpf}
+                    onChange={e => setTrabCpf(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5">
+                    Chave PIX
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="CPF, celular ou e-mail"
+                    value={trabChavePix}
+                    onChange={e => setTrabChavePix(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                  />
+                </div>
+              </div>
+
               <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2.5">
                 <button
                   type="button"
@@ -1168,7 +1263,7 @@ export const MaoDeObraView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs cursor-pointer"
+                  className="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs cursor-pointer active:scale-95 transition-all"
                 >
                   Cadastrar Trabalhador
                 </button>
@@ -1245,7 +1340,7 @@ export const MaoDeObraView: React.FC = () => {
 
       {/* 4. Notificação Toast */}
       {toast && (
-        <div className="fixed bottom-20 md:bottom-20 right-4 left-4 md:left-auto md:right-6 z-50 animate-in slide-in-from-bottom-2 fade-in">
+        <div className="fixed bottom-20 md:bottom-6 right-4 left-4 md:left-auto md:right-6 z-50 animate-in slide-in-from-bottom-2 fade-in">
           <div className="inline-flex w-full md:w-auto items-center justify-between gap-2.5 px-3.5 md:px-4 py-2.5 rounded-xl md:rounded-2xl bg-[#111c2d] text-white shadow-xl border border-zinc-700/60">
             <div className="flex items-center gap-2 min-w-0">
               <CheckCircle2 className="w-4 h-4 text-[#4bd08b] shrink-0" />
