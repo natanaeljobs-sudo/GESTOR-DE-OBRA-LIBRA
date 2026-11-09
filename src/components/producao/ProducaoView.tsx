@@ -14,10 +14,6 @@ import {
   CheckCircle2,
   Check,
   AlertTriangle,
-  Ruler,
-  Hammer,
-  Layers,
-  TrendingDown,
   Package,
 } from 'lucide-react';
 
@@ -36,7 +32,6 @@ export const ProducaoView: React.FC = () => {
     totalPlacasProduzidas,
     totalMetrosBatidos,
     custoIndicativoTrilho,
-    totaisPorCategoria,
     activeUser,
   } = useApp();
 
@@ -188,15 +183,6 @@ export const ProducaoView: React.FC = () => {
     });
   }, [producao, activeObra.id, produtoFilter, searchTerm]);
 
-  // Total metros filtered
-  const filteredTotalMetros = useMemo(() => {
-    return filteredProducao.reduce((sum, item) => {
-      if (item.comprimentoMetros && item.comprimentoMetros > 0) {
-        return sum + item.quantidade * item.comprimentoMetros;
-      }
-      return sum;
-    }, 0);
-  }, [filteredProducao]);
 
   // Open Add Modal
   const handleOpenAddModal = () => {
@@ -300,84 +286,63 @@ export const ProducaoView: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Card 1: Metros Batidos (Total) */}
-        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-between transition-all hover:border-[#0085db]/40">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-center items-center text-center transition-all hover:border-[#0085db]/40">
+          <div className="flex items-center justify-center w-full">
+            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider text-center">
               METROS BATIDOS (TOTAL)
             </span>
-            <div className="w-8 h-8 rounded-xl bg-[#0085db]/10 dark:bg-[#0085db]/20 text-[#0085db] dark:text-[#46caeb] flex items-center justify-center shrink-0">
-              <Ruler className="w-4 h-4" />
-            </div>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 text-center w-full">
             <div className="text-2xl sm:text-3xl font-extrabold text-[#111c2d] dark:text-white tabular-nums tracking-tight">
               {totalMetrosBatidos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               <span className="text-sm font-bold text-[#707a82] dark:text-[#7c8fac] ml-1 uppercase">M</span>
             </div>
-            <p className="mt-1 text-[11px] text-[#707a82] dark:text-[#7c8fac]">
-              Metragem linear total fabricada na obra
-            </p>
           </div>
         </div>
 
         {/* Card 2: Total de Trilhos */}
-        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-between transition-all hover:border-[#0085db]/40">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-center items-center text-center transition-all hover:border-[#0085db]/40">
+          <div className="flex items-center justify-center w-full">
+            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider text-center">
               TOTAL DE TRILHOS
             </span>
-            <div className="w-8 h-8 rounded-xl bg-[#46caeb]/15 dark:bg-[#46caeb]/25 text-[#0085db] dark:text-[#46caeb] flex items-center justify-center shrink-0">
-              <Hammer className="w-4 h-4" />
-            </div>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 text-center w-full">
             <div className="text-2xl sm:text-3xl font-extrabold text-[#111c2d] dark:text-white tabular-nums tracking-tight">
               {totalTrilhosProduzidos}{' '}
               <span className="text-sm font-bold text-[#707a82] dark:text-[#7c8fac] uppercase">UND</span>
             </div>
-            <p className="mt-1 text-[11px] text-[#707a82] dark:text-[#7c8fac]">
-              Produzidos com treliça H8 sob medida
-            </p>
           </div>
         </div>
 
         {/* Card 3: Placas de Concreto */}
-        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-between transition-all hover:border-[#0085db]/40">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-center items-center text-center transition-all hover:border-[#0085db]/40">
+          <div className="flex items-center justify-center w-full">
+            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider text-center">
               PLACAS DE CONCRETO
             </span>
-            <div className="w-8 h-8 rounded-xl bg-[#4bd08b]/15 dark:bg-[#4bd08b]/25 text-[#168a53] dark:text-[#4bd08b] flex items-center justify-center shrink-0">
-              <Layers className="w-4 h-4" />
-            </div>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 text-center w-full">
             <div className="text-2xl sm:text-3xl font-extrabold text-[#111c2d] dark:text-white tabular-nums tracking-tight">
               {totalPlacasProduzidas}{' '}
               <span className="text-sm font-bold text-[#707a82] dark:text-[#7c8fac] uppercase">UND</span>
             </div>
-            <p className="mt-1 text-[11px] text-[#707a82] dark:text-[#7c8fac]">
-              Placas pré-moldadas para laje e calçada
-            </p>
           </div>
         </div>
 
         {/* Card 4: Custo Indicativo / Trilho */}
-        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-between transition-all hover:border-[#0085db]/40">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-xs flex flex-col justify-center items-center text-center transition-all hover:border-[#0085db]/40">
+          <div className="flex items-center justify-center w-full">
+            <span className="text-[11px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider text-center">
               CUSTO INDICATIVO / TRILHO
             </span>
-            <div className="w-8 h-8 rounded-xl bg-[#8763da]/15 dark:bg-[#8763da]/25 text-[#8763da] flex items-center justify-center shrink-0">
-              <TrendingDown className="w-4 h-4" />
-            </div>
           </div>
-          <div className="mt-2">
-            <div className="text-2xl sm:text-3xl font-extrabold text-[#8763da] tabular-nums tracking-tight">
+          <div className="mt-2 text-center w-full">
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#0085db] tabular-nums tracking-tight">
               {formatBRL(custoIndicativoTrilho)}
             </div>
-            <p className="mt-1 text-[11px] text-[#707a82] dark:text-[#7c8fac]">
-              Material ÷ Quantidade · Total alocado: {formatBRL(totaisPorCategoria.trilhos_producao || 0)}
+            <p className="mt-1 text-[11px] text-[#707a82] dark:text-[#7c8fac] text-center">
+              Material ÷ Quantidade
             </p>
           </div>
         </div>
@@ -385,7 +350,7 @@ export const ProducaoView: React.FC = () => {
       </div>
 
       {/* Filter Toolbar matching Materiais and Permissões view */}
-      <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3 sm:p-4 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3 sm:p-4 shadow-xs">
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           {/* Search Bar */}
           <div className="relative flex-1">
@@ -438,17 +403,6 @@ export const ProducaoView: React.FC = () => {
             </button>
           )}
         </div>
-
-        {/* Filter Summary row */}
-        <div className="flex items-center justify-between text-xs text-[#707a82] dark:text-[#7c8fac] pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
-          <span>{filteredProducao.length} lote(s) de fabricação encontrado(s)</span>
-          <span className="font-semibold text-[#111c2d] dark:text-white">
-            Metragem linear no filtro:{' '}
-            <strong className="text-[#0085db] tabular-nums font-bold">
-              {filteredTotalMetros.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m
-            </strong>
-          </span>
-        </div>
       </div>
 
       {/* Corporate Data Table matching Materiais and Permissões view */}
@@ -480,55 +434,22 @@ export const ProducaoView: React.FC = () => {
               ) : (
                 filteredProducao.map(item => {
                   const hasComprimento = item.comprimentoMetros !== undefined && item.comprimentoMetros > 0;
-                  const itemIsTrilho = isTrilho(item.produto);
-                  const itemIsPlaca = item.produto === 'placa_cimento' || item.produto.toLowerCase().includes('placa');
 
                   return (
                     <tr
                       key={item.id}
                       className="hover:bg-zinc-50/80 dark:hover:bg-[#162232]/60 transition-colors"
                     >
-                      {/* Product & Specifications Column matching MateriaisView avatar layout */}
+                      {/* Product & Specifications Column */}
                       <td className="py-3 px-5 sm:px-6">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                              itemIsTrilho
-                                ? 'bg-[#0085db]/10 text-[#0085db] dark:bg-[#0085db]/20 dark:text-[#46caeb]'
-                                : itemIsPlaca
-                                ? 'bg-[#4bd08b]/15 text-[#168a53] dark:bg-[#4bd08b]/20 dark:text-[#4bd08b]'
-                                : 'bg-[#8763da]/10 text-[#8763da] dark:bg-[#8763da]/20 dark:text-[#8763da]'
-                            }`}
-                          >
-                            {itemIsTrilho ? (
-                              <Hammer className="w-4 h-4" />
-                            ) : itemIsPlaca ? (
-                              <Layers className="w-4 h-4" />
-                            ) : (
-                              <Package className="w-4 h-4" />
-                            )}
-                          </div>
-                          <div>
-                            <span className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white block leading-tight">
-                              {item.especificacao || getProdutoLabel(item.produto)}
+                        <div>
+                          <span className="font-bold text-xs sm:text-sm text-[#111c2d] dark:text-white block leading-tight">
+                            {item.especificacao || getProdutoLabel(item.produto)}
+                          </span>
+                          <div className="flex items-center gap-1.5 flex-wrap text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-1">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] border border-[#e6ecf1] dark:border-[#333f55]">
+                              {getProdutoLabel(item.produto)}
                             </span>
-                            <div className="flex items-center gap-1.5 flex-wrap text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-1">
-                              <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                                  itemIsTrilho
-                                    ? 'bg-[#0085db]/10 text-[#0085db] dark:bg-[#0085db]/20 dark:text-[#46caeb]'
-                                    : itemIsPlaca
-                                    ? 'bg-[#4bd08b]/10 text-[#168a53] dark:bg-[#4bd08b]/20 dark:text-[#4bd08b]'
-                                    : 'bg-[#8763da]/10 text-[#8763da]'
-                                }`}
-                              >
-                                {getProdutoLabel(item.produto)}
-                              </span>
-                              <span>·</span>
-                              <span className="truncate max-w-[240px] sm:max-w-xs">
-                                Destino: {item.destino || activeObra.nome}
-                              </span>
-                            </div>
                           </div>
                         </div>
                       </td>
@@ -536,17 +457,17 @@ export const ProducaoView: React.FC = () => {
                       {/* Comprimento Column */}
                       <td className="py-3 px-4 sm:px-6 text-center tabular-nums align-middle">
                         {hasComprimento ? (
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white border border-[#e6ecf1] dark:border-[#333f55]">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] border border-[#e6ecf1] dark:border-[#333f55]">
                             {item.comprimentoMetros?.toFixed(2)} m
                           </span>
                         ) : (
-                          <span className="text-zinc-400">—</span>
+                          <span className="text-[#707a82] dark:text-[#7c8fac]">—</span>
                         )}
                       </td>
 
                       {/* Quantidade Column */}
                       <td className="py-3 px-4 sm:px-6 text-center align-middle">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black bg-[#0085db]/10 text-[#0085db] dark:bg-[#0085db]/20 dark:text-[#46caeb] border border-[#0085db]/20 tabular-nums">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] dark:text-[#7c8fac] border border-[#e6ecf1] dark:border-[#333f55] tabular-nums">
                           {item.quantidade} un
                         </span>
                       </td>
@@ -555,9 +476,6 @@ export const ProducaoView: React.FC = () => {
                       <td className="py-3 px-4 sm:px-6 align-middle">
                         <span className="font-bold text-xs text-[#111c2d] dark:text-white block tabular-nums">
                           {formatDateBR(item.data)}
-                        </span>
-                        <span className="text-[11px] text-[#707a82] dark:text-[#7c8fac] block mt-0.5">
-                          Lançado por {item.criadoPor || 'Alberto'}
                         </span>
                       </td>
 
@@ -591,20 +509,6 @@ export const ProducaoView: React.FC = () => {
           </table>
         </div>
 
-        {/* Table Footer matching MateriaisView */}
-        {filteredProducao.length > 0 && (
-          <div className="p-3.5 px-5 sm:px-6 border-t border-[#e6ecf1] dark:border-[#333f55] bg-zinc-50/50 dark:bg-[#162232]/30 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#707a82] dark:text-[#7c8fac]">
-            <span>
-              Exibindo <strong>{filteredProducao.length}</strong> lote(s) de fabricação
-            </span>
-            <span className="font-medium text-[#111c2d] dark:text-white">
-              Total linear batido:{' '}
-              <strong className="text-[#0085db] font-bold tabular-nums">
-                {filteredTotalMetros.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m
-              </strong>
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Modal: New / Edit Production Batch matching Materiais view */}

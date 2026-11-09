@@ -475,110 +475,124 @@ export const DashboardView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Latest Expenses */}
-        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none">
-          <div className="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55] mb-3">
-            <div className="flex items-center gap-2">
-              <Receipt className="w-4 h-4 text-[#0085db]" />
-              <h3 className="text-sm font-bold text-[#111c2d] dark:text-white">
-                Últimas Compras & Notas
-              </h3>
-            </div>
-            <button
-              onClick={() => navigateToTabWithFilter('despesas')}
-              className="text-xs font-semibold text-[#0085db] hover:underline cursor-pointer"
-            >
-              Ver todas ({despesas.length})
-            </button>
-          </div>
-
-          <div className="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
-            {recentDespesas.map(d => (
-              <div
-                key={d.id}
-                onClick={() => navigateToTabWithFilter('despesas', d.id)}
-                className="py-3 flex items-center justify-between gap-3 hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl px-2.5 cursor-pointer transition-colors"
+        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-[#0085db]" />
+                <h3 className="text-sm font-bold text-[#111c2d] dark:text-white">
+                  Últimas Compras & Notas
+                </h3>
+              </div>
+              <button
+                onClick={() => navigateToTabWithFilter('despesas')}
+                className="text-xs font-semibold text-[#0085db] hover:underline cursor-pointer"
               >
-                <div className="min-w-0">
-                  <p className="text-xs font-bold text-[#111c2d] dark:text-white truncate">
-                    {d.descricao}
-                  </p>
-                  <div className="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                    <span>{d.fornecedorNome}</span>
-                    <span>·</span>
-                    <span>{formatDateBR(d.data)}</span>
-                    {d.statusConferencia === 'diferenca_rateio' && (
-                      <span className="text-[#fb977d] font-bold">Rateio pendente</span>
-                    )}
+                Ver todas ({despesas.length})
+              </button>
+            </div>
+
+            <div className="space-y-2.5">
+              {recentDespesas.map(d => (
+                <div
+                  key={d.id}
+                  onClick={() => navigateToTabWithFilter('despesas', d.id)}
+                  className="p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] dark:hover:border-[#0085db] cursor-pointer transition-all flex items-center justify-between gap-3"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                      <Receipt className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[#111c2d] dark:text-white truncate">
+                        {d.descricao}
+                      </p>
+                      <div className="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                        <span>{d.fornecedorNome}</span>
+                        <span>·</span>
+                        <span>{formatDateBR(d.data)}</span>
+                        {d.statusConferencia === 'diferenca_rateio' && (
+                          <span className="text-[#fb977d] font-bold">Rateio pendente</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                      {formatBRL(d.valorTotalNota)}
+                    </span>
+                    <span className="block text-[10px] text-[#707a82] dark:text-[#7c8fac] capitalize">
+                      {d.formaPagamento.replace('_', ' ')}
+                    </span>
                   </div>
                 </div>
-                <div className="text-right shrink-0">
-                  <span className="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">
-                    {formatBRL(d.valorTotalNota)}
-                  </span>
-                  <span className="block text-[10px] text-[#707a82] capitalize">
-                    {d.formaPagamento.replace('_', ' ')}
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Latest Diárias */}
-        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none">
-          <div className="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55] mb-3">
-            <div className="flex items-center gap-2">
-              <Users2 className="w-4 h-4 text-[#4bd08b]" />
-              <h3 className="text-sm font-bold text-[#111c2d] dark:text-white">
-                Diárias Recentes de Mão de Obra
-              </h3>
-            </div>
-            <button
-              onClick={() => navigateToTabWithFilter('maodeobra')}
-              className="text-xs font-semibold text-[#0085db] hover:underline cursor-pointer"
-            >
-              Ver todas ({diarias.length})
-            </button>
-          </div>
-
-          <div className="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
-            {recentDiarias.map(dia => (
-              <div
-                key={dia.id}
+        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Users2 className="w-4 h-4 text-[#4bd08b]" />
+                <h3 className="text-sm font-bold text-[#111c2d] dark:text-white">
+                  Diárias Recentes de Mão de Obra
+                </h3>
+              </div>
+              <button
                 onClick={() => navigateToTabWithFilter('maodeobra')}
-                className="py-3 flex items-center justify-between gap-3 hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl px-2.5 cursor-pointer transition-colors"
+                className="text-xs font-semibold text-[#0085db] hover:underline cursor-pointer"
               >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs font-bold text-[#111c2d] dark:text-white truncate">
-                      {dia.trabalhadorNome}
-                    </p>
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        dia.statusPagamento === 'pago'
-                          ? 'bg-[#4bd08b]/15 text-[#4bd08b]'
-                          : 'bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076]'
-                      }`}
-                    >
-                      {dia.statusPagamento === 'pago' ? 'Pago' : 'A Pagar'}
+                Ver todas ({diarias.length})
+              </button>
+            </div>
+
+            <div className="space-y-2.5">
+              {recentDiarias.map(dia => (
+                <div
+                  key={dia.id}
+                  onClick={() => navigateToTabWithFilter('maodeobra')}
+                  className="p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#4bd08b] dark:hover:border-[#4bd08b] cursor-pointer transition-all flex items-center justify-between gap-3"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-[#4bd08b]/15 text-[#4bd08b] flex items-center justify-center shrink-0">
+                      <Users2 className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs font-bold text-[#111c2d] dark:text-white truncate">
+                          {dia.trabalhadorNome}
+                        </p>
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            dia.statusPagamento === 'pago'
+                              ? 'bg-[#4bd08b]/15 text-[#10bd9d] dark:text-[#4bd08b] border border-[#4bd08b]/25'
+                              : 'bg-[#f8c076]/18 text-[#d9941a] dark:text-[#f8c076] border border-[#f8c076]/30'
+                          }`}
+                        >
+                          {dia.statusPagamento === 'pago' ? 'Pago' : 'A Pagar'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                        <span>{formatDateBR(dia.data)}</span>
+                        <span>·</span>
+                        <span>{dia.fracao === 1 ? 'Integral' : `${dia.fracao} diária`}</span>
+                        {dia.valorAdicional > 0 && (
+                          <span className="text-[#0085db] font-semibold">+ Adicional</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                      {formatBRL(dia.valorTotal)}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                    <span>{formatDateBR(dia.data)}</span>
-                    <span>·</span>
-                    <span>{dia.fracao === 1 ? 'Integral' : `${dia.fracao} diária`}</span>
-                    {dia.valorAdicional > 0 && (
-                      <span className="text-[#0085db] font-semibold">+ Adicional</span>
-                    )}
-                  </div>
                 </div>
-                <div className="text-right shrink-0">
-                  <span className="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">
-                    {formatBRL(dia.valorTotal)}
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
