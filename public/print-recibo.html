@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Recibo de Pagamento · Impressão do Sistema</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      background: #e9edf2;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #111c2d;
+      font-size: 11px;
+      line-height: 1.45;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Screen toolbar */
+    .screen-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: #111c2d;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid #333f55;
+    }
+    .screen-toolbar .title-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .screen-toolbar .title {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+    .screen-toolbar .badge {
+      background: rgba(0, 133, 219, 0.25);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .screen-toolbar .status-hint {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .screen-toolbar .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .screen-toolbar .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease-in-out;
+      text-decoration: none;
+    }
+    .screen-toolbar .btn:active {
+      transform: scale(0.97);
+    }
+    .screen-toolbar .btn-primary {
+      background: #0085db;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 133, 219, 0.4);
+    }
+    .screen-toolbar .btn-primary:hover {
+      background: #0071ba;
+    }
+    .screen-toolbar .btn-secondary {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+    }
+    .screen-toolbar .btn-secondary:hover {
+      background: #334155;
+    }
+
+    /* Print View Container */
+    .print-container {
+      padding: 24px 0 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sheet {
+      width: 210mm;
+      height: 297mm;
+      max-height: 297mm;
+      min-height: 297mm;
+      background: #ffffff;
+      padding: 10mm 16mm;
+      margin: 0 auto;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      border-radius: 3px;
+    }
+
+    .via {
+      height: 132mm;
+      max-height: 132mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      padding: 4mm 0;
+      overflow: hidden;
+    }
+
+    .via-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 11px;
+    }
+    .meta-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .meta-left .num {
+      font-family: monospace;
+      font-weight: 700;
+      color: #0085db;
+      font-size: 11px;
+    }
+    .meta-left .sep {
+      color: #94a3b8;
+    }
+    .meta-left .obra {
+      font-weight: 600;
+      color: #334155;
+    }
+    .via-header .badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 9px;
+      border-radius: 99px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+
+    .title-area {
+      text-align: center;
+      margin: 10px 0;
+    }
+    .title-area h2 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #111c2d;
+      text-transform: uppercase;
+    }
+
+    .body-text {
+      text-align: justify;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #111c2d;
+      margin: 8px 0;
+    }
+    .body-text strong {
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .body-text .obs {
+      margin-top: 8px;
+      font-size: 10px;
+      color: #64748b;
+      font-style: italic;
+    }
+
+    .signature-area {
+      margin-top: 10px;
+    }
+    .city-date {
+      text-align: right;
+      font-size: 11px;
+      font-weight: 600;
+      color: #111c2d;
+      margin-bottom: 30px;
+    }
+    .sign-block {
+      max-width: 380px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .sign-block .line {
+      border-top: 1.5px solid #0f172a;
+      width: 100%;
+      margin-bottom: 6px;
+    }
+    .sign-block .signer-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #111c2d;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .sign-block .signer-role {
+      font-size: 10px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* Cut line in the center */
+    .cut-line-wrapper {
+      height: 6mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      user-select: none;
+    }
+    .cut-line-wrapper .dash {
+      width: 100%;
+      border-top: 1px dashed #94a3b8;
+    }
+    .cut-line-wrapper .tag {
+      position: absolute;
+      background: #ffffff;
+      padding: 0 12px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Print Rules */
+    @media print {
+      .screen-toolbar {
+        display: none !important;
+      }
+      .print-container {
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      html, body {
+        background: #ffffff !important;
+      }
+      .sheet {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        break-after: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Screen Mode Header Toolbar -->
+  <div class="screen-toolbar">
+    <div class="title-area">
+      <span class="title">
+        <span>📄</span>
+        <span>Recibo de Pagamento · Modelo Oficial (2 Vias A4)</span>
+      </span>
+      <span id="reciboBadge" class="badge">REC</span>
+      <span id="statusHint" class="status-hint">Pronto para impressão ou salvamento em PDF</span>
+    </div>
+    <div class="btn-group">
+      <button onclick="runSystemPrint()" class="btn btn-primary" title="Abrir caixa de diálogo nativa de impressão">
+        <span>🖨️</span>
+        <span>Imprimir / Salvar PDF</span>
+      </button>
+      <button onclick="window.close()" class="btn btn-secondary" title="Fechar esta janela">
+        <span>Fechar</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Print Document Sheet -->
+  <div class="print-container">
+    <div id="reciboRoot">
+      <!-- Sheet injected here dynamically -->
+    </div>
+  </div>
+
+  <script>
+    function runSystemPrint() {
+      try {
+        const hint = document.getElementById('statusHint');
+        if (hint) hint.textContent = 'Enviando comando para a caixa de impressão do navegador...';
+        window.print();
+      } catch (err) {
+        console.warn('Erro ao abrir diálogo nativo de impressão:', err);
+      }
+    }
+
+    // Auto-replace content if dynamic HTML payload was prepared by main window
+    try {
+      const storedHtml = sessionStorage.getItem('recibo_print_html');
+      if (storedHtml && storedHtml.includes('class="sheet"')) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(storedHtml, 'text/html');
+        const sheet = doc.querySelector('.sheet');
+        if (sheet) {
+          const root = document.getElementById('reciboRoot');
+          if (root) {
+            root.innerHTML = sheet.outerHTML;
+          }
+        }
+      }
+
+      const storedPayload = sessionStorage.getItem('recibo_print_payload');
+      if (storedPayload) {
+        const payload = JSON.parse(storedPayload);
+        if (payload?.recibo?.numeroRecibo) {
+          const badge = document.getElementById('reciboBadge');
+          if (badge) badge.textContent = payload.recibo.numeroRecibo;
+          document.title = 'Recibo de Pagamento · ' + payload.recibo.numeroRecibo;
+        }
+      }
+    } catch (e) {
+      console.warn('Erro ao recuperar dados dinâmicos do recibo:', e);
+    }
+
+    // Automatically trigger system print dialog as soon as page is loaded
+    window.addEventListener('load', function() {
+      setTimeout(runSystemPrint, 250);
+    });
+    if (document.readyState === 'complete') {
+      setTimeout(runSystemPrint, 250);
+    }
+  </script>
+</body>
+</html>

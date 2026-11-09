@@ -537,7 +537,7 @@ export const MateriaisView: React.FC = () => {
                 <th className="py-3 px-5 sm:px-6">Material</th>
                 <th className="py-3 px-4 sm:px-6">Unidade</th>
                 <th className="py-3 px-4 sm:px-6">Compras</th>
-                <th className="py-3 px-4 sm:px-6">Último Preço Comprado</th>
+                <th className="py-3 px-4 sm:px-6">Último preço</th>
                 <th className="py-3 px-5 sm:px-6 text-right">Ações</th>
               </tr>
             </thead>

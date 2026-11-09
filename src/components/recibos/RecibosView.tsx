@@ -4,6 +4,8 @@ import { ReciboPagamento } from '../../types';
 import { formatBRL, valorPorExtenso } from '../../utils/currency';
 import { formatDateBR, formatDateExtendedBR, getTodayISO, getWeekRange } from '../../utils/date';
 import { Modal } from '../common/Modal';
+import { ReciboPreviewModal } from './ReciboPreviewModal';
+import { triggerReciboInPagePrint } from '../../utils/reciboPrintService';
 import {
   FileCheck2,
   Printer,
@@ -38,6 +40,7 @@ export const RecibosView: React.FC = () => {
   } = useApp();
 
   const previewContainerRef = useRef<HTMLDivElement>(null);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
   // Suggested receipt number calculation
   const suggestedReciboNumero = useMemo(() => {
@@ -75,6 +78,7 @@ export const RecibosView: React.FC = () => {
   // Preview & feedback
   const [previewRecibo, setPreviewRecibo] = useState<ReciboPagamento | null>(null);
   const [copied, setCopied] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   // Recibos History Table Search & Filters
   const [reciboSearchTerm, setReciboSearchTerm] = useState('');
@@ -245,30 +249,57 @@ export const RecibosView: React.FC = () => {
     }
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handlePrint = async (rec?: ReciboPagamento) => {
+    const targetRecibo = rec || previewRecibo;
+    if (!targetRecibo) {
+      showToast('Nenhum recibo disponível para impressão.', 'warning');
+      return;
+    }
+    setIsPrinting(true);
+    try {
+      const ok = await triggerReciboInPagePrint(targetRecibo, activeObra?.nome || 'Obra');
+      if (ok) {
+        showToast(`Janela de impressão gerada para ${targetRecibo.numeroRecibo}!`, 'success');
+      }
+    } catch (err) {
+      console.warn('Erro ao acionar impressão:', err);
+      showToast('Erro ao preparar impressão do recibo.', 'warning');
+    } finally {
+      setTimeout(() => setIsPrinting(false), 1200);
+    }
+  };
+
+  const getFormattedCityDate = (dataISO: string, cidade: string) => {
+    try {
+      const d = new Date(`${dataISO}T12:00:00`);
+      const meses = [
+        'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+        'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
+      ];
+      const dia = d.getDate();
+      const mes = meses[d.getMonth()];
+      const ano = d.getFullYear();
+      return `${cidade.toUpperCase()}, ${dia} de ${mes} de ${ano}`;
+    } catch {
+      return `${cidade.toUpperCase()}, ${dataISO}`;
+    }
   };
 
   const handleCopyText = (rec: ReciboPagamento) => {
+    const cpfSnippet = rec.trabalhadorCpf && rec.trabalhadorCpf !== 'Não informado'
+      ? `, portador(a) do CPF Nº ${rec.trabalhadorCpf}`
+      : '';
     const text = `
-RECIBO DE PAGAMENTO - ${rec.numeroRecibo}
-OBRA: ${activeObra.nome}
+RECIBO DE PAGAMENTO (2 VIAS EM FOLHA A4)
+Nº ${rec.numeroRecibo} · ${activeObra.nome}
 
-Recebi de ${rec.responsavelNome} a importância líquida de:
-VALOR: ${formatBRL(rec.valorTotal)} (${rec.valorPorExtenso})
+Eu, ${rec.trabalhadorNome}${cpfSnippet} recebi de ${rec.responsavelNome}, a importância de ${formatBRL(rec.valorTotal)} (${rec.valorPorExtenso}) referente à (${rec.motivo}).
 
-BENEFICIÁRIO: ${rec.trabalhadorNome}
-CPF: ${rec.trabalhadorCpf}
-FUNÇÃO: ${rec.trabalhadorFuncao}
+${getFormattedCityDate(rec.dataEmissao, rec.localCidade)}
 
-REFERENTE A:
-${rec.motivo}
-Período: ${formatDateBR(rec.periodoInicio)} a ${formatDateBR(rec.periodoFim)}
-
-${rec.localCidade}, ${formatDateBR(rec.dataEmissao)}
-
-_________________________________________
-Assinatura do Recebedor: ${rec.trabalhadorNome}
+_____________________________________________________
+${rec.trabalhadorNome.toUpperCase()}
+Assinatura do Recebedor
     `.trim();
 
     navigator.clipboard.writeText(text);
@@ -409,6 +440,92 @@ Assinatura do Recebedor: ${rec.trabalhadorNome}
     }
   };
 
+  // Helper to render one full autonomous via of the receipt matching the user's PDF reference
+  const renderReceiptVia = (rec: ReciboPagamento, viaNumber: 1 | 2, viaLabel: string) => {
+    const cpfFormatted = rec.trabalhadorCpf && rec.trabalhadorCpf !== 'Não informado' ? rec.trabalhadorCpf : '';
+
+    return (
+      <div
+        key={viaNumber}
+        className="recibo-via-block flex flex-col justify-between p-4 sm:p-6 bg-white text-[#111c2d] rounded-xl border border-slate-200/90 print:border-none print:p-0 print:rounded-none"
+      >
+        <div>
+          {/* Header metadata row */}
+          <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-200 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="font-mono font-bold text-[#0085db] text-xs">
+                {rec.numeroRecibo}
+              </span>
+              <span className="text-slate-400">·</span>
+              <span className="font-semibold text-slate-700 text-xs truncate max-w-[220px]">
+                {activeObra.nome}
+              </span>
+              {viaNumber === 1 && (
+                <button
+                  type="button"
+                  onClick={() => handleOpenQuickEditNome(rec)}
+                  className="text-[#0085db] hover:text-[#0071ba] text-[11px] font-semibold flex items-center gap-1 no-print ml-1 p-0.5 cursor-pointer"
+                  title="Editar nome / identificação deste recibo"
+                >
+                  <Pencil className="w-3 h-3" />
+                  <span className="underline">Editar nome</span>
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+                {viaLabel}
+              </span>
+            </div>
+          </div>
+
+          {/* Title matching user reference */}
+          <div className="text-center my-3 sm:my-4">
+            <h2 className="text-base sm:text-lg font-black tracking-wider text-[#111c2d] uppercase">
+              RECIBO DE PAGAMENTO
+            </h2>
+          </div>
+
+          {/* Reference Body Text */}
+          <div className="my-4 sm:my-5 text-justify text-xs sm:text-sm leading-relaxed text-[#111c2d]">
+            <p>
+              Eu, <strong className="uppercase">{rec.trabalhadorNome}</strong>
+              {cpfFormatted ? (
+                <>, portador do CPF Nº <strong>{cpfFormatted}</strong></>
+              ) : ''} recebi de <strong className="uppercase">{rec.responsavelNome}</strong>, a importância de{' '}
+              <strong className="text-[#111c2d] tabular-nums">{formatBRL(rec.valorTotal)}</strong>{' '}
+              ({rec.valorPorExtenso}) referente à ({rec.motivo}).
+            </p>
+            {rec.observacoes && (
+              <p className="text-[11px] text-[#707a82] italic mt-2">
+                <strong>Obs:</strong> {rec.observacoes}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Date and Signature Area */}
+        <div className="mt-4 pt-2">
+          <p className="text-right text-xs sm:text-sm font-semibold text-[#111c2d] mb-8 sm:mb-10">
+            {getFormattedCityDate(rec.dataEmissao, rec.localCidade)}
+          </p>
+
+          <div className="max-w-md mx-auto text-center">
+            <div className="border-t border-slate-900 w-full mb-1.5" />
+            <p className="font-bold text-xs sm:text-sm text-[#111c2d] uppercase tracking-wide">
+              {rec.trabalhadorNome}
+            </p>
+            <p className="text-[10px] sm:text-[11px] text-[#707a82]">
+              Assinatura do Recebedor
+              {cpfFormatted ? ` · CPF: ${cpfFormatted}` : ''}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6 pb-20 lg:pb-8 animate-in fade-in duration-150">
       {/* Header */}
@@ -425,7 +542,7 @@ Assinatura do Recebedor: ${rec.trabalhadorNome}
       </div>
 
       {/* Main Grid: items-stretch so both columns have matching height */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch recibos-grid-container">
         {/* Left Column: Generator Form (Dados do recibo) */}
         <div className="lg:col-span-5 flex flex-col no-print">
           <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 sm:p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col flex-1 justify-between gap-4 h-full">
@@ -826,7 +943,7 @@ Assinatura do Recebedor: ${rec.trabalhadorNome}
         </div>
 
         {/* Right Column: Live Printable Receipt Preview */}
-        <div ref={previewContainerRef} className="lg:col-span-7 flex flex-col">
+        <div ref={previewContainerRef} className="lg:col-span-7 flex flex-col recibos-preview-column">
           {previewRecibo ? (
             <div className="flex flex-col flex-1 h-full space-y-3">
               {/* Toolbar */}
@@ -865,142 +982,41 @@ Assinatura do Recebedor: ${rec.trabalhadorNome}
                     <span>{copied ? 'Copiado!' : 'Copiar Texto'}</span>
                   </button>
                   <button
-                    onClick={handlePrint}
-                    className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-[#0085db] hover:bg-[#0071ba] text-white transition-colors shadow-sm shadow-[#0085db]/25 cursor-pointer"
+                    type="button"
+                    onClick={() => {
+                      if (!previewRecibo) {
+                        showToast('Nenhum recibo disponível para impressão.', 'warning');
+                        return;
+                      }
+                      setIsPreviewModalOpen(true);
+                    }}
+                    className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 shadow-md shadow-[#0085db]/30 transition-all cursor-pointer"
+                    title="Abrir pré-visualização oficial do recibo para conferência e impressão"
                   >
-                    <Printer className="w-3.5 h-3.5" />
+                    <Printer className="w-4 h-4 shrink-0" />
                     <span>Imprimir</span>
                   </button>
                 </div>
               </div>
 
-              {/* Official Receipt Sheet Document (Equal height and balanced) */}
+              {/* Official Receipt Sheet Document (2 Vias em 1 Folha A4 com corte central) */}
               <div
                 id="receipt-print-area"
-                className="bg-white text-[#111c2d] border border-slate-300 rounded-[18px] p-6 sm:p-8 shadow-sm font-sans text-xs sm:text-sm leading-relaxed flex-1 flex flex-col justify-between"
+                className="bg-white text-[#111c2d] border border-slate-300 rounded-[18px] p-4 sm:p-6 shadow-sm font-sans flex-1 flex flex-col justify-between"
               >
-                <div>
-                  {/* Header */}
-                  <div className="text-center pb-4 border-b-2 border-[#111c2d] mb-6">
-                    <h1 className="text-xl sm:text-2xl font-black tracking-tight text-[#111c2d] uppercase">
-                      RECIBO DE PAGAMENTO
-                    </h1>
-                    <div className="flex items-center justify-center gap-2 mt-1">
-                      <span className="text-xs font-semibold text-[#707a82]">
-                        {previewRecibo.numeroRecibo} · {activeObra.nome}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => handleOpenQuickEditNome(previewRecibo)}
-                        className="text-[#0085db] hover:text-[#0071ba] text-[11px] font-semibold flex items-center gap-1 no-print p-0.5 cursor-pointer"
-                        title="Editar nome / número deste recibo"
-                      >
-                        <Pencil className="w-3 h-3" />
-                        <span className="underline">Editar nome</span>
-                      </button>
-                    </div>
-                  </div>
+                {/* 1ª Via (Metade Superior) */}
+                {renderReceiptVia(previewRecibo, 1, '1ª Via · Pagador')}
 
-                  {/* Amount Box */}
-                  <div className="flex justify-between items-center bg-[#f0f5f9] p-4 rounded-xl border border-slate-300 mb-6">
-                    <span className="font-bold text-[#707a82] text-xs uppercase tracking-wider">
-                      VALOR TOTAL LÍQUIDO:
-                    </span>
-                    <span className="text-xl sm:text-2xl font-black text-[#0085db] tabular-nums">
-                      {formatBRL(previewRecibo.valorTotal)}
-                    </span>
-                  </div>
-
-                  {/* Beneficiary Badge */}
-                  <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs flex flex-wrap justify-between gap-2">
-                    <div>
-                      <span className="text-[#707a82] font-semibold">Beneficiário: </span>
-                      <strong className="text-[#111c2d]">{previewRecibo.trabalhadorNome}</strong>
-                    </div>
-                    <div>
-                      <span className="text-[#707a82] font-semibold">Função: </span>
-                      <strong className="text-[#111c2d]">{previewRecibo.trabalhadorFuncao || 'Serviços Gerais'}</strong>
-                    </div>
-                    <div>
-                      <span className="text-[#707a82] font-semibold">CPF: </span>
-                      <strong className="text-[#111c2d]">{previewRecibo.trabalhadorCpf || 'Não informado'}</strong>
-                    </div>
-                  </div>
-
-                  {/* Legal body prose */}
-                  <div className="space-y-4 text-justify">
-                    <p>
-                      Recebi(emos) de <strong>{previewRecibo.responsavelNome}</strong> a importância líquida de{' '}
-                      <strong>{formatBRL(previewRecibo.valorTotal)}</strong> (
-                      <span className="italic underline">{previewRecibo.valorPorExtenso}</span>), referente a:{' '}
-                      <strong>{previewRecibo.motivo}</strong>, no período de{' '}
-                      <strong>{formatDateBR(previewRecibo.periodoInicio)}</strong> até{' '}
-                      <strong>{formatDateBR(previewRecibo.periodoFim)}</strong>.
-                    </p>
-                    {previewRecibo.observacoes && (
-                      <p className="text-xs text-[#707a82] italic">
-                        <strong>Obs:</strong> {previewRecibo.observacoes}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Discriminative Table */}
-                  <div className="mt-6 pt-4 border-t border-slate-200">
-                    <p className="text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2">
-                      Discriminação dos Dias Trabalhados ({previewRecibo.diasEspecificos?.length || selectedDiariasList.length})
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {selectedDiariasList.length > 0 ? (
-                        selectedDiariasList.map(dia => (
-                          <div key={dia.id} className="p-2 rounded-lg border border-slate-200 bg-slate-50 text-[11px]">
-                            <div className="flex justify-between font-semibold">
-                              <span>{formatDateBR(dia.data)}</span>
-                              <span className="tabular-nums font-bold text-[#0085db]">{formatBRL(dia.valorTotal)}</span>
-                            </div>
-                            <div className="text-[10px] text-[#707a82] mt-0.5 flex justify-between">
-                              <span className="truncate max-w-[120px] font-medium">{dia.trabalhadorNome}</span>
-                              <span>{dia.fracao === 1 ? 'Integral' : `${dia.fracao} d.`}</span>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        previewRecibo.diasEspecificos?.map((dataISO, idx) => (
-                          <div key={idx} className="p-2 rounded-lg border border-slate-200 bg-slate-50 text-[11px]">
-                            <div className="flex justify-between font-semibold">
-                              <span>{formatDateBR(dataISO)}</span>
-                              <span className="text-[#0085db]">Diária</span>
-                            </div>
-                            <div className="text-[10px] text-[#707a82] mt-0.5">
-                              {previewRecibo.trabalhadorNome}
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
+                {/* Linha de corte horizontal discreta para separar as vias ao meio */}
+                <div className="recibo-cut-line relative my-2 sm:my-3 py-1 flex items-center justify-center select-none">
+                  <div className="w-full border-t border-dashed border-zinc-400" />
+                  <span className="absolute bg-white px-3 text-[10px] font-bold text-zinc-500 tracking-wider flex items-center gap-1.5 uppercase">
+                    ✂ <span>Linha de corte · Separar as 2 vias</span> ✂
+                  </span>
                 </div>
 
-                {/* Date & Signature Section */}
-                <div className="mt-8 pt-6 border-t border-slate-300">
-                  <p className="text-right font-medium text-slate-700 mb-10">
-                    {formatDateExtendedBR(previewRecibo.dataEmissao, previewRecibo.localCidade)}
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-end">
-                    <div className="text-center pt-8 border-t border-slate-400">
-                      <p className="font-bold text-slate-800">{previewRecibo.responsavelNome}</p>
-                      <p className="text-xs text-[#707a82]">Responsável Técnico / Pagador</p>
-                    </div>
-
-                    <div className="text-center pt-8 border-t border-slate-400">
-                      <p className="font-bold text-slate-800">{previewRecibo.trabalhadorNome}</p>
-                      <p className="text-xs text-[#707a82]">
-                        CPF: {previewRecibo.trabalhadorCpf || 'Não informado'}
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Assinatura do Recebedor</p>
-                    </div>
-                  </div>
-                </div>
+                {/* 2ª Via (Metade Inferior) */}
+                {renderReceiptVia(previewRecibo, 2, '2ª Via · Recebedor')}
               </div>
             </div>
           ) : (
@@ -1505,6 +1521,14 @@ Assinatura do Recebedor: ${rec.trabalhadorNome}
           </div>
         </div>
       </Modal>
+
+      {/* Modal de Pré-visualização A4 em Tela Cheia */}
+      <ReciboPreviewModal
+        isOpen={isPreviewModalOpen}
+        onClose={() => setIsPreviewModalOpen(false)}
+        recibo={previewRecibo}
+        obraNome={activeObra?.nome}
+      />
     </div>
   );
 };

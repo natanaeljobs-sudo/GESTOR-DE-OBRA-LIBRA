@@ -227,6 +227,65 @@ html.dark .spike-badge-danger {
     page-break-after: auto !important;
     break-after: auto !important;
   }
+
+  /* Receipt 2-vias exact 1-page A4 portrait printing */
+  .recibos-grid-container {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .recibos-preview-column {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  #receipt-print-area {
+    width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
+    padding: 10mm 16mm !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    break-after: avoid !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .recibo-via-block {
+    flex: 1 1 0% !important;
+    height: 133mm !important;
+    max-height: 133mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    padding: 4mm 0 !important;
+    overflow: hidden !important;
+  }
+
+  .recibo-cut-line {
+    height: 6mm !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+  }
 }
 
 /* Screen mode preview for A4 pages */

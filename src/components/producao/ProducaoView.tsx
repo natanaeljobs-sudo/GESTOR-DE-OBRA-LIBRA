@@ -414,7 +414,7 @@ export const ProducaoView: React.FC = () => {
                 <th className="py-3.5 px-5 sm:px-6">Produção & Especificação</th>
                 <th className="py-3.5 px-4 sm:px-6 text-center">Tamanho</th>
                 <th className="py-3.5 px-4 sm:px-6 text-center">Quantidade</th>
-                <th className="py-3.5 px-4 sm:px-6">Data / Responsável</th>
+                <th className="py-3.5 px-4 sm:px-6">Data</th>
                 <th className="py-3.5 px-5 sm:px-6 text-right">Ações</th>
               </tr>
             </thead>
