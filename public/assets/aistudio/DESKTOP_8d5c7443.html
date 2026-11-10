@@ -1,0 +1,3168 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamentos &amp; Comparador — Visão Completa Integrada — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-headline { font-family: 'Outfit', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[1024px] font-body antialiased flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Header Superior Oficial Idêntico ao do Sistema -->
+  <header class="sticky top-0 z-30 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-16 shrink-0 flex items-center justify-between px-6">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-transparent hover:border-[#e6ecf1] dark:hover:border-[#333f55] transition-all cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+          N
+        </div>
+        <div class="text-left">
+          <span class="block text-xs font-bold text-[#111c2d] dark:text-white leading-tight uppercase">NATANAEL</span>
+          <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac] leading-none">Master</span>
+        </div>
+        <span class="material-symbols-outlined text-[16px] text-[#707a82]">expand_more</span>
+      </div>
+
+      <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer ml-1" aria-label="Alternar tema">
+        <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+      </button>
+
+      <button type="button" class="relative w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer" aria-label="Notificações">
+        <span class="material-symbols-outlined text-[18px]">notifications</span>
+        <span class="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#fb977d] text-white text-[9px] font-bold flex items-center justify-center">1</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Área de Trabalho: Sidebar + Conteúdo Principal -->
+  <div class="flex flex-1 min-h-[calc(1024px-4rem)]" data-stitch-vh="min-h-[calc(1024px-4rem)]===min-h-[calc(100vh-4rem)]">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="hidden lg:flex flex-col w-[265px] shrink-0 bg-white dark:bg-[#111c2d] border-r border-[#e6ecf1] dark:border-[#333f55] p-4 justify-between sticky top-16 h-[calc(1024px-4rem)] overflow-y-auto" data-stitch-vh="h-[calc(1024px-4rem)]===h-[calc(100vh-4rem)]">
+      <div class="space-y-4">
+        
+        <div class="pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="w-full flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white border border-[#e6ecf1] dark:border-[#333f55]">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">apartment</span>
+              </div>
+              <div class="text-left min-w-0">
+                <span class="block text-xs font-bold text-[#111c2d] dark:text-white truncate uppercase">OBRA JUSCELINO MOLA</span>
+                <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac] uppercase font-semibold">Canteiro Ativo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="space-y-1">
+          <!-- Orçamentos Ativo -->
+          <a href="#" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-[18px]">balance</span>
+              <span>Orçamentos</span>
+            </div>
+          </a>
+        </nav>
+      </div>
+
+      <div class="pt-4 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#fb977d] hover:bg-[#fb977d]/10 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span>Sair</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 p-6 lg:p-8 space-y-6 overflow-y-auto pb-20 lg:pb-8 animate-in fade-in duration-150">
+      
+      <!-- Header da Página -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 id="page-title" class="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white">
+            Orçamentos
+          </h1>
+          <p id="page-subtitle" class="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+            Compare cotações de fornecedores e converta as melhores ofertas direto em despesas.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Botão Nova Cotação (visível na aba Cadastrados) -->
+          <button type="button" id="btn-nova-cotacao-top" onclick="openModalNovoOrcamento()" class="flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all shrink-0 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span>Nova Cotação</span>
+          </button>
+
+          <!-- Botão Limpar Comparação (visível na aba Comparador) -->
+          <button type="button" id="btn-limpar-comparacao-top" onclick="openModalLimparComparacao()" class="hidden flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 border border-rose-200 dark:border-rose-900/50 rounded-xl transition-all cursor-pointer active:scale-95" title="Remove todos os orçamentos e inicia uma nova comparação do zero">
+            <span class="material-symbols-outlined text-[17px]">restart_alt</span>
+            <span>Limpar Comparação</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs Switcher Oficial: Cadastrados vs Comparador -->
+      <div class="flex items-center gap-2 border-b border-[#e6ecf1] dark:border-[#333f55] pb-2">
+        <button type="button" id="tab-btn-orcamentos" onclick="switchTab(&#39;orcamentos&#39;)" class="px-4 py-2 text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25">
+          <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+          <span>Cadastrados</span>
+        </button>
+        <button type="button" id="tab-btn-comparador" onclick="switchTab(&#39;comparador&#39;)" class="px-4 py-2 text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]">
+          <span class="material-symbols-outlined text-[16px]">scale</span>
+          <span>Comparador</span>
+        </button>
+      </div>
+
+      <!-- VIEW 1: ABA DE ORÇAMENTOS CADASTRADOS -->
+      <div id="view-orcamentos" class="space-y-6">
+        
+        <!-- Barra de Busca & Filtros (Status, Etapa e Ordenação) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3.5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col md:flex-row items-stretch md:items-center gap-3">
+          <!-- Campo de Busca Livre -->
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined text-[18px] absolute left-3.5 top-1/2 -translate-y-1/2 text-[#707a82]">search</span>
+            <input type="text" id="search-orcamentos" oninput="filterOrcamentos()" placeholder="Pesquisar orçamento por loja, material, etapa ou qualquer texto..." class="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+          </div>
+
+          <!-- Filtros Selecionáveis -->
+          <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
+            <!-- Filtro de Status -->
+            <div class="relative min-w-[130px] flex-1 sm:flex-initial">
+              <select id="filter-status-select" onchange="filterOrcamentos()" class="w-full h-9 pl-3 pr-8 text-xs font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+                <option value="todos">Todos os Status</option>
+                <option value="cotacao">Em Cotação</option>
+                <option value="aprovado">Aprovados</option>
+                <option value="recusado">Recusados / Arquivados</option>
+              </select>
+            </div>
+
+            <!-- Filtro de Etapa da Obra -->
+            <div class="relative min-w-[145px] flex-1 sm:flex-initial">
+              <select id="filter-etapa-select" onchange="filterOrcamentos()" class="w-full h-9 pl-3 pr-8 text-xs font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+                <option value="todas">Todas as Etapas</option>
+                <option value="Fundação &amp; Estrutura">Fundação &amp; Estrutura</option>
+                <option value="Alvenaria &amp; Fechamento">Alvenaria &amp; Fechamento</option>
+                <option value="Acabamento &amp; Pintura">Acabamento &amp; Pintura</option>
+              </select>
+            </div>
+
+            <!-- Ordenação -->
+            <div class="relative min-w-[135px] flex-1 sm:flex-initial">
+              <select id="sort-orcamentos-select" onchange="filterOrcamentos()" class="w-full h-9 pl-3 pr-8 text-xs font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+                <option value="recente">Mais recentes</option>
+                <option value="menor-valor">Menor valor total</option>
+                <option value="maior-valor">Maior valor total</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de Paginação de Orçamentos -->
+        <div id="orcamentos-paginacao-container" class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+          <div class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+            Página <strong id="orc-pag-current" class="text-[#111c2d] dark:text-white">1</strong> de <strong id="orc-pag-total" class="text-[#111c2d] dark:text-white">2</strong>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <button type="button" id="btn-orc-prev" onclick="changeOrcamentosPage(-1)" disabled title="Página Anterior" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+
+            <!-- Janela de páginas -->
+            <div id="orc-pag-window" class="flex items-center gap-1 px-1 transition-all duration-300">
+              <button type="button" onclick="goToOrcamentosPage(1)" class="w-8 h-8 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-xs transition-all duration-200 cursor-pointer transform scale-105">1</button>
+              <button type="button" onclick="goToOrcamentosPage(2)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer">2</button>
+            </div>
+
+            <button type="button" id="btn-orc-next" onclick="changeOrcamentosPage(1)" title="Próxima Página" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de Orçamentos: Cartões Retangulares Largos Empilhados -->
+        <div id="orcamentos-grid" class="flex flex-col gap-4">
+          
+          <!-- Orçamento 1: Comercial Silva Materiais (em_cotacao) -->
+          <div class="orc-card group bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:border-[#0085db]/40 rounded-[20px] p-5 shadow-[0px_4px_12px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all" data-id="orc-01" data-empresa="Comercial Silva Materiais" data-ident="COT-2026-109" data-status="cotacao" data-etapa="Fundação &amp; Estrutura" data-valor-num="5850.00" data-data="2026-10-28" data-materiais="Cimento CP II 50kg, Areia Média Lavada, BRITA 1">
+            <!-- Coluna 1: Dados do Fornecedor e Identificação -->
+            <div class="lg:w-1/3 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 dark:bg-[#0085db]/20 px-2 py-0.5 rounded-md border border-[#0085db]/25 font-mono">
+                  01
+                </span>
+                <span class="text-[10px] font-semibold text-[#707a82] bg-[#f6f9fc] dark:bg-[#1a2535] px-2 py-0.5 rounded-md border border-[#e6ecf1] dark:border-[#333f55]">
+                  Fundação &amp; Estrutura
+                </span>
+                <span class="text-xs text-[#707a82]">28/10/2026</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700">
+                  Cotação
+                </span>
+              </div>
+              <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white uppercase truncate max-w-[280px] sm:max-w-[320px]" title="COMERCIAL SILVA MATERIAIS">
+                COMERCIAL SILVA MATERIAIS
+              </h2>
+              <div class="text-[11px] text-[#707a82] space-y-0.5">
+                <p class="truncate max-w-[280px] sm:max-w-[320px] uppercase" title="CONDIÇÕES: 3X NO BOLETO FATURADO OU PIX COM 5% DESC">CONDIÇÕES: <strong class="text-[#111c2d] dark:text-white">3X NO BOLETO FATURADO OU PIX COM 5% DESC</strong></p>
+                <p class="italic truncate max-w-[280px] sm:max-w-[320px]" title="Obs: Frete grátis para entrega no canteiro em até 48h.">Obs: Frete grátis para entrega no canteiro em até 48h.</p>
+              </div>
+            </div>
+
+            <!-- Coluna 2: Itens Cotados em Linhas Empilhadas -->
+            <div class="lg:flex-1 flex flex-col gap-1.5 py-2 lg:py-0 lg:px-4 lg:border-x lg:border-[#e6ecf1] lg:dark:border-[#333f55]">
+              <div class="flex items-center justify-between text-[11px] text-[#707a82] px-1 font-medium">
+                <span>Itens cotados</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">3 itens</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">100 sc Cimento CP II 50kg</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 34,00/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">20 m³ Areia Média Lavada</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 92,00/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">6 m³ BRITA 1</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 101,66/un</span>
+              </div>
+            </div>
+
+            <!-- Coluna 3: Valor Total + Ações -->
+            <div class="lg:w-auto shrink-0 flex flex-row lg:flex-col items-center lg:items-end justify-between gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#e6ecf1] dark:border-[#333f55]">
+              <div class="flex items-center gap-3">
+                <div class="text-left lg:text-right">
+                  <span class="text-[10px] text-[#707a82] font-semibold uppercase tracking-wider block">Total Cotado</span>
+                  <span class="text-xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 5.850,00
+                  </span>
+                </div>
+                <!-- Botões Visualizar, Editar e Excluir -->
+                <div class="flex items-center gap-1 pl-2 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                  <button type="button" onclick="openModalDetalhesOrcamento(&#39;orc-01&#39;)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Visualizar todos os itens do orçamento">
+                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                  </button>
+                  <button type="button" onclick="openModalEditarOrcamento(&#39;Comercial Silva Materiais&#39;, &#39;COT-2026-109&#39;, &#39;2026-10-28&#39;, &#39;3x no boleto faturado ou Pix com 5% desc&#39;, &#39;5.850,00&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Editar orçamento">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                  </button>
+                  <button type="button" onclick="openModalExcluirOrcamento(&#39;Comercial Silva Materiais&#39;, &#39;R$ 5.850,00&#39;, 3, &#39;28/10/2026&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#707a82] hover:text-rose-600 border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Excluir orçamento">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Ações: Comprar, Arquivar e Comparar -->
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="openModalConverter(&#39;Comercial Silva Materiais&#39;, &#39;R$ 5.850,00&#39;, 3, this)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer whitespace-nowrap" title="Transforma este orçamento em despesa real sem duplicar valores">
+                  <span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+                  <span>Comprar</span>
+                </button>
+                <button type="button" onclick="arquivarOrcamento(this)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#707a82] hover:text-[#111c2d] dark:hover:text-white bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#e6ecf1] dark:hover:bg-[#253248] active:scale-95 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] transition-all cursor-pointer whitespace-nowrap" title="Arquivar este orçamento">
+                  <span class="material-symbols-outlined text-[15px]">archive</span>
+                  <span>Arquivar</span>
+                </button>
+                <button type="button" onclick="compararOrcamentoDireto(&#39;orc-01&#39;)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 hover:bg-[#0085db]/20 active:scale-95 rounded-xl border border-[#0085db]/25 transition-all cursor-pointer whitespace-nowrap" title="Comparar este orçamento com outros fornecedores">
+                  <span class="material-symbols-outlined text-[15px]">scale</span>
+                  <span>Comparar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orçamento 2: Depósito Goiás da Construção (aprovado) -->
+          <div class="orc-card group bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:border-[#0085db]/40 rounded-[20px] p-5 shadow-[0px_4px_12px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all" data-id="orc-02" data-empresa="Depósito Goiás da Construção" data-ident="PROP-8841" data-status="aprovado" data-etapa="Fundação &amp; Estrutura" data-valor-num="5590.00" data-data="2026-10-29" data-materiais="Cimento CP II 50kg, Areia Média Lavada, BRITA 1">
+            <!-- Coluna 1: Dados do Fornecedor e Identificação -->
+            <div class="lg:w-1/3 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 dark:bg-[#0085db]/20 px-2 py-0.5 rounded-md border border-[#0085db]/25 font-mono">
+                  02
+                </span>
+                <span class="text-[10px] font-semibold text-[#707a82] bg-[#f6f9fc] dark:bg-[#1a2535] px-2 py-0.5 rounded-md border border-[#e6ecf1] dark:border-[#333f55]">
+                  Fundação &amp; Estrutura
+                </span>
+                <span class="text-xs text-[#707a82]">29/10/2026</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#4bd08b]/15 text-[#10bd9d] dark:text-[#4bd08b] border border-[#4bd08b]/30">
+                  Aprovado
+                </span>
+              </div>
+              <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white uppercase truncate max-w-[280px] sm:max-w-[320px]" title="DEPÓSITO GOIÁS DA CONSTRUÇÃO">
+                DEPÓSITO GOIÁS DA CONSTRUÇÃO
+              </h2>
+              <div class="text-[11px] text-[#707a82] space-y-0.5">
+                <p class="truncate max-w-[280px] sm:max-w-[320px] uppercase" title="CONDIÇÕES: À VISTA VIA PIX">CONDIÇÕES: <strong class="text-[#111c2d] dark:text-white">À VISTA VIA PIX</strong></p>
+                <p class="italic truncate max-w-[280px] sm:max-w-[320px]" title="Obs: Excelente preço no cimento CP II (R$ 32,50/saco).">Obs: Excelente preço no cimento CP II (R$ 32,50/saco).</p>
+              </div>
+            </div>
+
+            <!-- Coluna 2: Itens Cotados em Linhas Empilhadas -->
+            <div class="lg:flex-1 flex flex-col gap-1.5 py-2 lg:py-0 lg:px-4 lg:border-x lg:border-[#e6ecf1] lg:dark:border-[#333f55]">
+              <div class="flex items-center justify-between text-[11px] text-[#707a82] px-1 font-medium">
+                <span>Itens cotados</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">3 itens</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">100 sc Cimento CP II 50kg</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 32,50/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">20 m³ Areia Média Lavada</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 95,00/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">6 m³ BRITA 1</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 73,33/un</span>
+              </div>
+            </div>
+
+            <!-- Coluna 3: Valor Total + Ações -->
+            <div class="lg:w-auto shrink-0 flex flex-row lg:flex-col items-center lg:items-end justify-between gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#e6ecf1] dark:border-[#333f55]">
+              <div class="flex items-center gap-3">
+                <div class="text-left lg:text-right">
+                  <span class="text-[10px] text-[#707a82] font-semibold uppercase tracking-wider block">Total Cotado</span>
+                  <span class="text-xl font-extrabold text-[#10bd9d] tabular-nums">
+                    R$ 5.590,00
+                  </span>
+                </div>
+                <!-- Botões Visualizar, Editar e Excluir -->
+                <div class="flex items-center gap-1 pl-2 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                  <button type="button" onclick="openModalDetalhesOrcamento(&#39;orc-02&#39;)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Visualizar todos os itens do orçamento">
+                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                  </button>
+                  <button type="button" onclick="openModalEditarOrcamento(&#39;Depósito Goiás da Construção&#39;, &#39;PROP-8841&#39;, &#39;2026-10-29&#39;, &#39;À vista via Pix&#39;, &#39;5.590,00&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Editar orçamento">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                  </button>
+                  <button type="button" onclick="openModalExcluirOrcamento(&#39;Depósito Goiás da Construção&#39;, &#39;R$ 5.590,00&#39;, 3, &#39;29/10/2026&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#707a82] hover:text-rose-600 border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Excluir orçamento">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Ações: Comprar, Arquivar e Comparar -->
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="openModalConverter(&#39;Depósito Goiás da Construção&#39;, &#39;R$ 5.590,00&#39;, 3, this)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer whitespace-nowrap" title="Transforma este orçamento em despesa real sem duplicar valores">
+                  <span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+                  <span>Comprar</span>
+                </button>
+                <button type="button" onclick="arquivarOrcamento(this)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#707a82] hover:text-[#111c2d] dark:hover:text-white bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#e6ecf1] dark:hover:bg-[#253248] active:scale-95 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] transition-all cursor-pointer whitespace-nowrap" title="Arquivar este orçamento">
+                  <span class="material-symbols-outlined text-[15px]">archive</span>
+                  <span>Arquivar</span>
+                </button>
+                <button type="button" onclick="compararOrcamentoDireto(&#39;orc-02&#39;)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 hover:bg-[#0085db]/20 active:scale-95 rounded-xl border border-[#0085db]/25 transition-all cursor-pointer whitespace-nowrap" title="Comparar este orçamento com outros fornecedores">
+                  <span class="material-symbols-outlined text-[15px]">scale</span>
+                  <span>Comparar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orçamento 3: Cimento & Cia Atacadista (recusado / arquivado) -->
+          <div class="orc-card group bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:border-[#0085db]/40 rounded-[20px] p-5 shadow-[0px_4px_12px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all" data-id="orc-03" data-empresa="Cimento &amp; Cia Atacadista" data-ident="ORC-NOV-01" data-status="recusado" data-etapa="Fundação &amp; Estrutura" data-valor-num="6200.00" data-data="2026-11-01" data-materiais="Cimento CP II 50kg, Areia Média Lavada, BRITA 1">
+            <!-- Coluna 1: Dados do Fornecedor e Identificação -->
+            <div class="lg:w-1/3 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 dark:bg-[#0085db]/20 px-2 py-0.5 rounded-md border border-[#0085db]/25 font-mono">
+                  03
+                </span>
+                <span class="text-[10px] font-semibold text-[#707a82] bg-[#f6f9fc] dark:bg-[#1a2535] px-2 py-0.5 rounded-md border border-[#e6ecf1] dark:border-[#333f55]">
+                  Fundação &amp; Estrutura
+                </span>
+                <span class="text-xs text-[#707a82]">01/11/2026</span>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">archive</span>
+                  <span>Arquivado</span>
+                </span>
+              </div>
+              <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white uppercase truncate max-w-[280px] sm:max-w-[320px]" title="CIMENTO &amp; CIA ATACADISTA">
+                CIMENTO &amp; CIA ATACADISTA
+              </h2>
+              <div class="text-[11px] text-[#707a82] space-y-0.5">
+                <p class="truncate max-w-[280px] sm:max-w-[320px] uppercase" title="CONDIÇÕES: CARTÃO EM ATÉ 4X SEM JUROS">CONDIÇÕES: <strong class="text-[#111c2d] dark:text-white">CARTÃO EM ATÉ 4X SEM JUROS</strong></p>
+                <p class="italic truncate max-w-[280px] sm:max-w-[320px]" title="Obs: Preço acima da concorrência local.">Obs: Preço acima da concorrência local.</p>
+              </div>
+            </div>
+
+            <!-- Coluna 2: Itens Cotados em Linhas Empilhadas -->
+            <div class="lg:flex-1 flex flex-col gap-1.5 py-2 lg:py-0 lg:px-4 lg:border-x lg:border-[#e6ecf1] lg:dark:border-[#333f55]">
+              <div class="flex items-center justify-between text-[11px] text-[#707a82] px-1 font-medium">
+                <span>Itens cotados</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">3 itens</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">100 sc Cimento CP II 50kg</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 36,00/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">20 m³ Areia Média Lavada</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 98,00/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">6 m³ BRITA 1</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 106,66/un</span>
+              </div>
+            </div>
+
+            <!-- Coluna 3: Valor Total + Ações -->
+            <div class="lg:w-auto shrink-0 flex flex-row lg:flex-col items-center lg:items-end justify-between gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#e6ecf1] dark:border-[#333f55]">
+              <div class="flex items-center gap-3">
+                <div class="text-left lg:text-right">
+                  <span class="text-[10px] text-[#707a82] font-semibold uppercase tracking-wider block">Total Cotado</span>
+                  <span class="text-xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 6.200,00
+                  </span>
+                </div>
+                <!-- Botões Visualizar, Editar e Excluir -->
+                <div class="flex items-center gap-1 pl-2 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                  <button type="button" onclick="openModalDetalhesOrcamento(&#39;orc-03&#39;)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Visualizar todos os itens do orçamento">
+                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                  </button>
+                  <button type="button" onclick="openModalEditarOrcamento(&#39;Cimento &amp; Cia Atacadista&#39;, &#39;ORC-NOV-01&#39;, &#39;2026-11-01&#39;, &#39;Cartão em até 4x sem juros&#39;, &#39;6.200,00&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Editar orçamento">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                  </button>
+                  <button type="button" onclick="openModalExcluirOrcamento(&#39;Cimento &amp; Cia Atacadista&#39;, &#39;R$ 6.200,00&#39;, 3, &#39;01/11/2026&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#707a82] hover:text-rose-600 border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Excluir orçamento">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Ações quando arquivado: apenas botão Desarquivar -->
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="desarquivarOrcamento(this)" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#0085db] dark:text-[#53b9ea] hover:text-[#006bb3] bg-[#0085db]/10 hover:bg-[#0085db]/20 active:scale-95 rounded-xl border border-[#0085db]/25 transition-all cursor-pointer whitespace-nowrap" title="Desarquivar este orçamento e restaurar as ações">
+                  <span class="material-symbols-outlined text-[15px]">unarchive</span>
+                  <span>Desarquivar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orçamento 4: Votoran Distribuidora (Cotação) -->
+          <div class="orc-card group bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:border-[#0085db]/40 rounded-[20px] p-5 shadow-[0px_4px_12px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all" data-id="orc-04" data-empresa="Votoran Distribuidora" data-ident="COT-VT-2026" data-status="cotacao" data-etapa="Fundação &amp; Estrutura" data-valor-num="5806.00" data-data="2026-11-02" data-materiais="Cimento CP II 50kg, Areia Média Lavada, BRITA 1">
+            <!-- Coluna 1: Dados do Fornecedor e Identificação -->
+            <div class="lg:w-1/3 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 dark:bg-[#0085db]/20 px-2 py-0.5 rounded-md border border-[#0085db]/25 font-mono">
+                  04
+                </span>
+                <span class="text-[10px] font-semibold text-[#707a82] bg-[#f6f9fc] dark:bg-[#1a2535] px-2 py-0.5 rounded-md border border-[#e6ecf1] dark:border-[#333f55]">
+                  Fundação &amp; Estrutura
+                </span>
+                <span class="text-xs text-[#707a82]">02/11/2026</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700">
+                  Cotação
+                </span>
+              </div>
+              <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white uppercase truncate max-w-[280px] sm:max-w-[320px]" title="VOTORAN DISTRIBUIDORA">
+                VOTORAN DISTRIBUIDORA
+              </h2>
+              <div class="text-[11px] text-[#707a82] space-y-0.5">
+                <p class="truncate max-w-[280px] sm:max-w-[320px] uppercase" title="CONDIÇÕES: BOLETO 30 DIAS OU CARTÃO EM 3X">CONDIÇÕES: <strong class="text-[#111c2d] dark:text-white">BOLETO 30 DIAS OU CARTÃO EM 3X</strong></p>
+                <p class="italic truncate max-w-[280px] sm:max-w-[320px]" title="Obs: Descarga inclusa no canteiro da obra.">Obs: Descarga inclusa no canteiro da obra.</p>
+              </div>
+            </div>
+
+            <!-- Coluna 2: Itens Cotados em Linhas Empilhadas -->
+            <div class="lg:flex-1 flex flex-col gap-1.5 py-2 lg:py-0 lg:px-4 lg:border-x lg:border-[#e6ecf1] lg:dark:border-[#333f55]">
+              <div class="flex items-center justify-between text-[11px] text-[#707a82] px-1 font-medium">
+                <span>Itens cotados</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">3 itens</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">100 sc Cimento CP II 50kg</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 33,50/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">20 m³ Areia Média Lavada</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 94,00/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">6 m³ BRITA 1</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 96,00/un</span>
+              </div>
+            </div>
+
+            <!-- Coluna 3: Valor Total + Ações -->
+            <div class="lg:w-auto shrink-0 flex flex-row lg:flex-col items-center lg:items-end justify-between gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#e6ecf1] dark:border-[#333f55]">
+              <div class="flex items-center gap-3">
+                <div class="text-left lg:text-right">
+                  <span class="text-[10px] text-[#707a82] font-semibold uppercase tracking-wider block">Total Cotado</span>
+                  <span class="text-xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 5.806,00
+                  </span>
+                </div>
+                <div class="flex items-center gap-1 pl-2 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                  <button type="button" onclick="openModalDetalhesOrcamento(&#39;orc-04&#39;)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Visualizar todos os itens do orçamento">
+                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                  </button>
+                  <button type="button" onclick="openModalEditarOrcamento(&#39;Votoran Distribuidora&#39;, &#39;COT-VT-2026&#39;, &#39;2026-11-02&#39;, &#39;Boleto 30 dias ou Cartão em 3x&#39;, &#39;5.806,00&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Editar orçamento">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                  </button>
+                  <button type="button" onclick="openModalExcluirOrcamento(&#39;Votoran Distribuidora&#39;, &#39;R$ 5.806,00&#39;, 3, &#39;02/11/2026&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#707a82] hover:text-rose-600 border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Excluir orçamento">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Ações: Comprar, Arquivar e Comparar -->
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="openModalConverter(&#39;Votoran Distribuidora&#39;, &#39;R$ 5.806,00&#39;, 3, this)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer whitespace-nowrap" title="Transforma este orçamento em despesa real sem duplicar valores">
+                  <span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+                  <span>Comprar</span>
+                </button>
+                <button type="button" onclick="arquivarOrcamento(this)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#707a82] hover:text-[#111c2d] dark:hover:text-white bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#e6ecf1] dark:hover:bg-[#253248] active:scale-95 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] transition-all cursor-pointer whitespace-nowrap" title="Arquivar este orçamento">
+                  <span class="material-symbols-outlined text-[15px]">archive</span>
+                  <span>Arquivar</span>
+                </button>
+                <button type="button" onclick="compararOrcamentoDireto(&#39;orc-04&#39;)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 hover:bg-[#0085db]/20 active:scale-95 rounded-xl border border-[#0085db]/25 transition-all cursor-pointer whitespace-nowrap" title="Comparar este orçamento com outros fornecedores">
+                  <span class="material-symbols-outlined text-[15px]">scale</span>
+                  <span>Comparar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orçamento 5: ConstruCenter Brasil (Página 2) -->
+          <div class="orc-card group bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] hover:border-[#0085db]/40 rounded-[20px] p-5 shadow-[0px_4px_12px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all" data-id="orc-05" data-empresa="ConstruCenter Brasil" data-ident="PROP-9910" data-status="cotacao" data-etapa="Fundação &amp; Estrutura" data-valor-num="6032.00" data-data="2026-11-03" data-materiais="Cimento CP II 50kg, Areia Média Lavada, BRITA 1">
+            <!-- Coluna 1: Dados do Fornecedor e Identificação -->
+            <div class="lg:w-1/3 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 dark:bg-[#0085db]/20 px-2 py-0.5 rounded-md border border-[#0085db]/25 font-mono">
+                  05
+                </span>
+                <span class="text-[10px] font-semibold text-[#707a82] bg-[#f6f9fc] dark:bg-[#1a2535] px-2 py-0.5 rounded-md border border-[#e6ecf1] dark:border-[#333f55]">
+                  Fundação &amp; Estrutura
+                </span>
+                <span class="text-xs text-[#707a82]">03/11/2026</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700">
+                  Cotação
+                </span>
+              </div>
+              <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white uppercase truncate max-w-[280px] sm:max-w-[320px]" title="CONSTRUCENTER BRASIL">
+                CONSTRUCENTER BRASIL
+              </h2>
+              <div class="text-[11px] text-[#707a82] space-y-0.5">
+                <p class="truncate max-w-[280px] sm:max-w-[320px] uppercase" title="CONDIÇÕES: PIX COM 7% DESCONTO">CONDIÇÕES: <strong class="text-[#111c2d] dark:text-white">PIX COM 7% DESCONTO</strong></p>
+                <p class="italic truncate max-w-[280px] sm:max-w-[320px]" title="Obs: Cotação válida por 48 horas úteis.">Obs: Cotação válida por 48 horas úteis.</p>
+              </div>
+            </div>
+
+            <!-- Coluna 2: Itens Cotados em Linhas Empilhadas -->
+            <div class="lg:flex-1 flex flex-col gap-1.5 py-2 lg:py-0 lg:px-4 lg:border-x lg:border-[#e6ecf1] lg:dark:border-[#333f55]">
+              <div class="flex items-center justify-between text-[11px] text-[#707a82] px-1 font-medium">
+                <span>Itens cotados</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">3 itens</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">100 sc Cimento CP II 50kg</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 35,00/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">20 m³ Areia Média Lavada</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 96,00/un</span>
+              </div>
+              <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs">
+                <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">6 m³ BRITA 1</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ 102,00/un</span>
+              </div>
+            </div>
+
+            <!-- Coluna 3: Valor Total + Ações -->
+            <div class="lg:w-auto shrink-0 flex flex-row lg:flex-col items-center lg:items-end justify-between gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#e6ecf1] dark:border-[#333f55]">
+              <div class="flex items-center gap-3">
+                <div class="text-left lg:text-right">
+                  <span class="text-[10px] text-[#707a82] font-semibold uppercase tracking-wider block">Total Cotado</span>
+                  <span class="text-xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 6.032,00
+                  </span>
+                </div>
+                <div class="flex items-center gap-1 pl-2 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                  <button type="button" onclick="openModalDetalhesOrcamento(&#39;orc-05&#39;)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Visualizar todos os itens do orçamento">
+                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                  </button>
+                  <button type="button" onclick="openModalEditarOrcamento(&#39;ConstruCenter Brasil&#39;, &#39;PROP-9910&#39;, &#39;2026-11-03&#39;, &#39;Pix com 7% desconto&#39;, &#39;6.032,00&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Editar orçamento">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                  </button>
+                  <button type="button" onclick="openModalExcluirOrcamento(&#39;ConstruCenter Brasil&#39;, &#39;R$ 6.032,00&#39;, 3, &#39;03/11/2026&#39;, this)" class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#707a82] hover:text-rose-600 border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-center transition-colors cursor-pointer" title="Excluir orçamento">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Ações: Comprar, Arquivar e Comparar -->
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="openModalConverter(&#39;ConstruCenter Brasil&#39;, &#39;R$ 6.032,00&#39;, 3, this)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer whitespace-nowrap" title="Transforma este orçamento em despesa real sem duplicar valores">
+                  <span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+                  <span>Comprar</span>
+                </button>
+                <button type="button" onclick="arquivarOrcamento(this)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#707a82] hover:text-[#111c2d] dark:hover:text-white bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#e6ecf1] dark:hover:bg-[#253248] active:scale-95 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] transition-all cursor-pointer whitespace-nowrap" title="Arquivar este orçamento">
+                  <span class="material-symbols-outlined text-[15px]">archive</span>
+                  <span>Arquivar</span>
+                </button>
+                <button type="button" onclick="compararOrcamentoDireto(&#39;orc-05&#39;)" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 hover:bg-[#0085db]/20 active:scale-95 rounded-xl border border-[#0085db]/25 transition-all cursor-pointer whitespace-nowrap" title="Comparar este orçamento com outros fornecedores">
+                  <span class="material-symbols-outlined text-[15px]">scale</span>
+                  <span>Comparar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- VIEW 2: ABA DO COMPARADOR DINÂMICO LADO A LADO -->
+      <div id="view-comparador" class="hidden space-y-6">
+        
+        <!-- PAINEL DE ORIENTAÇÃO & INDICADORES DA COMPARAÇÃO ATIVA -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Indicador 1: Quantidade de Orçamentos no Comparador -->
+          <div class="p-4 rounded-[18px] bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#707a82]">Orçamentos Selecionados</span>
+              <span class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">receipt</span>
+              </span>
+            </div>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span id="kpi-qtd-orcamentos" class="text-2xl font-black text-[#111c2d] dark:text-white">3</span>
+              <span class="text-xs text-[#707a82]">em confronto</span>
+            </div>
+            <span class="text-[11px] text-[#707a82] mt-0.5 block">Adicione ou remova livremente</span>
+          </div>
+
+          <!-- Indicador 2: Fornecedor Mais Vantajoso (Menor Total Global) -->
+          <div class="p-4 rounded-[18px] bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#707a82]">Menor Valor Global</span>
+              <span class="w-8 h-8 rounded-lg bg-[#4bd08b]/15 text-[#10bd9d] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">trophy</span>
+              </span>
+            </div>
+            <div class="mt-1">
+              <span id="kpi-menor-valor-total" class="text-2xl font-black text-[#10bd9d] tabular-nums">R$ 5.590,00</span>
+            </div>
+            <span id="kpi-loja-vencedora" class="text-[11px] text-[#10bd9d] font-bold block truncate uppercase">DEPÓSITO GOIÁS DA CONSTRUÇÃO</span>
+          </div>
+
+          <!-- Indicador 3: Maior Cotação Confrontada -->
+          <div class="p-4 rounded-[18px] bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#707a82]">Maior Cotação Confrontada</span>
+              <span class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">trending_up</span>
+              </span>
+            </div>
+            <div class="mt-1">
+              <span id="kpi-maior-valor-total" class="text-2xl font-black text-[#111c2d] dark:text-white tabular-nums">R$ 6.200,00</span>
+            </div>
+            <span id="kpi-loja-maior" class="text-[11px] text-[#707a82] block truncate uppercase">CIMENTO &amp; CIA ATACADISTA</span>
+          </div>
+
+          <!-- Indicador 4: Diferença / Economia Potencial -->
+          <div class="p-4 rounded-[18px] bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#707a82]">Diferença / Economia</span>
+              <span class="w-8 h-8 rounded-lg bg-[#4bd08b]/15 text-[#10bd9d] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">savings</span>
+              </span>
+            </div>
+            <div class="mt-1">
+              <span id="kpi-economia-total" class="text-2xl font-black text-[#10bd9d] tabular-nums">R$ 610,00</span>
+            </div>
+            <span class="text-[11px] text-[#707a82] block">Variação entre maior e menor</span>
+          </div>
+        </div>
+
+        <!-- PAINEL: ORÇAMENTOS SELECIONADOS NA COMPARAÇÃO ATUAL -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+            <div>
+              <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">compare_arrows</span>
+                <span>Orçamentos selecionados para comparar</span>
+                <span id="badge-selecionados-count" class="text-xs font-bold px-2 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db]">3 selecionados</span>
+              </h2>
+              <p class="text-xs text-[#707a82] mt-0.5">
+                Cotações ativas nesta comparação. Remova individualmente ou clique em &#39;+ Juntar&#39; para buscar e adicionar outras.
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="openModalJuntar()" class="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs transition-all cursor-pointer active:scale-95 shrink-0">
+                <span class="material-symbols-outlined text-[17px]">add</span>
+                <span>Juntar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Lista dos Orçamentos Selecionados com Botão Remover -->
+          <div id="lista-selecionados-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+        </div>
+
+        <!-- SEÇÃO PRINCIPAL: MESA DE COMPARAÇÃO ATIVA (LADO A LADO) -->
+        <div class="space-y-4">
+          <!-- Grid de Orçamentos Lado a Lado -->
+          <div id="grid-comparacao-ativa" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+            <!-- Preenchido dinamicamente via JS -->
+          </div>
+
+          <!-- Estado Vazio -->
+          <div id="comparador-empty-state" class="hidden text-center py-12 px-4 rounded-[20px] border-2 border-dashed border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d]">
+            <div class="w-14 h-14 rounded-2xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center mx-auto mb-3">
+              <span class="material-symbols-outlined text-[28px]">balance</span>
+            </div>
+            <h3 class="text-base font-bold text-[#111c2d] dark:text-white">Nenhum orçamento em comparação</h3>
+            <p class="text-xs text-[#707a82] max-w-md mx-auto mt-1 mb-4">
+              Pesquise no painel acima para juntar orçamentos e visualizá-los lado a lado com cálculo imediato do menor preço.
+            </p>
+            <button type="button" onclick="restaurarComparacaoPadrao()" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs transition-all cursor-pointer">
+              Carregar Cotações Principais
+            </button>
+          </div>
+        </div>
+
+        <!-- CONFRONTO ITEM A ITEM DOS ORÇAMENTOS REUNIDOS (SLIM) -->
+        <div id="matriz-materiais-wrapper" class="space-y-2.5 pt-4 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-[#0085db]">table_rows</span>
+              <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white">
+                Confronto Direto de Itens
+              </h2>
+              <span class="text-[11px] text-[#707a82] font-normal hidden sm:inline">· Preços unitários lado a lado</span>
+            </div>
+            <span id="mensagem-mais-barato" class="text-[11px] font-bold text-[#10bd9d] flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">check_circle</span>
+              <span id="texto-loja-mais-barata">DEPÓSITO GOIÁS DA CONSTRUÇÃO tem 4 itens mais barato</span>
+            </span>
+          </div>
+
+          <div id="matriz-itens-container" class="w-full">
+            <!-- Renderizado dinamicamente via JS em formato de tabela slim -->
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ==================== TODOS OS MODAIS INTEGRADOS ==================== -->
+
+  <!-- 1. MODAL: NOVA COTAÇÃO -->
+  <div id="modal-novo-orcamento" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalNovoOrcamento()"></div>
+    <div class="relative z-50 w-full max-w-2xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">add_circle</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-[#111c2d] dark:text-white">
+              Nova cotação
+            </h3>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+              Cadastre a cotação de um fornecedor para comparar com as outras.
+            </p>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeModalNovoOrcamento()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSalvarNovoOrcamento(event)" class="space-y-4 pt-4 max-h-[798px] overflow-y-auto pr-1" data-stitch-vh="max-h-[798px]===max-h-[78vh]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              Fornecedor / Loja *
+            </label>
+            <input type="text" id="new-orc-empresa" required placeholder="Ex: Comercial Silva, Depósito Central..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              Número da Cotação / Proposta
+            </label>
+            <input type="text" id="new-orc-ident" placeholder="Ex: COT-2026-042" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              Etapa da Obra *
+            </label>
+            <select id="new-orc-etapa" required class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-medium cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+              <option value="Fundação &amp; Estrutura">Fundação &amp; Estrutura</option>
+              <option value="Alvenaria &amp; Fechamento">Alvenaria &amp; Fechamento</option>
+              <option value="Acabamento &amp; Pintura">Acabamento &amp; Pintura</option>
+              <option value="Instalações Elétricas &amp; Hidráulicas">Instalações Elétricas &amp; Hidráulicas</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              Data da Cotação *
+            </label>
+            <input type="date" id="new-orc-data" required value="2026-11-10" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+            Condições Comerciais / Pagamento
+          </label>
+          <input type="text" id="new-orc-condicoes" placeholder="Ex: 3x no boleto, Pix com 5% de desconto, etc." class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+        </div>
+
+        <!-- Seção de Itens Cotados -->
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-[#0085db]">inventory_2</span>
+              <span>Itens da Cotação</span>
+            </h4>
+            
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="openModalCadastrarMaterialInPlace()" class="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db]/20 rounded-lg transition-colors cursor-pointer" title="Cadastrar um novo material que ainda não está na lista">
+                <span class="material-symbols-outlined text-[14px]">add_box</span>
+                <span>Novo Material</span>
+              </button>
+              <button type="button" onclick="adicionarLinhaItemNovoOrcamento()" class="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-lg transition-colors cursor-pointer">
+                <span class="material-symbols-outlined text-[14px]">add</span>
+                <span>Adicionar Item</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="new-orc-itens-container" class="space-y-2">
+            <div class="grid grid-cols-12 gap-2 items-center p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-xs item-row">
+              <div class="col-span-5 sm:col-span-4">
+                <select class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-material">
+                  <option value="CIMENTO CP II 50KG">CIMENTO CP II 50KG</option>
+                  <option value="AREIA MÉDIA LAVADA">AREIA MÉDIA LAVADA</option>
+                  <option value="BRITA 1">BRITA 1</option>
+                  <option value="AÇO CA-50 10MM (3/8\" )">AÇO CA-50 10MM (3/8&#34;)</option>
+                  <option value="BLOCO CERÂMICO 9X19X19">BLOCO CERÂMICO 9X19X19</option>
+                  <option value="CAL HIDRATADA CH-I 20KG">CAL HIDRATADA CH-I 20KG</option>
+                  <option value="TUBO ESGOTO PVC 100MM 6M">TUBO ESGOTO PVC 100MM 6M</option>
+                </select>
+              </div>
+
+              <div class="col-span-3 sm:col-span-2">
+                <input type="number" min="0.01" step="any" placeholder="Qtd" value="50" oninput="recalcularTotalItem(this)" class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-qtd">
+              </div>
+
+              <div class="col-span-4 sm:col-span-3">
+                <input type="number" min="0" step="any" placeholder="Preço Cotado R$" value="34" oninput="recalcularTotalItem(this)" class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-preco">
+              </div>
+
+              <div class="col-span-10 sm:col-span-2 text-right">
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums item-total">
+                  R$ 1.700,00
+                </span>
+              </div>
+
+              <div class="col-span-2 sm:col-span-1 text-right">
+                <button type="button" onclick="removerLinhaItem(this)" class="text-[#707a82] hover:text-[#fb977d] cursor-pointer">
+                  <span class="material-symbols-outlined text-[16px]">delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 p-3 bg-[#f6f9fc] dark:bg-[#1a2535] rounded-xl flex justify-between items-center text-xs border border-[#e6ecf1] dark:border-[#333f55]">
+            <span class="font-medium text-[#707a82] dark:text-[#7c8fac]">Total do Orçamento:</span>
+            <span id="new-orc-total-geral" class="text-base font-black text-[#0085db] tabular-nums">
+              R$ 1.700,00
+            </span>
+          </div>
+        </div>
+
+        <!-- Frete / Entrega com Checkbox e Input Condicional -->
+        <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] space-y-2.5">
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <input type="checkbox" id="chk-tem-entrega-main" onchange="toggleCampoEntregaMain(this)" class="w-4 h-4 rounded text-[#0085db] focus:ring-[#0085db] border-[#e6ecf1] dark:border-[#333f55] cursor-pointer">
+            <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-[#0085db]">local_shipping</span>
+              <span>Tem valor de entrega / frete</span>
+            </span>
+          </label>
+
+          <div id="box-valor-entrega-main" class="hidden pl-6 pt-1 transition-all">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 max-w-sm">
+              <span class="text-xs font-semibold text-[#707a82] shrink-0">Valor da entrega:</span>
+              <div class="relative flex-1">
+                <span class="absolute left-3 top-2 text-xs text-[#707a82] font-bold">R$</span>
+                <input type="text" id="input-valor-entrega-main" placeholder="0,00" oninput="recalcularTotalGeralCotacao()" class="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-bold tabular-nums focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+            Observações
+          </label>
+          <textarea rows="2" id="new-orc-obs" placeholder="Prazo de entrega, contatos do vendedor..." class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeModalNovoOrcamento()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer">
+            Salvar Orçamento
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. POPUP MODAL: CADASTRAR MATERIAL IN-PLACE -->
+  <div id="modal-cadastrar-material-inplace" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/70 backdrop-blur-xs transition-opacity" onclick="closeModalCadastrarMaterialInPlace()"></div>
+    <div class="relative z-50 w-full max-w-md bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">add_box</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+              Cadastrar Material
+            </h3>
+            <p class="text-[11px] text-[#707a82]">
+              Adicione à lista para cotações futuras
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalCadastrarMaterialInPlace()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSalvarMaterialInPlace(event)" class="space-y-3 pt-3.5">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+            Nome do Material *
+          </label>
+          <input type="text" id="mat-inplace-nome" required placeholder="Ex: Tinta Acrílica Fosca 18L" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              Unidade de Medida
+            </label>
+            <select id="mat-inplace-unidade" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-medium cursor-pointer">
+              <option value="un">un (Unidade)</option>
+              <option value="sc">sc (Saco)</option>
+              <option value="m³">m³ (Metro Cúbico)</option>
+              <option value="m²">m² (Metro Quadrado)</option>
+              <option value="barra">barra (Barra 12m)</option>
+              <option value="kg">kg (Quilograma)</option>
+              <option value="lata">lata (Lata 18L)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              Preço Estimado R$
+            </label>
+            <input type="text" id="mat-inplace-preco" placeholder="0,00" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] font-semibold">
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeModalCadastrarMaterialInPlace()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer">
+            Cadastrar e Inserir
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. MODAL: EDITAR ORÇAMENTO (COM ITENS EDITÁVEIS E OBSERVAÇÃO) -->
+  <div id="modal-editar-orcamento" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalEditarOrcamento()"></div>
+    <div class="relative z-50 w-full max-w-2xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">edit</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-[#111c2d] dark:text-white">
+              Editar orçamento
+            </h3>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+              Atualize os dados da cotação e condições comerciais.
+            </p>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeModalEditarOrcamento()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSalvarEdicaoOrcamento(event)" class="space-y-4 pt-4 max-h-[768px] overflow-y-auto pr-1" data-stitch-vh="max-h-[768px]===max-h-[75vh]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              Fornecedor
+            </label>
+            <input type="text" id="edit-orc-empresa" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              Nº DA COTAÇÃO
+            </label>
+            <input type="text" id="edit-orc-ident" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-mono font-bold">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              DATA DA COTAÇÃO
+            </label>
+            <input type="date" id="edit-orc-data" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+              CONDIÇÕES COMERCIAIS
+            </label>
+            <input type="text" id="edit-orc-condicoes" placeholder="Ex: 3x no boleto, à vista..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+          </div>
+        </div>
+
+        <!-- Campo Observações Dedicado -->
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+            OBSERVAÇÕES
+          </label>
+          <textarea id="edit-orc-observacoes" rows="2" placeholder="Prazo de entrega, contatos do vendedor, condições especiais..." class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"></textarea>
+        </div>
+
+        <!-- Itens Cotados Editáveis -->
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-[#0085db]">layers</span>
+              <span>Itens do Orçamento</span>
+            </h4>
+            <button type="button" onclick="adicionarLinhaEdicaoInterna()" class="flex items-center gap-1 px-3 py-1 text-xs font-bold bg-[#0085db]/10 hover:bg-[#0085db]/20 text-[#0085db] rounded-lg transition-colors cursor-pointer whitespace-nowrap">
+              <span class="material-symbols-outlined text-[15px]">add</span>
+              <span>Adicionar Item</span>
+            </button>
+          </div>
+
+          <div id="edit-orc-itens-container" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <!-- Linhas preenchidas dinamicamente via openModalEditarOrcamento -->
+          </div>
+
+          <div class="mt-3 p-3 bg-[#f6f9fc] dark:bg-[#1a2535] rounded-xl flex justify-between items-center text-xs border border-[#e6ecf1] dark:border-[#333f55]">
+            <span class="font-medium text-[#707a82] dark:text-[#7c8fac]">Valor Total Cotado:</span>
+            <div class="flex items-center gap-1">
+              <span class="text-base font-black text-[#0085db]">R$</span>
+              <input type="text" id="edit-orc-valor" class="w-28 text-base font-black text-[#0085db] tabular-nums bg-transparent border-b border-dashed border-[#0085db]/50 focus:outline-hidden">
+            </div>
+          </div>
+        </div>
+
+        <!-- Frete / Entrega com Checkbox e Input Condicional no Modal de Edição -->
+        <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] space-y-2.5">
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <input type="checkbox" id="edit-chk-tem-entrega-main" onchange="toggleCampoEntregaEdicaoMain(this)" class="w-4 h-4 rounded text-[#0085db] focus:ring-[#0085db] border-[#e6ecf1] dark:border-[#333f55] cursor-pointer">
+            <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-[#0085db]">local_shipping</span>
+              <span>Tem valor de entrega / frete</span>
+            </span>
+          </label>
+
+          <!-- Input escondido por padrão -->
+          <div id="box-valor-entrega-edit-main" class="hidden pl-6 pt-1 transition-all">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 max-w-sm">
+              <span class="text-xs font-semibold text-[#707a82] shrink-0">Valor da entrega:</span>
+              <div class="relative flex-1">
+                <span class="absolute left-3 top-2 text-xs text-[#707a82] font-bold">R$</span>
+                <input type="text" id="edit-input-valor-entrega-main" placeholder="0,00" oninput="recalcularTotalGeralEdicao()" class="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-bold tabular-nums focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeModalEditarOrcamento()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer">
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. MODAL: DETALHES DO ORÇAMENTO (VISUALIZAR ITENS DA COTAÇÃO) -->
+  <div id="modal-detalhes-orcamento" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalDetalhesOrcamento()"></div>
+    <div class="relative z-50 w-full max-w-2xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200 space-y-4">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-0.5">
+              <span id="det-orc-num" class="text-[10px] font-bold text-[#0085db] bg-[#0085db]/10 px-2 py-0.2 rounded-md font-mono">01</span>
+              <span id="det-orc-badge-status" class="text-[10px] font-bold px-2 py-0.2 rounded-full uppercase bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700">Cotação</span>
+              <span id="det-orc-data" class="text-[11px] text-[#707a82]">Cotado em 28/10/2026</span>
+            </div>
+            <h3 id="det-orc-empresa" class="text-base font-bold text-[#111c2d] dark:text-white uppercase">
+              COMERCIAL SILVA MATERIAIS
+            </h3>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeModalDetalhesOrcamento()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- Informações Comerciais Rápidas -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+        <div>
+          <span class="text-[10px] font-bold text-[#707a82] uppercase tracking-wider block">Condições de Pagamento</span>
+          <span id="det-orc-condicoes" class="font-bold text-[#111c2d] dark:text-white">3x no boleto faturado ou Pix com 5% desc</span>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold text-[#707a82] uppercase tracking-wider block">Observações / Frete</span>
+          <span id="det-orc-obs" class="text-[#111c2d] dark:text-white">Frete grátis para entrega no canteiro em até 48h.</span>
+        </div>
+      </div>
+
+      <!-- Tabela Detalhada de Itens Cotados -->
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <h4 id="det-orc-itens-header" class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+            Itens da Cotação (7 itens)
+          </h4>
+          <span class="text-xs text-[#707a82]">Valores unitários negociados</span>
+        </div>
+
+        <div class="rounded-xl border border-[#e6ecf1] dark:border-[#333f55] overflow-hidden max-h-60 overflow-y-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#f8fafc] dark:bg-[#162232] border-b border-[#e6ecf1] dark:border-[#333f55] text-[10px] font-bold text-[#707a82] uppercase tracking-wider">
+                <th class="py-2.5 px-3">Item / Material</th>
+                <th class="py-2.5 px-2 text-center">Un.</th>
+                <th class="py-2.5 px-3 text-right">Qtd</th>
+                <th class="py-2.5 px-3 text-right">Unitário</th>
+                <th class="py-2.5 px-3 text-right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="det-orc-itens-tbody" class="divide-y divide-[#e6ecf1] dark:divide-[#333f55] text-xs">
+              <!-- Preenchido dinamicamente via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Total Geral e Rodapé -->
+      <div class="flex items-center justify-between pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <div>
+          <span class="text-[10px] text-[#707a82] uppercase tracking-wider block font-semibold">Valor Total Cotado</span>
+          <span id="det-orc-total" class="text-lg font-black text-[#0085db] tabular-nums">R$ 5.850,00</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeModalDetalhesOrcamento()" class="px-4 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-colors cursor-pointer">
+            Fechar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. MODAL: CONVERTER ORÇAMENTO EM COMPRA EFETIVA (RESUMIDO COM FORMA DE PAGAMENTO) -->
+  <div id="modal-converter-compra" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalConverter()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-[#4bd08b]/15 text-[#10bd9d] dark:text-[#4bd08b] flex items-center justify-center border border-[#4bd08b]/30">
+            <span class="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+              Confirmar Compra
+            </h2>
+            <p class="text-[11px] text-[#707a82]">
+              Lança a despesa no custo da obra
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalConverter()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 pt-4">
+        <!-- Card compacto com as informações essenciais -->
+        <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#4bd08b]/10 dark:bg-[#4bd08b]/15 border border-[#4bd08b]/30 text-xs">
+          <div class="min-w-0 pr-3">
+            <span id="conv-fornecedor-nome" class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">
+              Depósito Goiás da Construção
+            </span>
+            <span class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">
+              <span id="conv-itens-count">3</span> itens cotados
+            </span>
+          </div>
+          <span id="conv-valor-total" class="text-sm font-black text-[#10bd9d] dark:text-[#4bd08b] tabular-nums shrink-0">
+            R$ 5.590,00
+          </span>
+        </div>
+
+        <!-- Input de Forma de Pagamento -->
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 uppercase tracking-wider">
+            FORMA DE PAGAMENTO
+          </label>
+          <select id="conv-forma-pagamento" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+            <option value="pix">Pix (À vista)</option>
+            <option value="cartao_credito">Cartão de Crédito</option>
+            <option value="boleto">Boleto Bancário</option>
+            <option value="dinheiro">Dinheiro</option>
+          </select>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeModalConverter()" class="h-9 px-3.5 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-colors cursor-pointer">
+            Cancelar
+          </button>
+          <button type="button" onclick="confirmarConversaoCompra()" class="h-9 px-4 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+            <span>Confirmar Compra</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MODAL: CONFIRMAR EXCLUSÃO DO ORÇAMENTO (RESUMIDO) -->
+  <div id="modal-excluir-orcamento" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalExcluirOrcamento()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center border border-rose-500/20">
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+              Excluir orçamento
+            </h2>
+            <p class="text-[11px] text-[#707a82]">
+              Esta ação não pode ser desfeita
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalExcluirOrcamento()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 pt-4">
+        <!-- Card compacto com as informações essenciais -->
+        <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs">
+          <div class="min-w-0 pr-3">
+            <span id="del-orc-empresa" class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">
+              Comercial Silva Materiais
+            </span>
+            <span id="del-orc-itens" class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">
+              3 itens cotados
+            </span>
+          </div>
+          <span id="del-orc-valor" class="text-sm font-black text-rose-600 dark:text-rose-400 tabular-nums shrink-0">
+            R$ 5.850,00
+          </span>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeModalExcluirOrcamento()" class="h-9 px-3.5 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-colors cursor-pointer">
+            Cancelar
+          </button>
+          <button type="button" onclick="confirmarExclusaoOrcamento()" class="h-9 px-4 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">delete</span>
+            <span>Excluir</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. MODAL: CONFIRMAR ARQUIVAMENTO DO ORÇAMENTO (TEMA CINZA RESUMIDO) -->
+  <div id="modal-arquivar-orcamento" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalArquivarOrcamento()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#707a82] dark:text-[#a0aec0] flex items-center justify-center border border-slate-200 dark:border-slate-700">
+            <span class="material-symbols-outlined text-[18px]">archive</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+              Arquivar orçamento
+            </h2>
+            <p class="text-[11px] text-[#707a82]">
+              Você poderá desarquivá-lo quando quiser
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalArquivarOrcamento()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 pt-4">
+        <!-- Card compacto com as informações essenciais -->
+        <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] text-xs">
+          <div class="min-w-0 pr-3">
+            <span id="arq-orc-empresa" class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">
+              Fornecedor
+            </span>
+            <span id="arq-orc-itens" class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">
+              3 itens cotados
+            </span>
+          </div>
+          <span id="arq-orc-valor" class="text-sm font-black text-[#111c2d] dark:text-white tabular-nums shrink-0">
+            R$ 0,00
+          </span>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeModalArquivarOrcamento()" class="h-9 px-3.5 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-colors cursor-pointer">
+            Cancelar
+          </button>
+          <button type="button" onclick="confirmarArquivamentoOrcamento()" class="h-9 px-4 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-500 active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">archive</span>
+            <span>Arquivar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. MODAL: CONFIRMAR DESARQUIVAMENTO DO ORÇAMENTO (RESUMIDO) -->
+  <div id="modal-desarquivar-orcamento" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalDesarquivarOrcamento()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-[#0085db]/10 text-[#0085db] dark:text-[#53b9ea] flex items-center justify-center border border-[#0085db]/20">
+            <span class="material-symbols-outlined text-[18px]">unarchive</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+              Desarquivar orçamento
+            </h2>
+            <p class="text-[11px] text-[#707a82]">
+              O orçamento voltará para a lista ativa
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalDesarquivarOrcamento()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 pt-4">
+        <!-- Card compacto com as informações essenciais -->
+        <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs">
+          <div class="min-w-0 pr-3">
+            <span id="desarq-orc-empresa" class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">
+              Fornecedor
+            </span>
+            <span id="desarq-orc-itens" class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">
+              3 itens cotados
+            </span>
+          </div>
+          <span id="desarq-orc-valor" class="text-sm font-black text-[#0085db] dark:text-[#53b9ea] tabular-nums shrink-0">
+            R$ 0,00
+          </span>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeModalDesarquivarOrcamento()" class="h-9 px-3.5 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-colors cursor-pointer">
+            Cancelar
+          </button>
+          <button type="button" onclick="confirmarDesarquivamentoOrcamento()" class="h-9 px-4 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">unarchive</span>
+            <span>Desarquivar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. MODAL: PESQUISAR E JUNTAR ORÇAMENTOS (COM FILTRO E ORDENAÇÃO POR DATA) -->
+  <div id="modal-juntar" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalJuntar()"></div>
+    <div class="relative z-50 w-full max-w-2xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200 space-y-4">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div>
+          <h3 class="text-base font-bold text-[#111c2d] dark:text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px] text-[#0085db]">library_add</span>
+            <span>Juntar Orçamentos para Comparar</span>
+          </h3>
+          <p class="text-xs text-[#707a82] mt-0.5">
+            Pesquise qualquer cotação cadastrada (inclusive arquivadas) e adicione à mesa.
+          </p>
+        </div>
+        <button type="button" onclick="closeModalJuntar()" class="w-8 h-8 rounded-lg text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] flex items-center justify-center transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- Barra de Pesquisa e Filtros dentro do Modal -->
+      <div class="flex flex-col sm:flex-row gap-2">
+        <div class="relative flex-1">
+          <span class="material-symbols-outlined text-[18px] absolute left-3.5 top-1/2 -translate-y-1/2 text-[#707a82]">search</span>
+          <input type="text" id="search-modal-orc" oninput="filtrarModalOrcamentos()" placeholder="Pesquisar por nome, valor, data, itens, número..." class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:outline-hidden focus:ring-2 focus:ring-[#0085db]">
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <select id="sort-modal-orc" onchange="filtrarModalOrcamentos()" class="px-3 py-2.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-medium focus:outline-hidden focus:ring-2 focus:ring-[#0085db] cursor-pointer">
+            <option value="recente" selected>Mais recente → Mais antigo</option>
+            <option value="antigo">Mais antigo → Mais recente</option>
+            <option value="menor_valor">Menor valor total</option>
+            <option value="maior_valor">Maior valor total</option>
+          </select>
+
+          <button type="button" id="btn-toggle-sort-modal" onclick="toggleOrdemDataModal()" class="h-9 px-3 text-xs font-bold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#0085db]/10 text-[#707a82] hover:text-[#0085db] flex items-center gap-1.5 transition-colors cursor-pointer shrink-0" title="Inverter ordem recente / antigo">
+            <span class="material-symbols-outlined text-[16px]">swap_vert</span>
+            <span class="hidden sm:inline">Inverter</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de Orçamentos no Modal -->
+      <div id="lista-modal-orcamentos" class="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <span id="modal-status-comparando" class="text-xs text-[#707a82] font-semibold">
+          3 orçamentos na comparação atual
+        </span>
+        <button type="button" onclick="closeModalJuntar()" class="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs transition-all cursor-pointer">
+          Concluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. MODAL: CONFIRMAR LIMPAR COMPARAÇÃO (RESUMIDO) -->
+  <div id="modal-limpar-comparacao" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalLimparComparacao()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center border border-amber-500/20">
+            <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+              Limpar comparação
+            </h2>
+            <p class="text-[11px] text-[#707a82]">
+              Comparador de orçamentos
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalLimparComparacao()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-4 pt-4">
+        <p class="text-xs text-zinc-600 dark:text-zinc-300">
+          Tem certeza que deseja limpar todos os orçamentos selecionados para comparação?
+        </p>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+          <button type="button" onclick="closeModalLimparComparacao()" class="h-9 px-3.5 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-colors cursor-pointer">
+            Cancelar
+          </button>
+          <button type="button" onclick="confirmarLimparComparacao()" class="h-9 px-4 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+            <span>Limpar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT PRINCIPAL INTEGRADO -->
+  <script>
+    // ==================== BANCO CENTRAL DE ORÇAMENTOS ====================
+    const bancoOrcamentos = [
+      {
+        id: "orc-01",
+        num: "01",
+        empresa: "COMERCIAL SILVA MATERIAIS",
+        ident: "COT-2026-109",
+        data: "28/10/2026",
+        dataISO: "2026-10-28",
+        etapa: "Fundação & Estrutura",
+        status: "cotacao",
+        statusLabel: "Cotação",
+        statusBadgeClass: "bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700",
+        total: 5850.00,
+        condicoes: "3X NO BOLETO FATURADO OU PIX COM 5% DESC",
+        obs: "Frete grátis para entrega no canteiro em até 48h.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", un: "sc", preco: 34.00, subtotal: 3400.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", un: "m³", preco: 92.00, subtotal: 1840.00 },
+          { nome: "BRITA 1", qtd: "6 m³", un: "m³", preco: 101.66, subtotal: 610.00 },
+          { nome: "Aço CA-50 10mm (3/8\")", qtd: "50 barras", un: "barra", preco: 48.50, subtotal: 2425.00 },
+          { nome: "Bloco Cerâmico 9x19x19", qtd: "1.200 un", un: "milheiro", preco: 1120.00, subtotal: 1344.00 },
+          { nome: "Cal Hidratada CH-I 20kg", qtd: "40 sc", un: "sc", preco: 17.80, subtotal: 712.00 },
+          { nome: "Tubo Esgoto PVC 100mm 6m", qtd: "12 barras", un: "barra", preco: 52.00, subtotal: 624.00 }
+        ]
+      },
+      {
+        id: "orc-02",
+        num: "02",
+        empresa: "DEPÓSITO GOIÁS DA CONSTRUÇÃO",
+        ident: "PROP-8841",
+        data: "29/10/2026",
+        dataISO: "2026-10-29",
+        etapa: "Fundação & Estrutura",
+        status: "aprovado",
+        statusLabel: "Aprovado",
+        statusBadgeClass: "bg-[#4bd08b]/15 text-[#10bd9d] dark:text-[#4bd08b] border border-[#4bd08b]/30",
+        total: 5590.00,
+        condicoes: "À VISTA VIA PIX",
+        obs: "Excelente preço no cimento CP II (R$ 32,50/saco).",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", un: "sc", preco: 32.50, subtotal: 3250.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", un: "m³", preco: 95.00, subtotal: 1900.00 },
+          { nome: "BRITA 1", qtd: "6 m³", un: "m³", preco: 73.33, subtotal: 440.00 },
+          { nome: "Aço CA-50 10mm (3/8\")", qtd: "50 barras", un: "barra", preco: 46.90, subtotal: 2345.00 },
+          { nome: "Bloco Cerâmico 9x19x19", qtd: "1.200 un", un: "milheiro", preco: 1080.00, subtotal: 1296.00 },
+          { nome: "Cal Hidratada CH-I 20kg", qtd: "40 sc", un: "sc", preco: 18.50, subtotal: 740.00 },
+          { nome: "Tubo Esgoto PVC 100mm 6m", qtd: "12 barras", un: "barra", preco: 49.90, subtotal: 598.80 }
+        ]
+      },
+      {
+        id: "orc-03",
+        num: "03",
+        empresa: "CIMENTO & CIA ATACADISTA",
+        ident: "ORC-NOV-01",
+        data: "01/11/2026",
+        dataISO: "2026-11-01",
+        etapa: "Fundação & Estrutura",
+        status: "recusado",
+        statusLabel: "Arquivado",
+        statusBadgeClass: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/25",
+        total: 6200.00,
+        condicoes: "CARTÃO EM ATÉ 4X SEM JUROS",
+        obs: "Preço acima da concorrência local.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", un: "sc", preco: 36.00, subtotal: 3600.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", un: "m³", preco: 98.00, subtotal: 1960.00 },
+          { nome: "BRITA 1", qtd: "6 m³", un: "m³", preco: 106.66, subtotal: 640.00 },
+          { nome: "Aço CA-50 10mm (3/8\")", qtd: "50 barras", un: "barra", preco: 51.00, subtotal: 2550.00 },
+          { nome: "Bloco Cerâmico 9x19x19", qtd: "1.200 un", un: "milheiro", preco: 1190.00, subtotal: 1428.00 },
+          { nome: "Cal Hidratada CH-I 20kg", qtd: "40 sc", un: "sc", preco: 19.20, subtotal: 768.00 },
+          { nome: "Tubo Esgoto PVC 100mm 6m", qtd: "12 barras", un: "barra", preco: 55.00, subtotal: 660.00 }
+        ]
+      },
+      {
+        id: "orc-04",
+        num: "04",
+        empresa: "VOTORAN DISTRIBUIDORA",
+        ident: "COT-VT-2026",
+        data: "02/11/2026",
+        dataISO: "2026-11-02",
+        etapa: "Fundação & Estrutura",
+        status: "cotacao",
+        statusLabel: "Cotação",
+        statusBadgeClass: "bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700",
+        total: 5806.00,
+        condicoes: "BOLETO 30 DIAS OU CARTÃO EM 3X",
+        obs: "Descarga inclusa no canteiro da obra.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", un: "sc", preco: 33.50, subtotal: 3350.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", un: "m³", preco: 94.00, subtotal: 1880.00 },
+          { nome: "BRITA 1", qtd: "6 m³", un: "m³", preco: 96.00, subtotal: 576.00 },
+          { nome: "Aço CA-50 10mm (3/8\")", qtd: "50 barras", un: "barra", preco: 47.50, subtotal: 2375.00 },
+          { nome: "Bloco Cerâmico 9x19x19", qtd: "1.200 un", un: "milheiro", preco: 1100.00, subtotal: 1320.00 },
+          { nome: "Cal Hidratada CH-I 20kg", qtd: "40 sc", un: "sc", preco: 16.90, subtotal: 676.00 },
+          { nome: "Tubo Esgoto PVC 100mm 6m", qtd: "12 barras", un: "barra", preco: 51.50, subtotal: 618.00 }
+        ]
+      },
+      {
+        id: "orc-05",
+        num: "05",
+        empresa: "CONSTRUCENTER BRASIL",
+        ident: "PROP-9910",
+        data: "03/11/2026",
+        dataISO: "2026-11-03",
+        etapa: "Fundação & Estrutura",
+        status: "cotacao",
+        statusLabel: "Cotação",
+        statusBadgeClass: "bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700",
+        total: 6032.00,
+        condicoes: "PIX COM 7% DESCONTO",
+        obs: "Cotação válida por 48 horas úteis.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", un: "sc", preco: 35.00, subtotal: 3500.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", un: "m³", preco: 96.00, subtotal: 1920.00 },
+          { nome: "BRITA 1", qtd: "6 m³", un: "m³", preco: 102.00, subtotal: 612.00 },
+          { nome: "Aço CA-50 10mm (3/8\")", qtd: "50 barras", un: "barra", preco: 49.00, subtotal: 2450.00 },
+          { nome: "Bloco Cerâmico 9x19x19", qtd: "1.200 un", un: "milheiro", preco: 1150.00, subtotal: 1380.00 },
+          { nome: "Cal Hidratada CH-I 20kg", qtd: "40 sc", un: "sc", preco: 17.50, subtotal: 700.00 },
+          { nome: "Tubo Esgoto PVC 100mm 6m", qtd: "12 barras", un: "barra", preco: 53.00, subtotal: 636.00 }
+        ]
+      }
+    ];
+
+    // IDs dos orçamentos reunidos na comparação atual
+    let orcamentosComparando = ["orc-01", "orc-02", "orc-03"];
+
+    // ==================== ALTERNÂNCIA DE ABAS ====================
+    function switchTab(tab) {
+      const btnOrcamentos = document.getElementById('tab-btn-orcamentos');
+      const btnComparador = document.getElementById('tab-btn-comparador');
+      const viewOrcamentos = document.getElementById('view-orcamentos');
+      const viewComparador = document.getElementById('view-comparador');
+      const btnNovaCotacao = document.getElementById('btn-nova-cotacao-top');
+      const btnLimparComp = document.getElementById('btn-limpar-comparacao-top');
+      const pageTitle = document.getElementById('page-title');
+      const pageSubtitle = document.getElementById('page-subtitle');
+
+      if (tab === 'orcamentos') {
+        viewOrcamentos.classList.remove('hidden');
+        viewComparador.classList.add('hidden');
+        btnNovaCotacao.classList.remove('hidden');
+        btnLimparComp.classList.add('hidden');
+
+        btnOrcamentos.className = "px-4 py-2 text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25";
+        btnComparador.className = "px-4 py-2 text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]";
+
+        pageTitle.innerText = "Orçamentos";
+        pageSubtitle.innerText = "Compare cotações de fornecedores e converta as melhores ofertas direto em despesas.";
+      } else {
+        viewOrcamentos.classList.add('hidden');
+        viewComparador.classList.remove('hidden');
+        btnNovaCotacao.classList.add('hidden');
+        btnLimparComp.classList.remove('hidden');
+
+        btnComparador.className = "px-4 py-2 text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25";
+        btnOrcamentos.className = "px-4 py-2 text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535]";
+
+        pageTitle.innerText = "Comparador de preços";
+        pageSubtitle.innerText = "Pesquise e junte orçamentos cadastrados ou arquivados para comparar lado a lado em tempo real.";
+
+        atualizarComparador();
+      }
+    }
+
+    function compararOrcamentoDireto(orcId) {
+      if (!orcamentosComparando.includes(orcId)) {
+        orcamentosComparando.push(orcId);
+      }
+      switchTab('comparador');
+    }
+
+    // ==================== PAGINAÇÃO E FILTROS DE CADASTRADOS ====================
+    let currentOrcamentosPage = 1;
+    const orcamentosPerPage = 4;
+
+    function applyOrcamentosPagination() {
+      const cards = Array.from(document.querySelectorAll('#orcamentos-grid .orc-card'));
+      const activeCards = cards.filter(card => !card.classList.contains('filter-hidden'));
+      const totalCards = activeCards.length;
+      const totalPages = Math.max(1, Math.ceil(totalCards / orcamentosPerPage));
+
+      if (currentOrcamentosPage > totalPages) currentOrcamentosPage = totalPages;
+      if (currentOrcamentosPage < 1) currentOrcamentosPage = 1;
+
+      const startIndex = (currentOrcamentosPage - 1) * orcamentosPerPage;
+      const endIndex = startIndex + orcamentosPerPage;
+
+      activeCards.forEach((card, index) => {
+        if (index >= startIndex && index < endIndex) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      const pagContainer = document.getElementById('orcamentos-paginacao-container');
+      const elCurrent = document.getElementById('orc-pag-current');
+      const elTotal = document.getElementById('orc-pag-total');
+      const btnPrev = document.getElementById('btn-orc-prev');
+      const btnNext = document.getElementById('btn-orc-next');
+      const pagWindow = document.getElementById('orc-pag-window');
+
+      if (totalCards <= orcamentosPerPage) {
+        if (pagContainer) pagContainer.classList.add('hidden');
+      } else {
+        if (pagContainer) pagContainer.classList.remove('hidden');
+      }
+
+      if (elCurrent) elCurrent.innerText = currentOrcamentosPage;
+      if (elTotal) elTotal.innerText = totalPages;
+
+      if (btnPrev) btnPrev.disabled = currentOrcamentosPage === 1;
+      if (btnNext) btnNext.disabled = currentOrcamentosPage === totalPages;
+
+      if (pagWindow) {
+        pagWindow.innerHTML = '';
+        for (let p = 1; p <= totalPages; p++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.innerText = p;
+          btn.onclick = () => goToOrcamentosPage(p);
+
+          if (p === currentOrcamentosPage) {
+            btn.className = "w-8 h-8 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-xs transition-all duration-200 cursor-pointer transform scale-105";
+          } else {
+            btn.className = "w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer";
+          }
+          pagWindow.appendChild(btn);
+        }
+      }
+    }
+
+    function changeOrcamentosPage(delta) {
+      currentOrcamentosPage += delta;
+      applyOrcamentosPagination();
+    }
+
+    function goToOrcamentosPage(pageNum) {
+      currentOrcamentosPage = pageNum;
+      applyOrcamentosPagination();
+    }
+
+    function filterOrcamentos() {
+      const query = (document.getElementById('search-orcamentos')?.value || '').toLowerCase().trim();
+      const statusFilter = document.getElementById('filter-status-select')?.value || 'todos';
+      const etapaFilter = document.getElementById('filter-etapa-select')?.value || 'todas';
+      const sortOption = document.getElementById('sort-orcamentos-select')?.value || 'recente';
+
+      const grid = document.getElementById('orcamentos-grid');
+      const cards = Array.from(grid.querySelectorAll('.orc-card'));
+
+      cards.forEach(card => {
+        const empresa = (card.getAttribute('data-empresa') || '').toLowerCase();
+        const ident = (card.getAttribute('data-ident') || '').toLowerCase();
+        const etapa = card.getAttribute('data-etapa') || '';
+        const status = card.getAttribute('data-status') || '';
+        const materiais = (card.getAttribute('data-materiais') || '').toLowerCase();
+        const textContent = card.innerText.toLowerCase();
+
+        let matchSearch = true;
+        if (query) {
+          matchSearch = empresa.includes(query) || ident.includes(query) || materiais.includes(query) || textContent.includes(query);
+        }
+
+        let matchStatus = true;
+        if (statusFilter !== 'todos') {
+          matchStatus = (status === statusFilter);
+        }
+
+        let matchEtapa = true;
+        if (etapaFilter !== 'todas') {
+          matchEtapa = (etapa === etapaFilter);
+        }
+
+        if (matchSearch && matchStatus && matchEtapa) {
+          card.classList.remove('filter-hidden');
+        } else {
+          card.classList.add('filter-hidden');
+          card.classList.add('hidden');
+        }
+      });
+
+      cards.sort((a, b) => {
+        const valA = parseFloat(a.getAttribute('data-valor-num') || '0');
+        const valB = parseFloat(b.getAttribute('data-valor-num') || '0');
+        const dataA = new Date(a.getAttribute('data-data') || '2026-01-01').getTime();
+        const dataB = new Date(b.getAttribute('data-data') || '2026-01-01').getTime();
+
+        if (sortOption === 'menor-valor') return valA - valB;
+        if (sortOption === 'maior-valor') return valB - valA;
+        return dataB - dataA;
+      });
+
+      cards.forEach(c => grid.appendChild(c));
+      currentOrcamentosPage = 1;
+      applyOrcamentosPagination();
+    }
+
+    // ==================== LÓGICA DO COMPARADOR DINÂMICO ====================
+    function renderBancoOrcamentos(filtroTexto = '') {
+      const container = document.getElementById('lista-modal-orcamentos');
+      if (!container) return;
+
+      const query = filtroTexto.toLowerCase().trim();
+      const sortOption = document.getElementById('sort-modal-orc') ? document.getElementById('sort-modal-orc').value : 'recente';
+
+      let disponiveis = bancoOrcamentos.filter(orc => {
+        if (query) {
+          const valorFormatado = (orc.total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+          const valorLimpo = (orc.total || 0).toString();
+          const match = orc.empresa.toLowerCase().includes(query) ||
+                        orc.ident.toLowerCase().includes(query) ||
+                        orc.num.toLowerCase().includes(query) ||
+                        orc.data.toLowerCase().includes(query) ||
+                        (orc.dataISO || '').includes(query) ||
+                        valorFormatado.includes(query) ||
+                        valorLimpo.includes(query) ||
+                        orc.statusLabel.toLowerCase().includes(query) ||
+                        orc.itens.some(i => i.nome.toLowerCase().includes(query) || i.qtd.toLowerCase().includes(query));
+          if (!match) return false;
+        }
+        return true;
+      });
+
+      disponiveis.sort((a, b) => {
+        const dataA = new Date(a.dataISO || '2026-01-01').getTime();
+        const dataB = new Date(b.dataISO || '2026-01-01').getTime();
+
+        if (sortOption === 'antigo') return dataA - dataB;
+        if (sortOption === 'menor_valor') return a.total - b.total;
+        if (sortOption === 'maior_valor') return b.total - a.total;
+        return dataB - dataA;
+      });
+
+      const elStatus = document.getElementById('modal-status-comparando');
+      if (elStatus) {
+        elStatus.innerText = `${orcamentosComparando.length} ${orcamentosComparando.length === 1 ? 'orçamento reunido' : 'orçamentos reunidos'} na comparação atual`;
+      }
+
+      if (disponiveis.length === 0) {
+        container.innerHTML = `
+          <div class="py-8 text-center text-xs text-[#707a82]">
+            Nenhum orçamento encontrado com o termo pesquisado.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = disponiveis.map(orc => {
+        const estaNaComparacao = orcamentosComparando.includes(orc.id);
+        const formatTotal = orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+        return `
+          <div class="p-3.5 rounded-xl border ${estaNaComparacao ? 'border-[#0085db] bg-[#0085db]/5 dark:bg-[#0085db]/10' : 'border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535]'} flex items-center justify-between gap-3 text-xs transition-all">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold text-[#0085db] font-mono">${orc.num}</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-full uppercase ${orc.statusBadgeClass}">${orc.statusLabel}</span>
+                <span class="text-[10px] text-[#707a82]">${orc.data}</span>
+              </div>
+              <h4 class="font-bold text-[#111c2d] dark:text-white truncate uppercase" title="${orc.empresa}">
+                ${orc.empresa}
+              </h4>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span class="text-[10px] text-[#707a82]">Total:</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums">R$ ${formatTotal}</span>
+                <span class="text-[10px] text-[#707a82]">· ${orc.itens.length} itens</span>
+              </div>
+            </div>
+
+            <div>
+              ${estaNaComparacao ? `
+                <button
+                  type="button"
+                  onclick="removerOrcamentoComparacao('${orc.id}')"
+                  class="px-3.5 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg border border-rose-200 dark:border-rose-900/50 transition-colors cursor-pointer"
+                  title="Remover desta comparação"
+                >
+                  Remover
+                </button>
+              ` : `
+                <button
+                  type="button"
+                  onclick="adicionarOrcamentoComparacao('${orc.id}')"
+                  class="px-3.5 py-1.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-lg transition-colors cursor-pointer"
+                  title="Juntar à comparação"
+                >
+                  Juntar
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filtrarModalOrcamentos() {
+      const q = document.getElementById('search-modal-orc') ? document.getElementById('search-modal-orc').value : '';
+      renderBancoOrcamentos(q);
+    }
+
+    function toggleOrdemDataModal() {
+      const select = document.getElementById('sort-modal-orc');
+      if (select) {
+        select.value = select.value === 'recente' ? 'antigo' : 'recente';
+        filtrarModalOrcamentos();
+      }
+    }
+
+    function openModalJuntar() {
+      document.getElementById('modal-juntar').classList.remove('hidden');
+      filtrarModalOrcamentos();
+    }
+
+    function closeModalJuntar() {
+      document.getElementById('modal-juntar').classList.add('hidden');
+    }
+
+    function adicionarOrcamentoComparacao(orcId) {
+      if (!orcamentosComparando.includes(orcId)) {
+        orcamentosComparando.push(orcId);
+        atualizarComparador();
+      }
+    }
+
+    function removerOrcamentoComparacao(orcId) {
+      orcamentosComparando = orcamentosComparando.filter(id => id !== orcId);
+      atualizarComparador();
+    }
+
+    function openModalLimparComparacao() {
+      document.getElementById('modal-limpar-comparacao').classList.remove('hidden');
+    }
+
+    function closeModalLimparComparacao() {
+      document.getElementById('modal-limpar-comparacao').classList.add('hidden');
+    }
+
+    function confirmarLimparComparacao() {
+      limparComparacao();
+      closeModalLimparComparacao();
+    }
+
+    function limparComparacao() {
+      orcamentosComparando = [];
+      atualizarComparador();
+    }
+
+    function restaurarComparacaoPadrao() {
+      orcamentosComparando = ["orc-01", "orc-02", "orc-03"];
+      atualizarComparador();
+    }
+
+    function renderSelecionadosNaTela(ativos) {
+      const container = document.getElementById('lista-selecionados-container');
+      const badge = document.getElementById('badge-selecionados-count');
+      if (badge) badge.innerText = `${ativos.length} ${ativos.length === 1 ? 'selecionado' : 'selecionados'}`;
+
+      if (!container) return;
+
+      if (ativos.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-4 text-center text-xs text-[#707a82]">
+            Nenhum orçamento selecionado no momento. Clique em "+ Juntar" acima para adicionar.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = ativos.map(orc => {
+        const formatTotal = orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+        return `
+          <div class="p-3.5 rounded-xl border border-[#0085db]/40 bg-[#0085db]/5 dark:bg-[#0085db]/10 flex items-center justify-between gap-3 text-xs transition-all">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold text-[#0085db] font-mono">${orc.num}</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-full uppercase ${orc.statusBadgeClass}">${orc.statusLabel}</span>
+                <span class="text-[10px] text-[#707a82]">${orc.data}</span>
+              </div>
+              <h4 class="font-bold text-[#111c2d] dark:text-white truncate uppercase" title="${orc.empresa}">
+                ${orc.empresa}
+              </h4>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span class="text-[10px] text-[#707a82]">Total:</span>
+                <span class="font-bold text-[#111c2d] dark:text-white tabular-nums">R$ ${formatTotal}</span>
+                <span class="text-[10px] text-[#707a82]">· ${orc.itens.length} itens</span>
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="button"
+                onclick="removerOrcamentoComparacao('${orc.id}')"
+                class="px-3 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg border border-rose-200 dark:border-rose-900/50 transition-colors cursor-pointer"
+                title="Remover desta comparação"
+              >
+                Remover
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function atualizarKPIs(ativos) {
+      const elQtd = document.getElementById('kpi-qtd-orcamentos');
+      const elMenor = document.getElementById('kpi-menor-valor-total');
+      const elLojaVencedora = document.getElementById('kpi-loja-vencedora');
+      const elMaior = document.getElementById('kpi-maior-valor-total');
+      const elLojaMaior = document.getElementById('kpi-loja-maior');
+      const elEconomia = document.getElementById('kpi-economia-total');
+
+      if (!elQtd) return;
+
+      elQtd.innerText = ativos.length;
+
+      if (ativos.length === 0) {
+        elMenor.innerText = "R$ 0,00";
+        elLojaVencedora.innerText = "Nenhum orçamento reunido";
+        elMaior.innerText = "R$ 0,00";
+        elLojaMaior.innerText = "—";
+        elEconomia.innerText = "R$ 0,00";
+        return;
+      }
+
+      const totais = ativos.map(o => o.total);
+      const menor = Math.min(...totais);
+      const maior = Math.max(...totais);
+      const diferenca = maior - menor;
+
+      const orcMenor = ativos.find(o => o.total === menor);
+      const orcMaior = ativos.find(o => o.total === maior);
+
+      elMenor.innerText = `R$ ${menor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      elLojaVencedora.innerText = orcMenor ? orcMenor.empresa : '—';
+
+      elMaior.innerText = `R$ ${maior.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      elLojaMaior.innerText = orcMaior ? orcMaior.empresa : '—';
+
+      elEconomia.innerText = `R$ ${diferenca.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    }
+
+    function renderMatrizItens(ativos) {
+      const container = document.getElementById('matriz-itens-container');
+      if (!container) return;
+
+      if (ativos.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      const mapaMateriais = new Map();
+      ativos.forEach(orc => {
+        orc.itens.forEach(item => {
+          if (!mapaMateriais.has(item.nome)) {
+            mapaMateriais.set(item.nome, {
+              nome: item.nome,
+              un: item.un || 'un'
+            });
+          }
+        });
+      });
+
+      const listaMateriais = Array.from(mapaMateriais.values());
+
+      let html = `
+        <div class="rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] shadow-xs overflow-hidden">
+          <table class="w-full table-fixed text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#f8fafc] dark:bg-[#162232] border-b border-[#e6ecf1] dark:border-[#333f55]">
+                <th class="py-2.5 px-3 font-bold text-[#707a82] uppercase tracking-wider text-[10px] w-[34%]">
+                  Material
+                </th>
+                <th class="py-2.5 px-1.5 text-center text-[#707a82] uppercase tracking-wider text-[10px] w-[7%]">
+                  Un.
+                </th>
+                ${ativos.map(orc => `
+                  <th class="py-2.5 px-2.5 text-right border-l border-[#e6ecf1] dark:border-[#333f55]" style="width: ${Math.floor(42 / ativos.length)}%">
+                    <div class="flex items-center justify-end gap-1 font-semibold text-[#111c2d] dark:text-white">
+                      <span class="font-mono text-[9px] px-1 py-0.2 rounded-sm bg-[#0085db]/10 text-[#0085db] font-bold shrink-0">${orc.num}</span>
+                      <span class="truncate text-[11px]" title="${orc.empresa}">${orc.empresa}</span>
+                    </div>
+                  </th>
+                `).join('')}
+                <th class="py-2.5 px-3 text-right border-l border-[#e6ecf1] dark:border-[#333f55] bg-[#4bd08b]/5 dark:bg-[#4bd08b]/10 text-[#10bd9d] font-bold text-[10px] uppercase tracking-wider w-[17%]">
+                  Menor Valor
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#e6ecf1] dark:divide-[#333f55] text-xs">
+      `;
+
+      listaMateriais.forEach((mat) => {
+        const precosValidos = ativos.map(orc => {
+          const item = orc.itens.find(i => i.nome === mat.nome);
+          return item ? { orcId: orc.id, empresa: orc.empresa, preco: item.preco } : null;
+        }).filter(Boolean);
+
+        const menorPreco = precosValidos.length > 0 ? Math.min(...precosValidos.map(p => p.preco)) : 0;
+        const fornecedorVencedor = precosValidos.find(p => p.preco === menorPreco);
+
+        html += `
+          <tr class="hover:bg-[#f6f9fc]/80 dark:hover:bg-[#1a2535]/80 transition-colors">
+            <td class="py-2 px-3 font-semibold text-[#111c2d] dark:text-white uppercase text-[11px]">
+              <span class="truncate block" title="${mat.nome}">${mat.nome}</span>
+            </td>
+            <td class="py-2 px-1.5 text-center text-[#707a82] font-mono text-[10px]">
+              ${mat.un}
+            </td>
+            ${ativos.map(orc => {
+              const item = orc.itens.find(i => i.nome === mat.nome);
+              if (!item) {
+                return `
+                  <td class="py-2 px-2.5 text-right text-[#707a82] border-l border-[#e6ecf1] dark:border-[#333f55]">
+                    —
+                  </td>
+                `;
+              }
+
+              const isMenor = item.preco === menorPreco && ativos.length > 1;
+
+              return `
+                <td class="py-2 px-2.5 text-right border-l border-[#e6ecf1] dark:border-[#333f55] tabular-nums ${isMenor ? 'bg-[#4bd08b]/15 font-bold text-[#10bd9d]' : 'text-[#111c2d] dark:text-[#cbd5e1]'}" title="${isMenor ? 'Menor preço cotado' : ''}">
+                  <div class="inline-flex items-center justify-end gap-1">
+                    <span class="truncate">R$ ${item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    ${isMenor ? `
+                      <span class="material-symbols-outlined text-[13px] text-[#10bd9d] leading-none shrink-0">check_circle</span>
+                    ` : ''}
+                  </div>
+                </td>
+              `;
+            }).join('')}
+            <td class="py-2 px-3 text-right border-l border-[#e6ecf1] dark:border-[#333f55] bg-[#4bd08b]/5 dark:bg-[#4bd08b]/10 tabular-nums">
+              <div class="font-extrabold text-[#10bd9d] text-xs leading-tight">
+                R$ ${menorPreco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </div>
+              <div class="text-[9px] text-[#707a82] truncate leading-tight mt-0.5" title="${fornecedorVencedor ? fornecedorVencedor.empresa : ''}">
+                ${fornecedorVencedor ? fornecedorVencedor.empresa : '—'}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      const vitoriasPorLoja = {};
+      ativos.forEach(orc => { vitoriasPorLoja[orc.empresa] = 0; });
+
+      listaMateriais.forEach((mat) => {
+        const precosValidos = ativos.map(orc => {
+          const item = orc.itens.find(i => i.nome === mat.nome);
+          return item ? { orcId: orc.id, empresa: orc.empresa, preco: item.preco } : null;
+        }).filter(Boolean);
+
+        if (precosValidos.length > 0) {
+          const menorPreco = Math.min(...precosValidos.map(p => p.preco));
+          precosValidos.forEach(p => {
+            if (p.preco === menorPreco) {
+              vitoriasPorLoja[p.empresa] = (vitoriasPorLoja[p.empresa] || 0) + 1;
+            }
+          });
+        }
+      });
+
+      let lojaLider = '';
+      let maxVitorias = 0;
+      Object.entries(vitoriasPorLoja).forEach(([empresa, count]) => {
+        if (count > maxVitorias) {
+          maxVitorias = count;
+          lojaLider = empresa;
+        }
+      });
+
+      const elTextoLoja = document.getElementById('texto-loja-mais-barata');
+      if (elTextoLoja) {
+        if (lojaLider && maxVitorias > 0) {
+          elTextoLoja.innerText = `${lojaLider} tem ${maxVitorias} ${maxVitorias === 1 ? 'item mais barato' : 'itens mais baratos'}`;
+        } else {
+          elTextoLoja.innerText = 'Valores unitários comparados lado a lado';
+        }
+      }
+
+      container.innerHTML = html;
+    }
+
+    function atualizarComparador() {
+      renderBancoOrcamentos(document.getElementById('search-modal-orc') ? document.getElementById('search-modal-orc').value : '');
+
+      const ativos = bancoOrcamentos.filter(o => orcamentosComparando.includes(o.id));
+      const grid = document.getElementById('grid-comparacao-ativa');
+      const emptyState = document.getElementById('comparador-empty-state');
+      const matrizWrapper = document.getElementById('matriz-materiais-wrapper');
+
+      renderSelecionadosNaTela(ativos);
+      atualizarKPIs(ativos);
+
+      if (ativos.length === 0) {
+        if (grid) grid.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        if (matrizWrapper) matrizWrapper.classList.add('hidden');
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+      if (matrizWrapper) matrizWrapper.classList.remove('hidden');
+
+      const menorTotal = Math.min(...ativos.map(o => o.total));
+
+      grid.innerHTML = ativos.map(orc => {
+        const isVencedor = orc.total === menorTotal && ativos.length > 1;
+        const formatTotal = orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+        return `
+          <div class="orc-card relative rounded-[20px] p-5 border ${isVencedor ? 'border-[#4bd08b] bg-gradient-to-b from-emerald-50/40 via-white to-white dark:from-emerald-950/20 dark:via-[#111c2d] dark:to-[#111c2d] shadow-md shadow-[#4bd08b]/10' : 'border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] shadow-[0px_4px_12px_rgba(37,83,185,0.06)] dark:shadow-none'} flex flex-col justify-between gap-4 transition-all">
+            
+            ${isVencedor ? `
+              <div class="absolute -top-3 left-5">
+                <span class="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-white bg-[#10bd9d] px-2.5 py-0.5 rounded-full shadow-xs">
+                  <span class="material-symbols-outlined text-[13px]">military_tech</span>
+                  <span>Melhor Cotação Global</span>
+                </span>
+              </div>
+            ` : ''}
+
+            <div class="space-y-2 pt-1">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-bold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 px-2 py-0.5 rounded-md font-mono">${orc.num}</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${orc.statusBadgeClass}">${orc.statusLabel}</span>
+                </div>
+                <button
+                  type="button"
+                  onclick="removerOrcamentoComparacao('${orc.id}')"
+                  class="w-7 h-7 rounded-lg text-[#707a82] hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center transition-colors cursor-pointer"
+                  title="Excluir este orçamento da comparação"
+                >
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+
+              <div>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase truncate" title="${orc.empresa}">
+                  ${orc.empresa}
+                </h3>
+                <span class="text-[11px] text-[#707a82]">Cotado em ${orc.data}</span>
+              </div>
+
+              <div class="text-[11px] text-[#707a82] pt-1">
+                <p class="truncate uppercase text-[10px]">COND: <strong class="text-[#111c2d] dark:text-white">${orc.condicoes}</strong></p>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 py-2 border-y border-[#e6ecf1] dark:border-[#333f55]">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="font-bold uppercase tracking-wider text-[#707a82] text-[10px]">Itens cotados</span>
+                <span class="font-bold text-[#707a82] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-full text-[10px]">
+                  Total ${orc.itens.length} itens
+                </span>
+              </div>
+              <div class="space-y-1">
+                ${orc.itens.slice(0, 3).map(item => `
+                  <div class="flex items-center justify-between py-1 px-2.5 rounded-lg bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 text-xs">
+                    <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">${item.qtd} ${item.nome}</span>
+                    <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ ${item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}/un</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <div>
+                <span class="text-[10px] text-[#707a82] uppercase tracking-wider block font-semibold">Total Cotado</span>
+                <span class="text-lg font-extrabold ${isVencedor ? 'text-[#10bd9d]' : 'text-[#111c2d] dark:text-white'} tabular-nums">
+                  R$ ${formatTotal}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onclick="openModalConverter('${orc.empresa}', 'R$ ${formatTotal}', ${orc.itens.length}, this)"
+                class="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer whitespace-nowrap"
+                title="Transformar este orçamento em compra real"
+              >
+                <span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+                <span>Comprar</span>
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+
+      renderMatrizItens(ativos);
+    }
+
+    // ==================== LÓGICA DE DETALHES DO ORÇAMENTO ====================
+    function openModalDetalhesOrcamento(orcId) {
+      const orc = bancoOrcamentos.find(o => o.id === orcId);
+      if (!orc) return;
+
+      document.getElementById('det-orc-num').innerText = orc.num;
+      document.getElementById('det-orc-empresa').innerText = orc.empresa;
+      document.getElementById('det-orc-data').innerText = `Cotado em ${orc.data}`;
+      document.getElementById('det-orc-condicoes').innerText = orc.condicoes;
+      document.getElementById('det-orc-obs').innerText = orc.obs || 'Nenhuma observação registrada.';
+      document.getElementById('det-orc-total').innerText = `R$ ${orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      document.getElementById('det-orc-itens-header').innerText = `Itens da Cotação (${orc.itens.length} itens)`;
+
+      const badgeStatus = document.getElementById('det-orc-badge-status');
+      badgeStatus.innerText = orc.statusLabel;
+      badgeStatus.className = `text-[10px] font-bold px-2 py-0.2 rounded-full uppercase ${orc.statusBadgeClass}`;
+
+      const tbody = document.getElementById('det-orc-itens-tbody');
+      tbody.innerHTML = orc.itens.map(item => {
+        const subtotal = item.subtotal || (item.preco * (parseFloat(item.qtd) || 1));
+        return `
+          <tr class="hover:bg-[#f6f9fc]/80 dark:hover:bg-[#1a2535]/80 transition-colors">
+            <td class="py-2.5 px-3 font-semibold text-[#111c2d] dark:text-white uppercase">
+              ${item.nome}
+            </td>
+            <td class="py-2.5 px-2 text-center text-[#707a82] font-mono text-[11px]">
+              ${item.un || 'un'}
+            </td>
+            <td class="py-2.5 px-3 text-right text-[#707a82]">
+              ${item.qtd}
+            </td>
+            <td class="py-2.5 px-3 text-right font-medium text-[#111c2d] dark:text-[#cbd5e1] tabular-nums">
+              R$ ${item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </td>
+            <td class="py-2.5 px-3 text-right font-bold text-[#111c2d] dark:text-white tabular-nums">
+              R$ ${subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('modal-detalhes-orcamento').classList.remove('hidden');
+    }
+
+    function closeModalDetalhesOrcamento() {
+      document.getElementById('modal-detalhes-orcamento').classList.add('hidden');
+    }
+
+    // ==================== LÓGICA DE CONVERTER EM COMPRA ====================
+    let cardPendingConvert = null;
+
+    function openModalConverter(empresa, valor, itensCount, btn) {
+      if (btn && btn.closest) {
+        cardPendingConvert = btn.closest('.orc-card');
+      } else {
+        cardPendingConvert = null;
+      }
+      document.getElementById('conv-fornecedor-nome').innerText = empresa;
+      document.getElementById('conv-valor-total').innerText = valor;
+      document.getElementById('conv-itens-count').innerText = itensCount;
+      document.getElementById('modal-converter-compra').classList.remove('hidden');
+    }
+
+    function closeModalConverter() {
+      document.getElementById('modal-converter-compra').classList.add('hidden');
+      cardPendingConvert = null;
+    }
+
+    function confirmarConversaoCompra() {
+      const formaPag = document.getElementById('conv-forma-pagamento').value;
+      if (cardPendingConvert) {
+        cardPendingConvert.setAttribute('data-status', 'aprovado');
+        const headerRow = cardPendingConvert.querySelector('.lg\\:w-1\\/3 > div.flex.items-center.gap-2');
+        if (headerRow) {
+          const lastTag = headerRow.querySelector('span:last-child');
+          if (lastTag) {
+            lastTag.className = "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#4bd08b]/15 text-[#10bd9d] dark:text-[#4bd08b] border border-[#4bd08b]/30";
+            lastTag.innerText = "Aprovado";
+          }
+        }
+      }
+      closeModalConverter();
+      // Opcional: feedback visual ou transição suave
+    }
+
+    // ==================== LÓGICA DE EXCLUIR ORÇAMENTO ====================
+    let cardPendingDelete = null;
+
+    function openModalExcluirOrcamento(empresa, valor, itensCount, data, btn) {
+      cardPendingDelete = btn.closest('.orc-card');
+      document.getElementById('del-orc-empresa').innerText = empresa;
+      document.getElementById('del-orc-valor').innerText = valor;
+      document.getElementById('del-orc-itens').innerText = `${itensCount} itens cotados`;
+      document.getElementById('modal-excluir-orcamento').classList.remove('hidden');
+    }
+
+    function closeModalExcluirOrcamento() {
+      document.getElementById('modal-excluir-orcamento').classList.add('hidden');
+      cardPendingDelete = null;
+    }
+
+    function confirmarExclusaoOrcamento() {
+      if (cardPendingDelete) {
+        const orcId = cardPendingDelete.getAttribute('data-id');
+        if (orcId) {
+          removerOrcamentoComparacao(orcId);
+        }
+        cardPendingDelete.remove();
+        applyOrcamentosPagination();
+      }
+      closeModalExcluirOrcamento();
+    }
+
+    // ==================== LÓGICA DE ARQUIVAR / DESARQUIVAR ====================
+    let cardPendingArchive = null;
+
+    function openModalArquivarOrcamento(empresa, valor, itensCount, data, btn) {
+      cardPendingArchive = btn.closest('.orc-card');
+      document.getElementById('arq-orc-empresa').innerText = empresa;
+      document.getElementById('arq-orc-valor').innerText = valor;
+      document.getElementById('arq-orc-itens').innerText = `${itensCount} itens cotados`;
+      document.getElementById('modal-arquivar-orcamento').classList.remove('hidden');
+    }
+
+    function closeModalArquivarOrcamento() {
+      document.getElementById('modal-arquivar-orcamento').classList.add('hidden');
+      cardPendingArchive = null;
+    }
+
+    function confirmarArquivamentoOrcamento() {
+      if (cardPendingArchive) {
+        cardPendingArchive.setAttribute('data-status', 'recusado');
+        
+        const headerRow = cardPendingArchive.querySelector('.lg\\:w-1\\/3 > div.flex.items-center.gap-2');
+        if (headerRow) {
+          const lastTag = headerRow.querySelector('span:last-child');
+          if (lastTag) {
+            lastTag.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center gap-1";
+            lastTag.innerHTML = `<span class="material-symbols-outlined text-[12px]">archive</span><span>Arquivado</span>`;
+          }
+        }
+
+        const actionsContainer = cardPendingArchive.querySelector('.lg\\:w-auto > div.flex.items-center.gap-2');
+        if (actionsContainer) {
+          actionsContainer.innerHTML = `
+            <button
+              type="button"
+              onclick="desarquivarOrcamento(this)"
+              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#0085db] dark:text-[#53b9ea] hover:text-[#006bb3] bg-[#0085db]/10 hover:bg-[#0085db]/20 active:scale-95 rounded-xl border border-[#0085db]/25 transition-all cursor-pointer whitespace-nowrap"
+              title="Desarquivar este orçamento e restaurar as ações"
+            >
+              <span class="material-symbols-outlined text-[15px]">unarchive</span>
+              <span>Desarquivar</span>
+            </button>
+          `;
+        }
+      }
+      closeModalArquivarOrcamento();
+    }
+
+    function arquivarOrcamento(btn) {
+      const card = btn.closest('.orc-card');
+      if (!card) return;
+      const empresa = card.getAttribute('data-empresa') || 'Orçamento';
+      const valor = card.querySelector('.text-xl.font-extrabold') ? card.querySelector('.text-xl.font-extrabold').innerText : 'R$ 0,00';
+      const data = card.querySelector('.lg\\:w-1\\/3 span.text-xs.text-\\[\\#707a82\\]') ? card.querySelector('.lg\\:w-1\\/3 span.text-xs.text-\\[\\#707a82\\]').innerText : '28/10/2026';
+      openModalArquivarOrcamento(empresa, valor, 3, data, btn);
+    }
+
+    let cardPendingUnarchive = null;
+
+    function openModalDesarquivarOrcamento(empresa, valor, itensCount, data, btn) {
+      cardPendingUnarchive = btn.closest('.orc-card');
+      document.getElementById('desarq-orc-empresa').innerText = empresa;
+      document.getElementById('desarq-orc-valor').innerText = valor;
+      document.getElementById('desarq-orc-itens').innerText = `${itensCount} itens cotados`;
+      document.getElementById('modal-desarquivar-orcamento').classList.remove('hidden');
+    }
+
+    function closeModalDesarquivarOrcamento() {
+      document.getElementById('modal-desarquivar-orcamento').classList.add('hidden');
+      cardPendingUnarchive = null;
+    }
+
+    function confirmarDesarquivamentoOrcamento() {
+      if (cardPendingUnarchive) {
+        cardPendingUnarchive.setAttribute('data-status', 'cotacao');
+        
+        const headerRow = cardPendingUnarchive.querySelector('.lg\\:w-1\\/3 > div.flex.items-center.gap-2');
+        if (headerRow) {
+          const lastTag = headerRow.querySelector('span:last-child');
+          if (lastTag) {
+            lastTag.className = "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700";
+            lastTag.innerHTML = `Cotação`;
+          }
+        }
+
+        const empresa = cardPendingUnarchive.getAttribute('data-empresa') || 'Orçamento';
+        const valor = cardPendingUnarchive.querySelector('.text-xl.font-extrabold') ? cardPendingUnarchive.querySelector('.text-xl.font-extrabold').innerText : 'R$ 0,00';
+
+        const actionsContainer = cardPendingUnarchive.querySelector('.lg\\:w-auto > div.flex.items-center.gap-2');
+        if (actionsContainer) {
+          actionsContainer.innerHTML = `
+            <button
+              type="button"
+              onclick="openModalConverter('${empresa}', '${valor}', 3, this)"
+              class="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer whitespace-nowrap"
+              title="Transforma este orçamento em despesa real sem duplicar valores"
+            >
+              <span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+              <span>Comprar</span>
+            </button>
+            <button
+              type="button"
+              onclick="arquivarOrcamento(this)"
+              class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#707a82] hover:text-[#111c2d] dark:hover:text-white bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#e6ecf1] dark:hover:bg-[#253248] active:scale-95 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] transition-all cursor-pointer whitespace-nowrap"
+              title="Arquivar este orçamento"
+            >
+              <span class="material-symbols-outlined text-[15px]">archive</span>
+              <span>Arquivar</span>
+            </button>
+            <button
+              type="button"
+              onclick="compararOrcamentoDireto('${cardPendingUnarchive.getAttribute('data-id') || 'orc-01'}')"
+              class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#0085db] dark:text-[#53b9ea] bg-[#0085db]/10 hover:bg-[#0085db]/20 active:scale-95 rounded-xl border border-[#0085db]/25 transition-all cursor-pointer whitespace-nowrap"
+              title="Comparar este orçamento com outros fornecedores"
+            >
+              <span class="material-symbols-outlined text-[15px]">scale</span>
+              <span>Comparar</span>
+            </button>
+          `;
+        }
+      }
+      closeModalDesarquivarOrcamento();
+    }
+
+    function desarquivarOrcamento(btn) {
+      const card = btn.closest('.orc-card');
+      if (!card) return;
+      const empresa = card.getAttribute('data-empresa') || 'Orçamento';
+      const valor = card.querySelector('.text-xl.font-extrabold') ? card.querySelector('.text-xl.font-extrabold').innerText : 'R$ 0,00';
+      const data = card.querySelector('.lg\\:w-1\\/3 span.text-xs.text-\\[\\#707a82\\]') ? card.querySelector('.lg\\:w-1\\/3 span.text-xs.text-\\[\\#707a82\\]').innerText : '01/11/2026';
+      openModalDesarquivarOrcamento(empresa, valor, 3, data, btn);
+    }
+
+    // ==================== LÓGICA DE EDITAR ORÇAMENTO ====================
+    let cardPendingEdit = null;
+
+    function toggleCampoEntregaEdicaoMain(chk) {
+      const box = document.getElementById('box-valor-entrega-edit-main');
+      if (chk.checked) {
+        box.classList.remove('hidden');
+        document.getElementById('edit-input-valor-entrega-main').focus();
+      } else {
+        box.classList.add('hidden');
+        document.getElementById('edit-input-valor-entrega-main').value = '';
+      }
+      recalcularTotalGeralEdicao();
+    }
+
+    function recalcularTotalGeralEdicao() {
+      const rows = document.querySelectorAll('#edit-orc-itens-container .edit-row');
+      let somaTotal = 0;
+      rows.forEach(r => {
+        const precoInput = r.querySelector('.edit-item-preco');
+        const qtdInput = r.querySelector('.edit-item-qtd');
+        const subtotalEl = r.querySelector('.edit-item-subtotal');
+        
+        let pVal = 0;
+        if (precoInput) {
+          pVal = parseFloat(precoInput.value.replace('.', '').replace(',', '.')) || 0;
+        }
+        let qVal = 1;
+        if (qtdInput) {
+          const matchQtd = qtdInput.value.match(/[\d.,]+/);
+          if (matchQtd) {
+            qVal = parseFloat(matchQtd[0].replace('.', '').replace(',', '.')) || 1;
+          }
+        }
+        const sub = pVal * qVal;
+        somaTotal += sub;
+        if (subtotalEl) {
+          subtotalEl.innerText = 'R$ ' + sub.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+      });
+
+      const chkEntrega = document.getElementById('edit-chk-tem-entrega-main');
+      let valEntrega = 0;
+      if (chkEntrega && chkEntrega.checked) {
+        valEntrega = parseFloat((document.getElementById('edit-input-valor-entrega-main').value || '0').replace('.', '').replace(',', '.')) || 0;
+      }
+
+      somaTotal += valEntrega;
+
+      const totalInput = document.getElementById('edit-orc-valor');
+      if (totalInput) {
+        totalInput.value = somaTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    }
+
+    function adicionarLinhaEdicaoInterna(nome = 'NOVO MATERIAL', qtd = '1 un', preco = '0,00', subtotal = 'R$ 0,00') {
+      const container = document.getElementById('edit-orc-itens-container');
+      if (!container) return;
+
+      const div = document.createElement('div');
+      div.className = "edit-row flex items-center justify-between gap-2 p-2 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs";
+      div.innerHTML = `
+        <div class="flex-1 min-w-0">
+          <input
+            type="text"
+            value="${nome}"
+            placeholder="Nome do material"
+            class="edit-item-nome w-full px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold uppercase"
+          />
+        </div>
+        <div class="w-20">
+          <input
+            type="text"
+            value="${qtd}"
+            placeholder="Qtd / Un"
+            oninput="recalcularTotalGeralEdicao()"
+            class="edit-item-qtd w-full px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white text-center font-medium"
+          />
+        </div>
+        <div class="w-24">
+          <input
+            type="text"
+            value="${preco}"
+            placeholder="Preço unit."
+            oninput="recalcularTotalGeralEdicao()"
+            class="edit-item-preco w-full px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white text-right font-bold tabular-nums"
+          />
+        </div>
+        <div class="w-24 text-right pr-1">
+          <span class="edit-item-subtotal font-bold text-[#111c2d] dark:text-white tabular-nums">${subtotal}</span>
+        </div>
+        <button
+          type="button"
+          onclick="removerLinhaEdicaoInterna(this)"
+          class="w-7 h-7 text-[#707a82] hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+          title="Remover item"
+        >
+          <span class="material-symbols-outlined text-[16px]">delete</span>
+        </button>
+      `;
+      container.appendChild(div);
+      recalcularTotalGeralEdicao();
+    }
+
+    function removerLinhaEdicaoInterna(btn) {
+      const rows = document.querySelectorAll('#edit-orc-itens-container .edit-row');
+      if (rows.length > 1) {
+        btn.closest('.edit-row').remove();
+        recalcularTotalGeralEdicao();
+      } else {
+        alert('O orçamento deve ter pelo menos um item.');
+      }
+    }
+
+    function openModalEditarOrcamento(empresa, ident, data, condicoes, valor, btn) {
+      cardPendingEdit = btn.closest('.orc-card');
+      document.getElementById('edit-orc-empresa').value = empresa;
+      document.getElementById('edit-orc-ident').value = ident;
+      document.getElementById('edit-orc-data').value = data;
+      document.getElementById('edit-orc-condicoes').value = condicoes;
+      document.getElementById('edit-orc-valor').value = valor;
+
+      const container = document.getElementById('edit-orc-itens-container');
+      if (container) {
+        container.innerHTML = '';
+        if (cardPendingEdit) {
+          const itemDivs = cardPendingEdit.querySelectorAll('.lg\\:flex-1 > div.flex.items-center.justify-between.py-1\\.5');
+          if (itemDivs.length > 0) {
+            itemDivs.forEach(item => {
+              const fullText = item.querySelector('span:first-child')?.innerText || '';
+              const precoText = item.querySelector('span:last-child')?.innerText || '';
+              
+              const parts = fullText.split(' ');
+              let qtdStr = parts.length > 2 ? `${parts[0]} ${parts[1]}` : (parts[0] || '1');
+              let nomeStr = parts.length > 2 ? parts.slice(2).join(' ') : fullText;
+              
+              let precoNumStr = precoText.replace('R$', '').replace('/un', '').replace('/sc', '').replace('/m³', '').trim();
+              let precoVal = parseFloat(precoNumStr.replace(',', '.')) || 0;
+              let qtdVal = parseFloat(parts[0].replace(',', '.')) || 1;
+              let subtotalVal = qtdVal * precoVal;
+              let subtotalStr = 'R$ ' + (subtotalVal > 0 ? subtotalVal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : precoText);
+
+              adicionarLinhaEdicaoInterna(nomeStr, qtdStr, precoNumStr, subtotalStr);
+            });
+          } else {
+            adicionarLinhaEdicaoInterna('CIMENTO CP II 50KG', '100 sc', '34,00', 'R$ 3.400,00');
+            adicionarLinhaEdicaoInterna('AREIA MÉDIA LAVADA', '20 m³', '92,00', 'R$ 1.840,00');
+          }
+        }
+      }
+
+      const obsInput = document.getElementById('edit-orc-observacoes');
+      if (obsInput) {
+        const obsEl = cardPendingEdit ? cardPendingEdit.querySelector('p.italic') : null;
+        if (obsEl) {
+          obsInput.value = obsEl.innerText.replace(/^Obs:\s*/i, '').trim();
+        } else {
+          obsInput.value = 'Frete grátis para entrega no canteiro em até 48h. Descarga inclusa.';
+        }
+      }
+
+      // Inicializa o campo de frete/entrega no modal de edição
+      const chkEntrega = document.getElementById('edit-chk-tem-entrega-main');
+      const boxEntrega = document.getElementById('box-valor-entrega-edit-main');
+      const inputEntrega = document.getElementById('edit-input-valor-entrega-main');
+      if (chkEntrega) chkEntrega.checked = false;
+      if (boxEntrega) boxEntrega.classList.add('hidden');
+      if (inputEntrega) inputEntrega.value = '';
+
+      document.getElementById('modal-editar-orcamento').classList.remove('hidden');
+    }
+
+    function closeModalEditarOrcamento() {
+      document.getElementById('modal-editar-orcamento').classList.add('hidden');
+      cardPendingEdit = null;
+    }
+
+    function handleSalvarEdicaoOrcamento(e) {
+      e.preventDefault();
+      const novoNome = document.getElementById('edit-orc-empresa').value.trim();
+      const novoIdent = document.getElementById('edit-orc-ident').value.trim();
+      const novoValor = document.getElementById('edit-orc-valor').value.trim();
+      const novasCondicoes = document.getElementById('edit-orc-condicoes').value.trim();
+      const novasObs = document.getElementById('edit-orc-observacoes') ? document.getElementById('edit-orc-observacoes').value.trim() : '';
+
+      if (cardPendingEdit) {
+        const titleEl = cardPendingEdit.querySelector('h2');
+        if (titleEl && novoNome) titleEl.innerText = novoNome;
+
+        const identEl = cardPendingEdit.querySelector('span.font-mono');
+        if (identEl && novoIdent) identEl.innerText = novoIdent;
+
+        const valorEl = cardPendingEdit.querySelector('.text-xl.font-extrabold');
+        if (valorEl && novoValor) valorEl.innerText = `R$ ${novoValor}`;
+
+        const condicoesEl = cardPendingEdit.querySelector('strong.text-\\[\\#111c2d\\]');
+        if (condicoesEl && novasCondicoes) condicoesEl.innerText = novasCondicoes;
+
+        const obsEl = cardPendingEdit.querySelector('p.italic');
+        if (obsEl && novasObs) {
+          obsEl.innerText = `Obs: ${novasObs}`;
+          obsEl.setAttribute('title', `Obs: ${novasObs}`);
+        }
+
+        const colItens = cardPendingEdit.querySelector('.lg\\:flex-1');
+        const rows = document.querySelectorAll('#edit-orc-itens-container .edit-row');
+        if (colItens && rows.length > 0) {
+          const badgeCount = colItens.querySelector('.text-\\[10px\\].font-bold');
+          if (badgeCount) badgeCount.innerText = `${rows.length} itens`;
+
+          const header = colItens.querySelector('.flex.items-center.justify-between.text-\\[11px\\]');
+          colItens.innerHTML = '';
+          if (header) colItens.appendChild(header);
+
+          rows.forEach(r => {
+            const n = r.querySelector('.edit-item-nome')?.value || 'Material';
+            const q = r.querySelector('.edit-item-qtd')?.value || '1 un';
+            const p = r.querySelector('.edit-item-preco')?.value || '0,00';
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = "flex items-center justify-between py-1.5 px-3 rounded-xl bg-[#f0f5f9]/60 dark:bg-[#16253a]/40 border border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-xs";
+            itemDiv.innerHTML = `
+              <span class="font-medium text-[#111c2d] dark:text-[#7c8fac] truncate pr-2">${q} ${n}</span>
+              <span class="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">R$ ${p}/un</span>
+            `;
+            colItens.appendChild(itemDiv);
+          });
+        }
+      }
+      closeModalEditarOrcamento();
+    }
+
+    // ==================== LÓGICA DE NOVA COTAÇÃO & MATERIAL ====================
+    function openModalNovoOrcamento() {
+      document.getElementById('modal-novo-orcamento').classList.remove('hidden');
+    }
+
+    function closeModalNovoOrcamento() {
+      document.getElementById('modal-novo-orcamento').classList.add('hidden');
+    }
+
+    function toggleCampoEntregaMain(chk) {
+      const box = document.getElementById('box-valor-entrega-main');
+      if (chk.checked) {
+        box.classList.remove('hidden');
+        document.getElementById('input-valor-entrega-main').focus();
+      } else {
+        box.classList.add('hidden');
+        document.getElementById('input-valor-entrega-main').value = '';
+      }
+      recalcularTotalGeralCotacao();
+    }
+
+    function recalcularTotalItem(input) {
+      const row = input.closest('.item-row');
+      const qtd = parseFloat(row.querySelector('.item-qtd').value) || 0;
+      const preco = parseFloat(row.querySelector('.item-preco').value) || 0;
+      const total = qtd * preco;
+      row.querySelector('.item-total').innerText = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      recalcularTotalGeralCotacao();
+    }
+
+    function recalcularTotalGeralCotacao() {
+      const rows = document.querySelectorAll('#new-orc-itens-container .item-row');
+      let soma = 0;
+      rows.forEach(r => {
+        const qtd = parseFloat(r.querySelector('.item-qtd').value) || 0;
+        const preco = parseFloat(r.querySelector('.item-preco').value) || 0;
+        soma += (qtd * preco);
+      });
+
+      const chkEntrega = document.getElementById('chk-tem-entrega-main');
+      if (chkEntrega && chkEntrega.checked) {
+        const valEntrega = parseFloat((document.getElementById('input-valor-entrega-main').value || '0').replace(',', '.')) || 0;
+        soma += valEntrega;
+      }
+
+      document.getElementById('new-orc-total-geral').innerText = `R$ ${soma.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    }
+
+    function adicionarLinhaItemNovoOrcamento() {
+      const container = document.getElementById('new-orc-itens-container');
+      const div = document.createElement('div');
+      div.className = "grid grid-cols-12 gap-2 items-center p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-xs item-row animate-in fade-in";
+      div.innerHTML = `
+        <div class="col-span-5 sm:col-span-4">
+          <select class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-material">
+            <option value="CIMENTO CP II 50KG">CIMENTO CP II 50KG</option>
+            <option value="AREIA MÉDIA LAVADA">AREIA MÉDIA LAVADA</option>
+            <option value="BRITA 1">BRITA 1</option>
+            <option value="AÇO CA-50 10MM (3/8\")">AÇO CA-50 10MM (3/8")</option>
+            <option value="BLOCO CERÂMICO 9X19X19">BLOCO CERÂMICO 9X19X19</option>
+            <option value="CAL HIDRATADA CH-I 20KG">CAL HIDRATADA CH-I 20KG</option>
+            <option value="TUBO ESGOTO PVC 100MM 6M">TUBO ESGOTO PVC 100MM 6M</option>
+          </select>
+        </div>
+        <div class="col-span-3 sm:col-span-2">
+          <input
+            type="number"
+            min="0.01"
+            step="any"
+            placeholder="Qtd"
+            value="1"
+            oninput="recalcularTotalItem(this)"
+            class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-qtd"
+          />
+        </div>
+        <div class="col-span-4 sm:col-span-3">
+          <input
+            type="number"
+            min="0"
+            step="any"
+            placeholder="Preço Cotado R$"
+            value="0"
+            oninput="recalcularTotalItem(this)"
+            class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-preco"
+          />
+        </div>
+        <div class="col-span-10 sm:col-span-2 text-right">
+          <span class="font-bold text-[#111c2d] dark:text-white tabular-nums item-total">
+            R$ 0,00
+          </span>
+        </div>
+        <div class="col-span-2 sm:col-span-1 text-right">
+          <button
+            type="button"
+            onclick="removerLinhaItem(this)"
+            class="text-[#707a82] hover:text-[#fb977d] cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-[16px]">delete</span>
+          </button>
+        </div>
+      `;
+      container.appendChild(div);
+      recalcularTotalGeralCotacao();
+    }
+
+    function removerLinhaItem(btn) {
+      const rows = document.querySelectorAll('#new-orc-itens-container .item-row');
+      if (rows.length > 1) {
+        btn.closest('.item-row').remove();
+        recalcularTotalGeralCotacao();
+      } else {
+        alert('A cotação deve ter pelo menos um item.');
+      }
+    }
+
+    function handleSalvarNovoOrcamento(e) {
+      e.preventDefault();
+      const empresa = document.getElementById('new-orc-empresa').value.trim().toUpperCase();
+      const ident = document.getElementById('new-orc-ident').value.trim() || 'COT-NOVA';
+      const etapa = document.getElementById('new-orc-etapa').value;
+      const data = document.getElementById('new-orc-data').value;
+      const condicoes = document.getElementById('new-orc-condicoes').value.trim().toUpperCase() || 'À VISTA';
+      const obs = document.getElementById('new-orc-obs').value.trim();
+
+      const rows = document.querySelectorAll('#new-orc-itens-container .item-row');
+      const itensArr = [];
+      let totalGeral = 0;
+
+      rows.forEach(r => {
+        const mat = r.querySelector('.item-material').value;
+        const qtd = parseFloat(r.querySelector('.item-qtd').value) || 1;
+        const preco = parseFloat(r.querySelector('.item-preco').value) || 0;
+        const sub = qtd * preco;
+        totalGeral += sub;
+        itensArr.push({
+          nome: mat,
+          qtd: `${qtd} un`,
+          un: 'un',
+          preco: preco,
+          subtotal: sub
+        });
+      });
+
+      const novoId = 'orc-' + (bancoOrcamentos.length + 1).toString().padStart(2, '0');
+      const novoNum = (bancoOrcamentos.length + 1).toString().padStart(2, '0');
+
+      const dataFormatada = data ? data.split('-').reverse().join('/') : '10/11/2026';
+
+      bancoOrcamentos.push({
+        id: novoId,
+        num: novoNum,
+        empresa: empresa,
+        ident: ident,
+        data: dataFormatada,
+        dataISO: data || '2026-11-10',
+        etapa: etapa,
+        status: 'cotacao',
+        statusLabel: 'Cotação',
+        statusBadgeClass: 'bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700',
+        total: totalGeral,
+        condicoes: condicoes,
+        obs: obs,
+        itens: itensArr
+      });
+
+      closeModalNovoOrcamento();
+      filterOrcamentos();
+      atualizarComparador();
+    }
+
+    function openModalCadastrarMaterialInPlace() {
+      document.getElementById('modal-cadastrar-material-inplace').classList.remove('hidden');
+      document.getElementById('mat-inplace-nome').focus();
+    }
+
+    function closeModalCadastrarMaterialInPlace() {
+      document.getElementById('modal-cadastrar-material-inplace').classList.add('hidden');
+    }
+
+    function handleSalvarMaterialInPlace(e) {
+      e.preventDefault();
+      const nome = document.getElementById('mat-inplace-nome').value.trim().toUpperCase();
+      const unidade = document.getElementById('mat-inplace-unidade').value;
+      const preco = parseFloat(document.getElementById('mat-inplace-preco').value.replace(',', '.')) || 0;
+
+      if (nome) {
+        const selects = document.querySelectorAll('.item-material');
+        selects.forEach(sel => {
+          const opt = document.createElement('option');
+          opt.value = nome;
+          opt.innerText = nome;
+          sel.appendChild(opt);
+        });
+
+        const container = document.getElementById('new-orc-itens-container');
+        if (container) {
+          const div = document.createElement('div');
+          div.className = "grid grid-cols-12 gap-2 items-center p-2.5 rounded-xl border border-[#0085db]/40 bg-[#0085db]/5 dark:bg-[#0085db]/10 text-xs item-row animate-in fade-in";
+          div.innerHTML = `
+            <div class="col-span-5 sm:col-span-4">
+              <select class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-material font-bold">
+                <option value="${nome}" selected>${nome}</option>
+              </select>
+            </div>
+            <div class="col-span-3 sm:col-span-2">
+              <input
+                type="number"
+                min="1"
+                value="1"
+                placeholder="Qtd"
+                oninput="recalcularTotalItem(this)"
+                class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-qtd"
+              />
+            </div>
+            <div class="col-span-4 sm:col-span-3">
+              <input
+                type="number"
+                min="0"
+                step="any"
+                placeholder="Preço Cotado R$"
+                value="${preco > 0 ? preco : ''}"
+                oninput="recalcularTotalItem(this)"
+                class="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white item-preco"
+              />
+            </div>
+            <div class="col-span-10 sm:col-span-2 text-right">
+              <span class="font-bold text-[#111c2d] dark:text-white tabular-nums item-total">
+                R$ ${(preco * 1).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </span>
+            </div>
+            <div class="col-span-2 sm:col-span-1 text-right">
+              <button
+                type="button"
+                onclick="removerLinhaItem(this)"
+                class="text-[#707a82] hover:text-[#fb977d] cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+          recalcularTotalGeralCotacao();
+        }
+      }
+
+      document.getElementById('mat-inplace-nome').value = '';
+      document.getElementById('mat-inplace-preco').value = '';
+      closeModalCadastrarMaterialInPlace();
+    }
+
+    // Inicialização ao carregar
+    document.addEventListener('DOMContentLoaded', function() {
+      applyOrcamentosPagination();
+      atualizarComparador();
+    });
+    applyOrcamentosPagination();
+    atualizarComparador();
+  </script>
+
+
+</body></html>

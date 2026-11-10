@@ -1,0 +1,960 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartões — Mobile — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-headline { font-family: 'Outfit', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[884px] font-body antialiased flex flex-col pb-24" data-stitch-vh="min-h-[884px]===min-h-screen">
+
+  <!-- Header Superior Mobile Idêntico a Diarias-Mobile.html -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-14 px-4 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+        N
+      </div>
+      <div>
+        <span class="block text-xs font-bold leading-tight uppercase">NATANAEL</span>
+        <span class="block text-[10px] text-[#707a82] leading-none">Master</span>
+      </div>
+    </div>
+
+    <!-- Canteiro Badge -->
+    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+      <span class="material-symbols-outlined text-[14px] text-[#0085db]">apartment</span>
+      <span class="text-[10px] font-bold uppercase truncate max-w-[130px]">Juscelino Mola</span>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal Mobile -->
+  <main class="p-4 space-y-4 flex-1">
+    
+    <!-- Título & Subtítulo -->
+    <div class="space-y-0.5">
+      <h1 class="text-xl font-bold text-[#111c2d] dark:text-white">
+        Cartões
+      </h1>
+      <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+        Controle de faturas, parcelas e contas da obra.
+      </p>
+    </div>
+
+    <!-- Botão de Ação Rápida Mobile -->
+    <div class="grid grid-cols-1 gap-2.5">
+      <button type="button" onclick="openModalCadastrarMobile()" class="h-10 px-4 inline-flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[18px]">add</span>
+        <span>Cadastrar Cartão / Conta</span>
+      </button>
+    </div>
+
+    <!-- Alerta Compacto de Compras Pendentes -->
+    <div class="bg-[#f8c076]/10 border border-[#f8c076]/30 rounded-xl p-3 flex items-start gap-2.5 text-xs">
+      <span class="material-symbols-outlined text-[18px] text-[#d9941a] dark:text-[#f8c076] shrink-0 mt-0.5">warning</span>
+      <div class="flex-1 min-w-0">
+        <p class="text-[11px] text-[#111c2d] dark:text-white uppercase font-bold tracking-wider leading-snug">
+          1 COMPRA PENDENTE DE VÍNCULO COM CARTÃO
+        </p>
+        <a href="../despesas/Despesas.html" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#0085db] mt-1">
+          <span>Ver pendência</span>
+          <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Filtro de Período Mobile (Segmented Control + Selects Perfeitamente Alinhados) -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-3.5 shadow-[0px_2px_6px_rgba(37,83,185,0.04)] space-y-3">
+      <div class="flex items-center justify-between pb-1 border-b border-[#e6ecf1]/70 dark:border-[#333f55]/60">
+        <div class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px] text-[#0085db]">date_range</span>
+          <span class="text-[10px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider">
+            PERÍODO DA OBRA
+          </span>
+        </div>
+        <span id="m-period-summary-label" class="text-[10px] px-2.5 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db] font-bold uppercase tracking-wide">
+          Novembro / 2026
+        </span>
+      </div>
+
+      <!-- Segmented Control de Modo: Centralizado e Proporcional -->
+      <div class="flex items-center h-9 p-1 bg-[#f0f5f9] dark:bg-[#15263a] rounded-xl text-xs">
+        <button type="button" id="m-filter-btn-mes" onclick="setMobilePeriodMode(&#39;mes&#39;)" class="flex-1 h-7 inline-flex items-center justify-center rounded-lg bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold text-[11px] shadow-xs transition-all cursor-pointer">
+          Mês / Ano
+        </button>
+        <button type="button" id="m-filter-btn-todo" onclick="setMobilePeriodMode(&#39;todo&#39;)" class="flex-1 h-7 inline-flex items-center justify-center rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-[11px] transition-all cursor-pointer">
+          Todo o Período
+        </button>
+      </div>
+
+      <!-- Selects de Mês e Ano Alinhados com Padding e Altura Consistente -->
+      <div id="m-period-selects" class="grid grid-cols-2 gap-2.5">
+        <div class="relative">
+          <select id="m-select-mes" onchange="applyMobilePeriodFilter()" class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer focus:ring-2 focus:ring-[#0085db]">
+            <option value="10">Outubro</option>
+            <option value="11" selected>Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>
+        </div>
+        <div class="relative">
+          <select id="m-select-ano" onchange="applyMobilePeriodFilter()" class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer focus:ring-2 focus:ring-[#0085db]">
+            <option value="2026" selected>2026</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cartão Físico em Destaque Mobile (Exibição Completa 100% sem cortes) -->
+    <div class="space-y-2.5">
+      <div class="flex items-center justify-between px-0.5">
+        <span class="text-xs text-[#707a82] dark:text-[#7c8fac] font-bold uppercase tracking-wider">
+          CARTÕES ATIVOS (<span id="m-cards-count" class="text-[#111c2d] dark:text-white">3</span>)
+        </span>
+        <div class="flex items-center gap-1">
+          <button type="button" onclick="scrollMobileCards(-1)" class="w-7 h-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+          </button>
+          <span id="m-card-indicator" class="text-[11px] font-bold px-1.5 text-[#707a82]">1/3</span>
+          <button type="button" onclick="scrollMobileCards(1)" class="w-7 h-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] flex items-center justify-center text-[#111c2d] dark:text-white hover:text-[#0085db] active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Container Deslizante com largura 100% para cada cartão -->
+      <div id="m-cards-slider" onscroll="updateCardIndicator()" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
+        
+        <!-- Cartão 1: Nubank Natanael (Idêntico à Imagem de Referência) -->
+        <div class="card-item-box snap-center shrink-0 w-full relative overflow-hidden rounded-[22px] p-5 shadow-lg border border-[#2b3544] bg-[#111927] text-white flex flex-col justify-between min-h-[175px]" data-card-id="m-card-nubank">
+          <div>
+            <!-- Topo: Chip Amarelo + Wifi à esquerda, •••• 4821 e Ações à direita -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-6 rounded-md bg-gradient-to-r from-[#eab308] to-[#facc15] shadow-xs"></div>
+                <span class="material-symbols-outlined text-[15px] text-zinc-400 rotate-90 leading-none">wifi</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs font-bold text-zinc-300 tracking-wider">•••• 4821</span>
+                <!-- Ações Editar e Excluir Cartão -->
+                <div class="flex items-center gap-1 pl-1 border-l border-white/20">
+                  <button type="button" onclick="openEditarCartaoMobile(&#39;NUBANK NATANAEL&#39;, &#39;Mastercard&#39;, &#39;4821&#39;, &#39;25&#39;, &#39;5&#39;, this)" class="w-6 h-6 rounded-md bg-white/10 hover:bg-[#0085db] text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Editar cartão">
+                    <span class="material-symbols-outlined text-[14px]">edit</span>
+                  </button>
+                  <button type="button" onclick="openExcluirCartaoMobile(&#39;NUBANK NATANAEL&#39;, &#39;•••• 4821&#39;, &#39;Cartão de Crédito&#39;, this)" class="w-6 h-6 rounded-md bg-white/10 hover:bg-rose-600 text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Excluir cartão">
+                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Meio: Título e Vencimento -->
+            <div class="mt-3.5">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">
+                NUBANK NATANAEL
+              </h3>
+              <p class="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                Vence dia 05
+              </p>
+            </div>
+          </div>
+
+          <!-- Rodapé: Linha divisória fina, FATURA e Valor Dourado -->
+          <div class="pt-3 border-t border-zinc-800/80 flex items-baseline justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+              FATURA
+            </span>
+            <span id="m-card-nubank-val" class="text-lg font-black text-[#facc15] tabular-nums tracking-tight">
+              R$ 1.616,83
+            </span>
+          </div>
+        </div>
+
+        <!-- Cartão 2: Inter Obra PJ -->
+        <div class="card-item-box snap-center shrink-0 w-full relative overflow-hidden rounded-[22px] p-5 shadow-lg border border-[#2b3544] bg-[#111927] text-white flex flex-col justify-between min-h-[175px]" data-card-id="m-card-inter">
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-6 rounded-md bg-gradient-to-r from-[#ea580c] to-[#f97316] shadow-xs"></div>
+                <span class="material-symbols-outlined text-[15px] text-zinc-400 rotate-90 leading-none">wifi</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs font-bold text-zinc-300 tracking-wider">•••• 9034</span>
+                <!-- Ações Editar e Excluir Cartão -->
+                <div class="flex items-center gap-1 pl-1 border-l border-white/20">
+                  <button type="button" onclick="openEditarCartaoMobile(&#39;INTER OBRA PJ&#39;, &#39;Mastercard&#39;, &#39;9034&#39;, &#39;20&#39;, &#39;1&#39;, this)" class="w-6 h-6 rounded-md bg-white/10 hover:bg-[#0085db] text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Editar cartão">
+                    <span class="material-symbols-outlined text-[14px]">edit</span>
+                  </button>
+                  <button type="button" onclick="openExcluirCartaoMobile(&#39;INTER OBRA PJ&#39;, &#39;•••• 9034&#39;, &#39;Cartão de Crédito&#39;, this)" class="w-6 h-6 rounded-md bg-white/10 hover:bg-rose-600 text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Excluir cartão">
+                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3.5">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">
+                INTER OBRA PJ
+              </h3>
+              <p class="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                Vence dia 01
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-zinc-800/80 flex items-baseline justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+              FATURA
+            </span>
+            <span class="text-lg font-black text-emerald-400 tabular-nums tracking-tight">
+              R$ 0,00
+            </span>
+          </div>
+        </div>
+
+        <!-- Cartão 3: Conta Bradesco Pix -->
+        <div class="card-item-box snap-center shrink-0 w-full relative overflow-hidden rounded-[22px] p-5 shadow-lg border border-[#0085db]/30 bg-gradient-to-br from-white to-[#f0f6fc] dark:from-[#111c2d] dark:to-[#16253b] text-[#111c2d] dark:text-white flex flex-col justify-between min-h-[175px]" data-card-id="m-card-bradesco">
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">account_balance</span>
+                <span class="text-xs font-bold uppercase tracking-wide">Conta Corrente</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-0.5 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#10bd9d]/15 text-[#10bd9d]">
+                  <span class="material-symbols-outlined text-[11px]">bolt</span>
+                  <span>PIX</span>
+                </span>
+                <!-- Ações Editar e Excluir Conta -->
+                <div class="flex items-center gap-1 pl-1 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                  <button type="button" onclick="openEditarCartaoMobile(&#39;CONTA BRADESCO PIX&#39;, &#39;Pix&#39;, &#39;1289&#39;, &#39;&#39;, &#39;&#39;, this, true)" class="w-6 h-6 rounded-md bg-[#f0f5f9] dark:bg-[#1a2535] hover:bg-[#0085db] text-[#707a82] hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Editar conta">
+                    <span class="material-symbols-outlined text-[14px]">edit</span>
+                  </button>
+                  <button type="button" onclick="openExcluirCartaoMobile(&#39;CONTA BRADESCO PIX&#39;, &#39;Chave Final 1289&#39;, &#39;Conta Bancária / Pix&#39;, this)" class="w-6 h-6 rounded-md bg-[#f0f5f9] dark:bg-[#1a2535] hover:bg-rose-600 text-[#707a82] hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Excluir conta">
+                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3.5">
+              <h3 class="text-sm font-extrabold uppercase tracking-wide">
+                CONTA BRADESCO PIX
+              </h3>
+              <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5 font-medium">
+                Chave Final 1289
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-baseline justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#707a82] dark:text-[#7c8fac]">
+              PREVISÃO DE SAÍDA
+            </span>
+            <span class="text-lg font-black text-[#0085db] tabular-nums tracking-tight">
+              R$ 0,00
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Barra de Paginação Solta e em Cima Idêntica a Diarias-Mobile.html -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-3.5 py-2.5 flex items-center justify-between shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+      <div class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+        Página <strong id="m-pag-num" class="text-[#111c2d] dark:text-white">1</strong> de <strong id="m-pag-total" class="text-[#111c2d] dark:text-white">3</strong>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button type="button" id="m-pag-prev" onclick="changeMobilePage(-1)" disabled title="Página Anterior" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+        </button>
+
+        <div id="m-pag-window" class="flex items-center gap-1 px-1">
+          <button type="button" onclick="goMobilePage(1)" class="w-8 h-8 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-xs transition-all cursor-pointer">1</button>
+          <button type="button" onclick="goMobilePage(2)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-all cursor-pointer">2</button>
+          <button type="button" onclick="goMobilePage(3)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-all cursor-pointer">3</button>
+        </div>
+
+        <button type="button" id="m-pag-next" onclick="changeMobilePage(1)" title="Próxima Página" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de Parcelas em Cards Mobile com Ações -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] space-y-3">
+      
+      <!-- Cabeçalho -->
+      <div class="pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] text-[#0085db]">calendar_today</span>
+          <h2 class="text-xs font-bold text-[#111c2d] dark:text-white leading-none uppercase tracking-wider">
+            PARCELAS &amp; VENCIMENTOS
+          </h2>
+        </div>
+        <p class="text-[10px] text-[#707a82] dark:text-[#7c8fac] mt-1 uppercase tracking-wider font-semibold">
+          A VENCER: <strong class="text-[#fb977d] font-bold">R$ 3.233,67</strong> · QUITADO: <strong class="text-[#4bd08b] font-bold">R$ 1.616,83</strong>
+        </p>
+      </div>
+
+      <!-- Itens de Parcela em Cards Verticais Touch -->
+      <div id="m-parcelas-list" class="space-y-2.5">
+        
+        <!-- Parcela 1 -->
+        <div class="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-semibold text-[#707a82]">05/10/2026 · Segunda</span>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#4bd08b]/20 text-[#10bd9d] dark:text-[#4bd08b] uppercase">Paga</span>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">COMPRA INICIAL CIMENTO E AREIA (1/3)</h4>
+            <span class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">Nubank Natanael · Parcela 1 de 3</span>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]/60">
+            <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 1.616,83</span>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="openModalEditarMobile(&#39;COMPRA INICIAL CIMENTO E AREIA (1/3)&#39;, 1, 3, &#39;1616.83&#39;, &#39;2026-10-05&#39;, &#39;paga&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px]">edit</span>
+              </button>
+              <button type="button" onclick="openModalExcluirMobile(this, &#39;COMPRA INICIAL CIMENTO E AREIA (1/3)&#39;, &#39;R$ 1.616,83&#39;, &#39;05/10/2026&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Parcela 2 -->
+        <div class="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-semibold text-[#707a82]">05/11/2026 · Quinta</span>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076] uppercase">A Vencer</span>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">COMPRA INICIAL CIMENTO E AREIA (2/3)</h4>
+            <span class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">Nubank Natanael · Parcela 2 de 3</span>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]/60">
+            <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 1.616,83</span>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="openModalEditarMobile(&#39;COMPRA INICIAL CIMENTO E AREIA (2/3)&#39;, 2, 3, &#39;1616.83&#39;, &#39;2026-11-05&#39;, &#39;avencer&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px]">edit</span>
+              </button>
+              <button type="button" onclick="openModalExcluirMobile(this, &#39;COMPRA INICIAL CIMENTO E AREIA (2/3)&#39;, &#39;R$ 1.616,83&#39;, &#39;05/11/2026&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Parcela 3 -->
+        <div class="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-semibold text-[#707a82]">05/12/2026 · Sábado</span>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076] uppercase">A Vencer</span>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">COMPRA INICIAL CIMENTO E AREIA (3/3)</h4>
+            <span class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">Nubank Natanael · Parcela 3 de 3</span>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]/60">
+            <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 1.616,84</span>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="openModalEditarMobile(&#39;COMPRA INICIAL CIMENTO E AREIA (3/3)&#39;, 3, 3, &#39;1616.84&#39;, &#39;2026-12-05&#39;, &#39;avencer&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px]">edit</span>
+              </button>
+              <button type="button" onclick="openModalExcluirMobile(this, &#39;COMPRA INICIAL CIMENTO E AREIA (3/3)&#39;, &#39;R$ 1.616,84&#39;, &#39;05/12/2026&#39;)" class="w-8 h-8 rounded-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Barra de Navegação Inferior Fixa Mobile Idêntica a Diarias-Mobile.html -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-t border-[#e6ecf1] dark:border-[#333f55] h-16 flex items-center justify-around px-2 z-40">
+    <a href="../dashboard/Dashboard.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">grid_view</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Dashboard</span>
+    </a>
+
+    <a href="../despesas/Despesas.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">receipt</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Despesas</span>
+    </a>
+
+    <a href="../maodeobra/Diarias-Mobile.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">group</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Diárias</span>
+    </a>
+
+    <a href="#" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">balance</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Orçamentos</span>
+    </a>
+
+    <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.remove(&#39;hidden&#39;)" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors relative cursor-pointer">
+      <div class="relative flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+        <span class="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#fb977d] border-2 border-white dark:border-[#111c2d]"></span>
+      </div>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Mais</span>
+    </button>
+  </nav>
+
+  <!-- Bottom Sheet Menu Mais (Módulos do Sistema) Idêntico a Diarias-Mobile.html -->
+  <div id="bottom-sheet-menu" class="hidden fixed inset-0 z-50 flex flex-col justify-end">
+    <!-- Backdrop com desfoque -->
+    <div onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+
+    <!-- Gaveta / Bottom Sheet Card -->
+    <aside class="relative z-10 bg-white dark:bg-[#111c2d] rounded-t-[28px] border-t border-[#e6ecf1] dark:border-[#333f55] shadow-2xl p-5 pt-3 animate-in slide-in-from-bottom duration-200">
+      
+      <!-- Puxador (Handle bar) -->
+      <div class="w-12 h-1.5 rounded-full bg-[#dbe4ec] dark:bg-[#333f55] mx-auto mb-4"></div>
+
+      <!-- Cabeçalho do Bottom Sheet -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#f0f4f8] dark:border-[#223147] mb-4">
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#526b84] dark:text-[#8fa3ba]">
+          Módulos do Sistema
+        </h2>
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Grade com os 7 Módulos (2 colunas) -->
+      <div class="grid grid-cols-2 gap-2.5 mb-5">
+        
+        <!-- 1. Recibos -->
+        <a href="../recibos/Recibos.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">fact_check</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Recibos
+          </span>
+        </a>
+
+        <!-- 2. Materiais -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Materiais
+          </span>
+        </a>
+
+        <!-- 3. Produção -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">build</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Produção
+          </span>
+        </a>
+
+        <!-- 4. Cartões (Ativo) -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#0085db]/10 dark:bg-[#0085db]/20 border border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">credit_card</span>
+          </div>
+          <span class="text-sm font-bold text-[#0085db] transition-colors truncate">
+            Cartões
+          </span>
+        </a>
+
+        <!-- 5. Pendências (com Badge 3) -->
+        <a href="../despesas/Despesas.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">warning</span>
+          </div>
+          <div class="min-w-0 flex items-center gap-1.5">
+            <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+              Pendências
+            </span>
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#f87171] text-white text-[10px] font-bold leading-none">
+              3
+            </span>
+          </div>
+        </a>
+
+        <!-- 6. Relatórios -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">description</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Relatórios
+          </span>
+        </a>
+
+        <!-- 7. Permissões -->
+        <a href="../usuarios/Central-Permissoes.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">shield</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Permissões
+          </span>
+        </a>
+
+      </div>
+
+      <!-- Linha Inferior: Sair & Fechar idêntica à referência -->
+      <div class="pt-3 border-t border-[#f0f4f8] dark:border-[#223147] flex items-center justify-between">
+        <button type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#fb977d] hover:text-[#fa7a58] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span>Sair</span>
+        </button>
+
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="h-10 px-7 inline-flex items-center justify-center rounded-full bg-[#0085db] hover:bg-[#0074bf] text-white text-sm font-bold shadow-sm transition-colors active:scale-95 cursor-pointer">
+          Fechar
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Modal Cadastrar Mobile -->
+  <div id="m-modal-cadastrar" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalCadastrarMobile()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <h3 class="text-sm font-bold text-[#111c2d] dark:text-white">Cadastrar Cartão / Conta</h3>
+        <button type="button" onclick="closeModalCadastrarMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[20px]">close</span></button>
+      </div>
+      <form onsubmit="handleCadastrarMobile(event)" class="space-y-3 pt-3">
+        <div>
+          <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Apelido *</label>
+          <input type="text" id="m-cad-apelido" required placeholder="Ex: Nubank Obra..." class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] uppercase font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Bandeira / Tipo</label>
+            <select id="m-cad-tipo" class="w-full px-2.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-semibold">
+              <option value="Mastercard">Mastercard</option>
+              <option value="Visa">Visa</option>
+              <option value="Elo">Elo</option>
+              <option value="Pix">Conta Pix</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Últimos Dígitos</label>
+            <input type="text" id="m-cad-digitos" maxlength="4" placeholder="4821" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-mono font-bold">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" onclick="closeModalCadastrarMobile()" class="px-3 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] rounded-xl">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Editar Mobile -->
+  <div id="m-modal-editar" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalEditarMobile()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <h3 class="text-sm font-bold text-[#111c2d] dark:text-white">Editar Parcela</h3>
+        <button type="button" onclick="closeModalEditarMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[20px]">close</span></button>
+      </div>
+      <form onsubmit="handleSalvarEditarMobile(event)" class="space-y-3 pt-3">
+        <div>
+          <label class="block text-[11px] font-bold uppercase mb-1">Descrição</label>
+          <input type="text" id="m-edit-desc" required class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold uppercase mb-1">Vencimento</label>
+            <input type="date" id="m-edit-venc" required class="w-full px-2.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-semibold">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase mb-1">Valor (R$)</label>
+            <input type="number" step="0.01" id="m-edit-valor" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" onclick="closeModalEditarMobile()" class="px-3 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] rounded-xl">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Excluir Mobile -->
+  <div id="m-modal-excluir" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalExcluirMobile()"></div>
+    <div class="relative z-50 w-full max-w-xs bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200 space-y-3">
+      <div class="flex items-center gap-2.5 pb-2 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[18px]">delete</span>
+        </div>
+        <h4 class="text-xs font-bold uppercase">Excluir Parcela</h4>
+      </div>
+      <p class="text-xs text-[#707a82]">Tem certeza que deseja remover esta parcela?</p>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModalExcluirMobile()" class="px-3 py-1.5 text-xs font-semibold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarExclusaoMobile()" class="px-3.5 py-1.5 text-xs font-bold text-white bg-rose-600 rounded-xl">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Cartão Mobile -->
+  <div id="m-modal-editar-cartao" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeEditarCartaoMobile()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <h3 class="text-sm font-bold text-[#111c2d] dark:text-white" id="m-edit-cartao-title">Editar Cartão</h3>
+        <button type="button" onclick="closeEditarCartaoMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[20px]">close</span></button>
+      </div>
+      <form onsubmit="handleSalvarEditarCartaoMobile(event)" class="space-y-3 pt-3">
+        <div>
+          <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Apelido / Nome *</label>
+          <input type="text" id="m-edit-card-nome" required class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] uppercase font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Bandeira / Tipo</label>
+            <select id="m-edit-card-tipo" class="w-full px-2.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-semibold">
+              <option value="Mastercard">Mastercard</option>
+              <option value="Visa">Visa</option>
+              <option value="Elo">Elo</option>
+              <option value="Pix">Conta Corrente / Pix</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Final / Dígitos</label>
+            <input type="text" id="m-edit-card-digitos" maxlength="4" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-mono font-bold">
+          </div>
+        </div>
+        <div id="m-edit-card-datas" class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Fechamento</label>
+            <input type="number" id="m-edit-card-fechamento" min="1" max="31" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Vencimento</label>
+            <input type="number" id="m-edit-card-vencimento" min="1" max="31" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" onclick="closeEditarCartaoMobile()" class="px-3 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] rounded-xl">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Excluir Cartão Mobile -->
+  <div id="m-modal-excluir-cartao" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeExcluirCartaoMobile()"></div>
+    <div class="relative z-50 w-full max-w-xs bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200 text-center space-y-3">
+      <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-500 mx-auto flex items-center justify-center">
+        <span class="material-symbols-outlined text-[22px]">delete</span>
+      </div>
+      <div>
+        <h4 class="text-sm font-bold text-[#111c2d] dark:text-white">Excluir Meio de Pagamento?</h4>
+        <p class="text-[11px] text-[#707a82] mt-1">Deseja remover este cartão ou conta bancária?</p>
+      </div>
+      <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-left text-xs space-y-1">
+        <p class="font-bold text-[#111c2d] dark:text-white" id="m-del-card-nome">Nubank Natanael</p>
+        <p class="text-[11px] text-[#707a82]" id="m-del-card-info">Identificação: •••• 4821</p>
+      </div>
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <button type="button" onclick="closeExcluirCartaoMobile()" class="h-9 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-xs font-semibold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarExcluirCartaoMobile()" class="h-9 rounded-xl bg-rose-600 text-xs font-bold text-white">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let mCurrentPage = 1;
+    let mTargetRow = null;
+
+    let mobilePeriodMode = 'mes';
+
+    const monthNamesMobile = {
+      '10': 'Outubro',
+      '11': 'Novembro',
+      '12': 'Dezembro'
+    };
+
+    function setMobilePeriodMode(mode) {
+      mobilePeriodMode = mode;
+      const btnMes = document.getElementById('m-filter-btn-mes');
+      const btnTodo = document.getElementById('m-filter-btn-todo');
+      const selects = document.getElementById('m-period-selects');
+      const label = document.getElementById('m-period-summary-label');
+
+      if (mode === 'mes') {
+        btnMes.className = "flex-1 h-7 rounded-lg bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold text-[11px] shadow-xs transition-all cursor-pointer";
+        btnTodo.className = "flex-1 h-7 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-[11px] transition-all cursor-pointer";
+        selects.classList.remove('hidden');
+        applyMobilePeriodFilter();
+      } else {
+        btnTodo.className = "flex-1 h-7 rounded-lg bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold text-[11px] shadow-xs transition-all cursor-pointer";
+        btnMes.className = "flex-1 h-7 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-[11px] transition-all cursor-pointer";
+        selects.classList.add('hidden');
+        label.innerText = "Todo o Período";
+      }
+    }
+
+    function applyMobilePeriodFilter() {
+      if (mobilePeriodMode === 'todo') return;
+      const mes = document.getElementById('m-select-mes').value;
+      const ano = document.getElementById('m-select-ano').value;
+      const label = document.getElementById('m-period-summary-label');
+      label.innerText = `${monthNamesMobile[mes] || mes} / ${ano}`;
+    }
+
+    function scrollMobileCards(direction) {
+      const slider = document.getElementById('m-cards-slider');
+      if (slider) {
+        const step = slider.clientWidth + 16;
+        slider.scrollBy({ left: direction * step, behavior: 'smooth' });
+      }
+    }
+
+    function updateCardIndicator() {
+      const slider = document.getElementById('m-cards-slider');
+      const indicator = document.getElementById('m-card-indicator');
+      if (slider && indicator) {
+        const index = Math.round(slider.scrollLeft / (slider.clientWidth + 16)) + 1;
+        indicator.innerText = `${Math.min(Math.max(index, 1), 3)}/3`;
+      }
+    }
+
+    function goMobilePage(page) {
+      mCurrentPage = page;
+      document.getElementById('m-pag-num').innerText = page;
+      document.getElementById('m-pag-prev').disabled = page === 1;
+      document.getElementById('m-pag-next').disabled = page === 3;
+      const btns = document.querySelectorAll('#m-pag-window button');
+      btns.forEach((btn, idx) => {
+        if (idx + 1 === page) {
+          btn.className = "w-8 h-8 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-xs transition-all cursor-pointer";
+        } else {
+          btn.className = "w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-all cursor-pointer";
+        }
+      });
+    }
+
+    function changeMobilePage(delta) {
+      goMobilePage(mCurrentPage + delta);
+    }
+
+    function openModalCadastrarMobile() {
+      document.getElementById('m-modal-cadastrar').classList.remove('hidden');
+    }
+    function closeModalCadastrarMobile() {
+      document.getElementById('m-modal-cadastrar').classList.add('hidden');
+    }
+    function handleCadastrarMobile(e) {
+      e.preventDefault();
+      closeModalCadastrarMobile();
+    }
+
+    function openModalEditarMobile(desc, parc, total, valor, venc, status) {
+      document.getElementById('m-edit-desc').value = desc;
+      document.getElementById('m-edit-venc').value = venc;
+      document.getElementById('m-edit-valor').value = valor;
+      document.getElementById('m-modal-editar').classList.remove('hidden');
+    }
+    function closeModalEditarMobile() {
+      document.getElementById('m-modal-editar').classList.add('hidden');
+    }
+    function handleSalvarEditarMobile(e) {
+      e.preventDefault();
+      closeModalEditarMobile();
+    }
+
+    function openModalExcluirMobile(btn) {
+      mTargetRow = btn.closest('.p-3');
+      document.getElementById('m-modal-excluir').classList.remove('hidden');
+    }
+    function closeModalExcluirMobile() {
+      document.getElementById('m-modal-excluir').classList.add('hidden');
+      mTargetRow = null;
+    }
+    function confirmarExclusaoMobile() {
+      if (mTargetRow) mTargetRow.remove();
+      closeModalExcluirMobile();
+    }
+
+    // Ações de Cartões Mobile
+    let mCardPendingEdit = null;
+    let mCardPendingDelete = null;
+
+    function openEditarCartaoMobile(nome, tipo, digitos, fechamento, vencimento, btn, isConta = false) {
+      mCardPendingEdit = btn.closest('.card-item-box');
+      document.getElementById('m-edit-card-nome').value = nome;
+      document.getElementById('m-edit-card-tipo').value = tipo;
+      document.getElementById('m-edit-card-digitos').value = digitos;
+      document.getElementById('m-edit-card-fechamento').value = fechamento;
+      document.getElementById('m-edit-card-vencimento').value = vencimento;
+      const datasDiv = document.getElementById('m-edit-card-datas');
+      const title = document.getElementById('m-edit-cartao-title');
+      if (isConta) {
+        datasDiv.classList.add('hidden');
+        title.innerText = "Editar Conta / Pix";
+      } else {
+        datasDiv.classList.remove('hidden');
+        title.innerText = "Editar Cartão de Crédito";
+      }
+      document.getElementById('m-modal-editar-cartao').classList.remove('hidden');
+    }
+
+    function closeEditarCartaoMobile() {
+      document.getElementById('m-modal-editar-cartao').classList.add('hidden');
+      mCardPendingEdit = null;
+    }
+
+    function handleSalvarEditarCartaoMobile(e) {
+      e.preventDefault();
+      const novoNome = document.getElementById('m-edit-card-nome').value.trim();
+      const novosDigitos = document.getElementById('m-edit-card-digitos').value.trim();
+      const novoVenc = document.getElementById('m-edit-card-vencimento').value;
+      if (mCardPendingEdit) {
+        const titleEl = mCardPendingEdit.querySelector('h3');
+        if (titleEl) titleEl.innerText = novoNome;
+        const digitosEl = mCardPendingEdit.querySelector('.font-mono');
+        if (digitosEl && novosDigitos) digitosEl.innerText = `•••• ${novosDigitos}`;
+        const vencEl = mCardPendingEdit.querySelector('p.text-\\[11px\\]');
+        if (vencEl && novoVenc) vencEl.innerText = `Vence dia ${novoVenc.padStart(2, '0')}`;
+      }
+      closeEditarCartaoMobile();
+    }
+
+    function openExcluirCartaoMobile(nome, info, tipo, btn) {
+      mCardPendingDelete = btn.closest('.card-item-box');
+      document.getElementById('m-del-card-nome').innerText = nome;
+      document.getElementById('m-del-card-info').innerText = `Identificação: ${info}`;
+      document.getElementById('m-modal-excluir-cartao').classList.remove('hidden');
+    }
+
+    function closeExcluirCartaoMobile() {
+      document.getElementById('m-modal-excluir-cartao').classList.add('hidden');
+      mCardPendingDelete = null;
+    }
+
+    function confirmarExcluirCartaoMobile() {
+      if (mCardPendingDelete) {
+        mCardPendingDelete.remove();
+        updateCardIndicator();
+      }
+      closeExcluirCartaoMobile();
+    }
+  </script>
+
+
+</body></html>

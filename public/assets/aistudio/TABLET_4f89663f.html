@@ -1,0 +1,1651 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamentos — Tablet — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-headline { font-family: 'Outfit', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[1024px] font-body antialiased flex flex-col pb-24" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Header Superior Tablet Idêntico a Cartoes-Tablet.html -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-16 px-6 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+        N
+      </div>
+      <div>
+        <span class="block text-xs font-bold leading-tight uppercase">NATANAEL</span>
+        <span class="block text-[10px] text-[#707a82] leading-none">Master</span>
+      </div>
+    </div>
+
+    <!-- Canteiro Ativo Centralizado -->
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+      <div class="w-7 h-7 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-[16px]">apartment</span>
+      </div>
+      <div class="text-left">
+        <span class="block text-xs font-bold truncate uppercase">OBRA JUSCELINO MOLA</span>
+        <span class="block text-[9px] text-[#707a82] uppercase font-semibold">Canteiro Ativo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Área Principal Tablet com Largura Máxima Confortável (max-w-4xl) -->
+  <main class="p-6 space-y-6 flex-1 max-w-4xl mx-auto w-full">
+    
+    <!-- Cabeçalho com Título & Ações Principais -->
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-[#111c2d] dark:text-white">
+          Orçamentos
+        </h1>
+        <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+          Cotações de materiais, confronto de preços e compras da obra.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <!-- Botão Limpar Comparação (Visível na aba Comparador) -->
+        <button type="button" id="t-btn-limpar-comparacao" onclick="openModalLimparTablet()" class="hidden h-10 px-3.5 inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 border border-rose-200 dark:border-rose-900/50 rounded-xl transition-all cursor-pointer active:scale-95">
+          <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+          <span>Limpar</span>
+        </button>
+
+        <button type="button" id="t-btn-juntar" onclick="openModalJuntarTablet()" class="hidden h-10 px-3.5 inline-flex items-center gap-1.5 text-xs font-bold text-[#111c2d] dark:text-white bg-white dark:bg-[#111c2d] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl shadow-2xs active:scale-95 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[18px] text-[#0085db]">merge</span>
+          <span>Juntar Cotações</span>
+        </button>
+
+        <button type="button" id="t-btn-nova-cotacao" onclick="openModalNovoOrcamentoTablet()" class="h-10 px-4 inline-flex items-center gap-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer shadow-[#0085db]/25">
+          <span class="material-symbols-outlined text-[18px]">add</span>
+          <span>Nova Cotação</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Alerta de Comparação Ativa no Tablet -->
+    <div class="bg-[#0085db]/10 border border-[#0085db]/25 rounded-[18px] px-4 py-3 flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="material-symbols-outlined text-[18px] text-[#0085db] shrink-0">compare_arrows</span>
+        <p class="text-[#111c2d] dark:text-white uppercase tracking-wider text-[11px] truncate">
+          <strong class="font-extrabold text-[#0085db]">3 FORNECEDORES COMPARADOS</strong> · ECONOMIA DE R$ 610,00 IDENTIFICADA
+        </p>
+      </div>
+      <button type="button" onclick="switchTabletTab(&#39;comparador&#39;)" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#0085db] hover:text-white bg-white dark:bg-[#111c2d] hover:bg-[#0085db] border border-[#0085db]/30 rounded-lg transition-all whitespace-nowrap active:scale-95 shrink-0 cursor-pointer">
+        <span>VER CONFRONTO</span>
+        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+      </button>
+    </div>
+
+    <!-- Segmented Tabs: Cadastrados vs Comparador -->
+    <div class="flex items-center h-11 p-1 bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl text-xs shadow-xs">
+      <button type="button" id="t-tab-btn-cadastrados" onclick="switchTabletTab(&#39;cadastrados&#39;)" class="flex-1 h-9 inline-flex items-center justify-center gap-2 rounded-lg bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[18px]">receipt_long</span>
+        <span>Cadastrados (<span id="t-tab-count-cadastrados">3</span>)</span>
+      </button>
+      <button type="button" id="t-tab-btn-comparador" onclick="switchTabletTab(&#39;comparador&#39;)" class="flex-1 h-9 inline-flex items-center justify-center gap-2 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer hover:text-[#111c2d] dark:hover:text-white">
+        <span class="material-symbols-outlined text-[18px]">scale</span>
+        <span>Comparador de Preços</span>
+      </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ABA 1: CADASTRADOS TABLET                  -->
+    <!-- ========================================== -->
+    <div id="t-view-cadastrados" class="space-y-4">
+
+      <!-- Barra de Filtros Tablet -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.04)] flex items-center justify-between gap-3">
+        <!-- Campo de Pesquisa Geral -->
+        <div class="relative flex-1">
+          <span class="material-symbols-outlined text-[18px] absolute left-3.5 top-1/2 -translate-y-1/2 text-[#707a82]">search</span>
+          <input type="text" id="t-search-input" oninput="filtrarOrcamentosTablet()" placeholder="Pesquisar por fornecedor, material, identificação ou data..." class="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:ring-2 focus:ring-[#0085db]">
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <!-- Filtro de Status -->
+          <select id="t-filter-status" onchange="filtrarOrcamentosTablet()" class="h-9 pl-3 pr-8 text-xs font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer focus:ring-2 focus:ring-[#0085db]/40">
+            <option value="todos">Todos os Status</option>
+            <option value="cotacao">Em Cotação</option>
+            <option value="aprovado">Aprovado</option>
+            <option value="recusado">Arquivado</option>
+          </select>
+
+          <!-- Ordenação -->
+          <select id="t-filter-sort" onchange="filtrarOrcamentosTablet()" class="h-9 pl-3 pr-8 text-xs font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer focus:ring-2 focus:ring-[#0085db]/40">
+            <option value="recente">Mais Recente Primeiro</option>
+            <option value="antigo">Mais Antigo Primeiro</option>
+            <option value="menor-preco">Menor Valor</option>
+            <option value="maior-preco">Maior Valor</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Barra de Paginação Solta e em Cima Idêntica a Cartoes-Tablet.html -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-4 py-3 flex items-center justify-between shadow-xs">
+        <div class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+          Exibindo <strong id="t-orc-total-count" class="text-[#111c2d] dark:text-white">3</strong> cotações cadastradas · Página <strong id="t-pag-current" class="text-[#111c2d] dark:text-white">1</strong> de <strong id="t-pag-total" class="text-[#111c2d] dark:text-white">1</strong>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button type="button" id="t-btn-prev" onclick="changeTabletPage(-1)" disabled class="w-8 h-8 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] opacity-40 flex items-center justify-center cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+          </button>
+          <div id="t-pag-window" class="flex items-center gap-1 px-1 transition-all duration-300">
+            <button type="button" class="w-8 h-8 rounded-xl bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all duration-200 cursor-pointer transform scale-105">1</button>
+          </div>
+          <button type="button" id="t-btn-next" onclick="changeTabletPage(1)" disabled class="w-8 h-8 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] opacity-40 flex items-center justify-center cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabela / Cards de Orçamentos Tablet -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] space-y-4">
+        
+        <!-- Cabeçalho da Tabela Tablet -->
+        <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-[#0085db]">request_quote</span>
+            <h2 class="text-sm font-bold text-[#111c2d] dark:text-white leading-none uppercase tracking-wider">
+              COTAÇÕES DE MATERIAIS
+            </h2>
+          </div>
+          <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider font-semibold">
+            VALOR TOTAL COTADO: <strong class="text-[#0085db] font-bold">R$ 17.640,00</strong>
+          </p>
+        </div>
+
+        <!-- Lista de Cotações Tablet (Card-Table Otimizada) -->
+        <div id="t-orcamentos-list" class="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
+          <!-- Renderizado via JS -->
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ABA 2: COMPARADOR DE PREÇOS TABLET         -->
+    <!-- ========================================== -->
+    <div id="t-view-comparador" class="space-y-5 hidden">
+      
+      <!-- 4 Cards de Métricas Comparativas no Tablet -->
+      <div class="grid grid-cols-4 gap-3">
+        <!-- 1. Menor Valor Global -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#707a82]">MENOR VALOR GLOBAL</span>
+            <span class="w-6 h-6 rounded-lg bg-[#4bd08b]/15 text-[#10bd9d] flex items-center justify-center">
+              <span class="material-symbols-outlined text-[15px]">verified</span>
+            </span>
+          </div>
+          <div class="text-xl font-black text-[#10bd9d] tracking-tight">R$ 5.590,00</div>
+          <p class="text-[10px] text-[#707a82] font-semibold truncate mt-1">Depósito Goiás</p>
+        </div>
+
+        <!-- 2. Maior Proposta -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#707a82]">MAIOR PROPOSTA</span>
+            <span class="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-500 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[15px]">trending_up</span>
+            </span>
+          </div>
+          <div class="text-xl font-black text-rose-500 tracking-tight">R$ 6.200,00</div>
+          <p class="text-[10px] text-[#707a82] font-semibold truncate mt-1">Cimento &amp; Cia</p>
+        </div>
+
+        <!-- 3. Economia Real -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#707a82]">ECONOMIA REAL</span>
+            <span class="w-6 h-6 rounded-lg bg-[#0085db]/15 text-[#0085db] flex items-center justify-center">
+              <span class="material-symbols-outlined text-[15px]">savings</span>
+            </span>
+          </div>
+          <div class="text-xl font-black text-[#0085db] tracking-tight">R$ 610,00</div>
+          <p class="text-[10px] text-[#10bd9d] font-bold mt-1">9,8% de redução</p>
+        </div>
+
+        <!-- 4. Lojas em Confronto -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#707a82]">LOJAS EM CONFRONTO</span>
+            <span class="w-6 h-6 rounded-lg bg-[#f8c076]/20 text-[#d9941a] flex items-center justify-center">
+              <span class="material-symbols-outlined text-[15px]">balance</span>
+            </span>
+          </div>
+          <div class="text-xl font-black text-[#111c2d] dark:text-white tracking-tight">3</div>
+          <p class="text-[10px] text-[#707a82] font-semibold mt-1">3 materiais cotados</p>
+        </div>
+      </div>
+
+      <!-- Cards de Fornecedores Lado a Lado (Carrossel / Grid Tablet) -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-[#707a82] dark:text-[#7c8fac] font-bold uppercase tracking-wider">
+            PROPOSTAS EM ANÁLISE (3)
+          </span>
+          <span class="text-[11px] text-[#10bd9d] font-bold flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-[#10bd9d] animate-pulse"></span>
+            Melhor proposta destacada
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3.5">
+          
+          <!-- Card Fornecedor 1 -->
+          <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-4 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-1 mb-2">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[#707a82]">#01</span>
+                <span class="text-[10px] text-[#707a82]">28/10/2026</span>
+              </div>
+              <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase leading-snug line-clamp-2 min-h-[32px]">
+                Comercial Silva Materiais
+              </h3>
+              <p class="text-[10px] text-[#707a82] font-mono mt-0.5">COT-2026-109</p>
+
+              <div class="my-3 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
+                <span class="text-[10px] font-semibold text-[#707a82] uppercase block">Valor Total</span>
+                <span class="text-lg font-black text-[#111c2d] dark:text-white tabular-nums">R$ 5.850,00</span>
+                <span class="text-[10px] text-[#707a82] block mt-0.5">+R$ 260,00 vs menor</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 pt-2">
+              <button type="button" onclick="openModalConverterTablet(&#39;orc-01&#39;)" class="w-full h-8 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db] hover:text-white rounded-xl transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[15px]">shopping_cart_checkout</span>
+                <span>Comprar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card Fornecedor 2 (VENCEDOR) -->
+          <div class="bg-white dark:bg-[#111c2d] border-2 border-[#10bd9d] rounded-[20px] p-4 shadow-md shadow-[#10bd9d]/10 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-[#10bd9d] text-white text-[9px] font-black uppercase px-2.5 py-0.5 rounded-bl-lg tracking-wider">
+              MENOR PREÇO
+            </div>
+
+            <div>
+              <div class="flex items-start justify-between gap-1 mb-2">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#10bd9d]/15 text-[#10bd9d]">#02</span>
+                <span class="text-[10px] text-[#707a82]">29/10/2026</span>
+              </div>
+              <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase leading-snug line-clamp-2 min-h-[32px]">
+                Depósito Goiás da Construção
+              </h3>
+              <p class="text-[10px] text-[#707a82] font-mono mt-0.5">PROP-8841</p>
+
+              <div class="my-3 pt-3 border-t border-[#10bd9d]/20">
+                <span class="text-[10px] font-semibold text-[#10bd9d] uppercase block">Valor Total</span>
+                <span class="text-xl font-black text-[#10bd9d] tabular-nums">R$ 5.590,00</span>
+                <span class="text-[10px] text-[#10bd9d] font-bold block mt-0.5">★ Melhor Opção Global</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 pt-2">
+              <button type="button" onclick="openModalConverterTablet(&#39;orc-02&#39;)" class="w-full h-8 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-[#10bd9d] hover:bg-[#0da68a] rounded-xl shadow-xs transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[15px]">check_circle</span>
+                <span>Comprar Proposta</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card Fornecedor 3 -->
+          <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-4 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-1 mb-2">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[#707a82]">#03</span>
+                <span class="text-[10px] text-[#707a82]">01/11/2026</span>
+              </div>
+              <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase leading-snug line-clamp-2 min-h-[32px]">
+                Cimento &amp; Cia Atacadista
+              </h3>
+              <p class="text-[10px] text-[#707a82] font-mono mt-0.5">ORC-NOV-01</p>
+
+              <div class="my-3 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
+                <span class="text-[10px] font-semibold text-[#707a82] uppercase block">Valor Total</span>
+                <span class="text-lg font-black text-[#111c2d] dark:text-white tabular-nums">R$ 6.200,00</span>
+                <span class="text-[10px] text-rose-500 block mt-0.5">+R$ 610,00 vs menor</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 pt-2">
+              <button type="button" onclick="openModalConverterTablet(&#39;orc-03&#39;)" class="w-full h-8 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db] hover:text-white rounded-xl transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[15px]">shopping_cart_checkout</span>
+                <span>Comprar</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tabela Comparativa de Itens Item a Item no Tablet -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-[#0085db]">view_column</span>
+            <h2 class="text-sm font-bold text-[#111c2d] dark:text-white leading-none uppercase tracking-wider">
+              CONFRONTO ITEM A ITEM
+            </h2>
+          </div>
+          <span class="text-[11px] text-[#707a82] font-semibold">
+            Verde = Menor valor unitário cotado
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] font-bold text-[11px] uppercase tracking-wider">
+                <th class="pb-3">Material</th>
+                <th class="pb-3 text-center">Qtd</th>
+                <th class="pb-3 text-right">Comercial Silva</th>
+                <th class="pb-3 text-right text-[#10bd9d]">Depósito Goiás</th>
+                <th class="pb-3 text-right">Cimento &amp; Cia</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
+              <!-- Linha 1: Cimento -->
+              <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors">
+                <td class="py-3 font-semibold text-[#111c2d] dark:text-white">
+                  Cimento CP II 50kg
+                </td>
+                <td class="py-3 text-center text-[#707a82] font-semibold">
+                  100 sc
+                </td>
+                <td class="py-3 text-right font-medium text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 34,00 <span class="text-[10px] text-[#707a82] block">(R$ 3.400,00)</span>
+                </td>
+                <td class="py-3 text-right font-bold text-[#10bd9d] bg-[#10bd9d]/5 tabular-nums">
+                  R$ 32,50 ★ <span class="text-[10px] text-[#10bd9d] block">(R$ 3.250,00)</span>
+                </td>
+                <td class="py-3 text-right font-medium text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 36,00 <span class="text-[10px] text-[#707a82] block">(R$ 3.600,00)</span>
+                </td>
+              </tr>
+
+              <!-- Linha 2: Areia Média -->
+              <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors">
+                <td class="py-3 font-semibold text-[#111c2d] dark:text-white">
+                  Areia Média Lavada
+                </td>
+                <td class="py-3 text-center text-[#707a82] font-semibold">
+                  20 m³
+                </td>
+                <td class="py-3 text-right font-bold text-[#10bd9d] bg-[#10bd9d]/5 tabular-nums">
+                  R$ 92,00 ★ <span class="text-[10px] text-[#10bd9d] block">(R$ 1.840,00)</span>
+                </td>
+                <td class="py-3 text-right font-medium text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 95,00 <span class="text-[10px] text-[#707a82] block">(R$ 1.900,00)</span>
+                </td>
+                <td class="py-3 text-right font-medium text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 98,00 <span class="text-[10px] text-[#707a82] block">(R$ 1.960,00)</span>
+                </td>
+              </tr>
+
+              <!-- Linha 3: Brita 1 -->
+              <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors">
+                <td class="py-3 font-semibold text-[#111c2d] dark:text-white">
+                  BRITA 1
+                </td>
+                <td class="py-3 text-center text-[#707a82] font-semibold">
+                  6 m³
+                </td>
+                <td class="py-3 text-right font-medium text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 101,66 <span class="text-[10px] text-[#707a82] block">(R$ 610,00)</span>
+                </td>
+                <td class="py-3 text-right font-bold text-[#10bd9d] bg-[#10bd9d]/5 tabular-nums">
+                  R$ 73,33 ★ <span class="text-[10px] text-[#10bd9d] block">(R$ 440,00)</span>
+                </td>
+                <td class="py-3 text-right font-medium text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 106,66 <span class="text-[10px] text-[#707a82] block">(R$ 640,00)</span>
+                </td>
+              </tr>
+
+              <!-- Totalizador -->
+              <tr class="font-extrabold text-xs bg-[#f8fafc] dark:bg-[#16253b]">
+                <td class="py-3 uppercase text-[#111c2d] dark:text-white">
+                  TOTAL FINAL
+                </td>
+                <td class="py-3 text-center text-[#707a82]">3 itens</td>
+                <td class="py-3 text-right text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 5.850,00
+                </td>
+                <td class="py-3 text-right text-[#10bd9d] bg-[#10bd9d]/10 tabular-nums text-sm font-black">
+                  R$ 5.590,00
+                </td>
+                <td class="py-3 text-right text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 6.200,00
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: NOVA COTAÇÃO (TABLET)               -->
+  <!-- ========================================== -->
+  <div id="t-modal-novo" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeModalNovoOrcamentoTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative w-full max-w-xl bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-6 space-y-4 max-h-[921px] overflow-y-auto" data-stitch-vh="max-h-[921px]===max-h-[90vh]">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">add_circle</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-[#111c2d] dark:text-white">Nova Cotação</h2>
+            <p class="text-[11px] text-[#707a82]">Cadastre a cotação de um novo fornecedor</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalNovoOrcamentoTablet()" class="text-[#707a82] hover:text-[#111c2d] dark:hover:text-white p-1">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form id="t-form-novo" onsubmit="salvarNovoOrcamentoTablet(event)" class="space-y-4 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-[#707a82] uppercase mb-1">Fornecedor / Loja *</label>
+            <input type="text" id="t-novo-empresa" required placeholder="Ex: Comercial Silva" class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:ring-2 focus:ring-[#0085db]">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#707a82] uppercase mb-1">Nº Identificação / Proposta</label>
+            <input type="text" id="t-novo-ident" placeholder="Ex: COT-2026-110" class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:ring-2 focus:ring-[#0085db]">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-[#707a82] uppercase mb-1">Data da Cotação *</label>
+            <input type="date" id="t-novo-data" required class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:ring-2 focus:ring-[#0085db]">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#707a82] uppercase mb-1">Status Inicial</label>
+            <select id="t-novo-status" class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:ring-2 focus:ring-[#0085db]">
+              <option value="cotacao">Em Cotação</option>
+              <option value="aprovado">Aprovado</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Seção de Frete -->
+        <div class="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-[#0085db]">local_shipping</span>
+              <span class="text-[11px] font-bold text-[#111c2d] dark:text-white uppercase">Frete para Entrega</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="t-novo-tem-frete" onchange="toggleFreteNovoTablet()" class="sr-only peer">
+              <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[&#39;&#39;] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#0085db]"></div>
+            </label>
+          </div>
+          <div id="t-novo-frete-container" class="hidden grid grid-cols-2 gap-2 pt-1 border-t border-[#e6ecf1] dark:border-[#333f55]">
+            <input type="number" step="0.01" id="t-novo-valor-frete" oninput="recalcNovoTotalTablet()" placeholder="Valor do Frete (R$)" class="h-8 px-2.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+            <input type="text" id="t-novo-prazo-frete" placeholder="Prazo (ex: 48h)" class="h-8 px-2.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+          </div>
+        </div>
+
+        <!-- Itens Cotados -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-[#707a82] uppercase">Itens da Cotação</span>
+            <button type="button" onclick="adicionarLinhaItemNovoTablet()" class="text-[11px] font-bold text-[#0085db] hover:underline flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">add</span> Adicionar Item
+            </button>
+          </div>
+          <div id="t-novo-itens-container" class="space-y-2">
+            <!-- Linhas de itens geradas -->
+          </div>
+        </div>
+
+        <!-- Totalizadores -->
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
+          <span class="text-xs font-bold text-[#707a82] uppercase">VALOR TOTAL:</span>
+          <span id="t-novo-total-display" class="text-lg font-black text-[#0085db]">R$ 0,00</span>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModalNovoOrcamentoTablet()" class="h-9 px-4 text-xs font-bold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl">Cancelar</button>
+          <button type="submit" class="h-9 px-4 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs">Salvar Cotação</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: EDITAR ORÇAMENTO (TABLET)           -->
+  <!-- ========================================== -->
+  <div id="t-modal-editar" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeModalEditarTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative w-full max-w-xl bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-6 space-y-4 max-h-[921px] overflow-y-auto" data-stitch-vh="max-h-[921px]===max-h-[90vh]">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">edit</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-[#111c2d] dark:text-white">Editar Orçamento</h2>
+            <p class="text-[11px] text-[#707a82]">Altere valores, materiais, fornecedor e frete</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalEditarTablet()" class="text-[#707a82] hover:text-[#111c2d] dark:hover:text-white p-1">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form id="t-form-editar" onsubmit="salvarEdicaoTablet(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="t-edit-id">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-[#707a82] uppercase mb-1">Fornecedor / Loja *</label>
+            <input type="text" id="t-edit-empresa" required class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#707a82] uppercase mb-1">Nº Identificação</label>
+            <input type="text" id="t-edit-ident" class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-[#707a82] uppercase mb-1">Data da Cotação *</label>
+            <input type="date" id="t-edit-data" required class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#707a82] uppercase mb-1">Status</label>
+            <select id="t-edit-status" class="w-full h-9 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white">
+              <option value="cotacao">Em Cotação</option>
+              <option value="aprovado">Aprovado</option>
+              <option value="recusado">Arquivado</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Seção de Frete Editável -->
+        <div class="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-[#0085db]">local_shipping</span>
+              <span class="text-[11px] font-bold text-[#111c2d] dark:text-white uppercase">Possui Frete para Canteiro</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="t-edit-tem-frete" onchange="toggleFreteEditTablet()" class="sr-only peer">
+              <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[&#39;&#39;] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#0085db]"></div>
+            </label>
+          </div>
+          <div id="t-edit-frete-container" class="hidden grid grid-cols-2 gap-2 pt-1 border-t border-[#e6ecf1] dark:border-[#333f55]">
+            <input type="number" step="0.01" id="t-edit-valor-frete" oninput="recalcEditTotalTablet()" placeholder="Valor do Frete (R$)" class="h-8 px-2.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+            <input type="text" id="t-edit-prazo-frete" placeholder="Prazo (ex: 48h)" class="h-8 px-2.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+          </div>
+        </div>
+
+        <!-- Itens Editáveis -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-[#707a82] uppercase">Itens Cotados</span>
+            <button type="button" onclick="adicionarLinhaItemEditTablet()" class="text-[11px] font-bold text-[#0085db] hover:underline flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">add</span> Adicionar Item
+            </button>
+          </div>
+          <div id="t-edit-itens-container" class="space-y-2"></div>
+        </div>
+
+        <!-- Total -->
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
+          <span class="text-xs font-bold text-[#707a82] uppercase">VALOR TOTAL RECALCULADO:</span>
+          <span id="t-edit-total-display" class="text-lg font-black text-[#0085db]">R$ 0,00</span>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModalEditarTablet()" class="h-9 px-4 text-xs font-bold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl">Cancelar</button>
+          <button type="submit" class="h-9 px-4 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] rounded-xl shadow-xs">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DETALHES DO ORÇAMENTO (TABLET)      -->
+  <!-- ========================================== -->
+  <div id="t-modal-detalhes" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeModalDetalhesTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative w-full max-w-lg bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">visibility</span>
+          </div>
+          <div>
+            <h2 id="t-det-empresa" class="text-sm font-bold uppercase tracking-wider text-[#111c2d] dark:text-white">Loja</h2>
+            <p id="t-det-ident" class="text-[11px] text-[#707a82]">Identificação</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalDetalhesTablet()" class="text-[#707a82] hover:text-[#111c2d] dark:hover:text-white p-1">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3 p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535]">
+          <div>
+            <span class="text-[10px] text-[#707a82] uppercase block">Data</span>
+            <strong id="t-det-data" class="text-xs text-[#111c2d] dark:text-white">-</strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-[#707a82] uppercase block">Status</span>
+            <span id="t-det-status" class="inline-block px-2 py-0.5 rounded text-[10px] font-bold">-</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="text-[11px] font-bold text-[#707a82] uppercase block mb-1.5">Itens Inclusos</span>
+          <div id="t-det-itens" class="divide-y divide-[#e6ecf1] dark:divide-[#333f55] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl p-2.5 space-y-1"></div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-[#0085db]/5 border border-[#0085db]/20 flex items-center justify-between">
+          <span class="text-xs font-bold text-[#707a82] uppercase">Valor Total</span>
+          <span id="t-det-total" class="text-lg font-black text-[#0085db]">R$ 0,00</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="closeModalDetalhesTablet()" class="h-9 px-4 text-xs font-bold text-white bg-[#0085db] rounded-xl">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: CONVERTER EM COMPRA (TABLET)        -->
+  <!-- ========================================== -->
+  <div id="t-modal-converter" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeModalConverterTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative w-full max-w-sm bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 space-y-3.5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[20px] text-[#10bd9d]">shopping_cart_checkout</span>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-[#111c2d] dark:text-white">Converter em Compra</h2>
+        </div>
+        <button type="button" onclick="closeModalConverterTablet()" class="text-[#707a82] p-1"><span class="material-symbols-outlined text-[18px]">close</span></button>
+      </div>
+
+      <div class="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] text-xs space-y-1">
+        <p class="font-bold text-[#111c2d] dark:text-white uppercase truncate" id="t-conv-empresa">Fornecedor</p>
+        <p class="text-[11px] text-[#707a82]">Total: <strong id="t-conv-total" class="text-[#10bd9d] font-bold">R$ 0,00</strong></p>
+      </div>
+
+      <div class="space-y-1.5 text-xs">
+        <label class="block text-[11px] font-bold text-[#707a82] uppercase">Forma de Pagamento</label>
+        <select id="t-conv-forma-pag" class="w-full h-9 px-2.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+          <option value="pix">Pix (À vista com desconto)</option>
+          <option value="cartao">Cartão de Crédito</option>
+          <option value="boleto">Boleto Bancário Faturado</option>
+          <option value="dinheiro">Dinheiro</option>
+        </select>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModalConverterTablet()" class="h-8 px-3 text-xs font-bold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarConversaoTablet()" class="h-8 px-4 text-xs font-bold text-white bg-[#10bd9d] hover:bg-[#0da68a] rounded-xl flex items-center gap-1.5 shadow-xs">
+          <span class="material-symbols-outlined text-[16px]">check_circle</span>
+          <span>Confirmar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: EXCLUIR ORÇAMENTO (TABLET)          -->
+  <!-- ========================================== -->
+  <div id="t-modal-excluir" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeModalExcluirTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative w-full max-w-sm bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-rose-200 dark:border-rose-900/50 p-5 space-y-3">
+      <div class="flex items-center gap-2 text-rose-500">
+        <span class="material-symbols-outlined text-[20px]">delete_forever</span>
+        <h2 class="text-xs font-bold uppercase tracking-wider">Excluir Orçamento</h2>
+      </div>
+      <p class="text-xs text-[#707a82]">
+        Deseja excluir a cotação de <strong id="t-exc-empresa" class="text-[#111c2d] dark:text-white">loja</strong> no valor de <strong id="t-exc-valor" class="text-[#111c2d] dark:text-white">R$ 0,00</strong>?
+      </p>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModalExcluirTablet()" class="h-8 px-3 text-xs font-bold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarExclusaoTablet()" class="h-8 px-4 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ARQUIVAR / DESARQUIVAR (TABLET)     -->
+  <!-- ========================================== -->
+  <div id="t-modal-arquivar" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeModalArquivarTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative w-full max-w-sm bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 space-y-3">
+      <div class="flex items-center gap-2 text-amber-500">
+        <span class="material-symbols-outlined text-[20px]" id="t-arq-icon">archive</span>
+        <h2 class="text-xs font-bold uppercase tracking-wider" id="t-arq-title">Arquivar Orçamento</h2>
+      </div>
+      <p class="text-xs text-[#707a82]" id="t-arq-msg">
+        Deseja arquivar esta cotação?
+      </p>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModalArquivarTablet()" class="h-8 px-3 text-xs font-bold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarArquivamentoTablet()" class="h-8 px-4 text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-xl" id="t-arq-confirm-btn">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: LIMPAR COMPARAÇÃO (TABLET)          -->
+  <!-- ========================================== -->
+  <div id="t-modal-limpar" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeModalLimparTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative w-full max-w-sm bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-rose-200 dark:border-rose-900/40 p-5 space-y-3">
+      <div class="flex items-center gap-2 text-rose-500">
+        <span class="material-symbols-outlined text-[20px]">restart_alt</span>
+        <h2 class="text-xs font-bold uppercase tracking-wider">Limpar Comparação</h2>
+      </div>
+      <p class="text-xs text-[#707a82]">
+        Tem certeza que deseja limpar a comparação atual? Você poderá reabrir os orçamentos a qualquer momento.
+      </p>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModalLimparTablet()" class="h-8 px-3 text-xs font-bold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarLimparTablet()" class="h-8 px-4 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl">Limpar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: JUNTAR COTAÇÕES (TABLET)            -->
+  <!-- ========================================== -->
+  <div id="t-modal-juntar" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeModalJuntarTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative w-full max-w-lg bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[20px] text-[#0085db]">merge</span>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-[#111c2d] dark:text-white">Juntar Orçamentos</h2>
+        </div>
+        <button type="button" onclick="closeModalJuntarTablet()" class="text-[#707a82] p-1"><span class="material-symbols-outlined text-[18px]">close</span></button>
+      </div>
+      <p class="text-xs text-[#707a82]">Selecione os orçamentos que deseja agrupar no comparador direto:</p>
+      <div id="t-juntar-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="closeModalJuntarTablet()" class="h-8 px-3 text-xs font-bold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarJuntarTablet()" class="h-8 px-4 text-xs font-bold text-white bg-[#0085db] rounded-xl">Comparar Selecionados</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Navegação Inferior Fixa Tablet (Idêntica a Cartoes-Tablet.html) -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-t border-[#e6ecf1] dark:border-[#333f55] h-16 flex items-center justify-around px-8 z-40 max-w-4xl mx-auto md:border-x">
+    <a href="../dashboard/Dashboard.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">grid_view</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Dashboard</span>
+    </a>
+
+    <a href="../despesas/Despesas.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">receipt</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Despesas</span>
+    </a>
+
+    <a href="../maodeobra/Diarias-Tablet.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">group</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Diárias</span>
+    </a>
+
+    <a href="#" class="flex flex-col items-center justify-center flex-1 py-1 text-[#0085db] transition-colors">
+      <span class="material-symbols-outlined text-[24px]">balance</span>
+      <span class="text-[11px] font-bold tracking-tight mt-0.5">Orçamentos</span>
+    </a>
+
+    <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.remove(&#39;hidden&#39;)" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white relative cursor-pointer">
+      <div class="relative flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+        <span class="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#fb977d] border-2 border-white dark:border-[#111c2d]"></span>
+      </div>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Mais</span>
+    </button>
+  </nav>
+
+  <!-- Bottom Sheet Menu Mais (Módulos do Sistema) Tablet Centralizado -->
+  <div id="bottom-sheet-menu-tablet" class="fixed inset-0 z-50 flex flex-col justify-end hidden">
+    <div onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+
+    <aside class="relative z-10 bg-white dark:bg-[#111c2d] rounded-t-[28px] border-t border-[#e6ecf1] dark:border-[#333f55] shadow-2xl p-6 pt-3 animate-in slide-in-from-bottom duration-200 max-w-xl mx-auto w-full">
+      <div class="w-12 h-1.5 rounded-full bg-[#dbe4ec] dark:bg-[#333f55] mx-auto mb-4"></div>
+
+      <div class="flex items-center justify-between pb-3 border-b border-[#f0f4f8] dark:border-[#223147] mb-4">
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#526b84] dark:text-[#8fa3ba]">
+          Módulos do Sistema
+        </h2>
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Grade com os Módulos -->
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <a href="../recibos/Recibos.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">fact_check</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Recibos</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Materiais</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">build</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Produção</span>
+        </a>
+
+        <a href="../cartoes/Cartoes-Tablet.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">credit_card</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Cartões</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">assignment_turned_in</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Pendências</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">bar_chart</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Relatórios</span>
+        </a>
+      </div>
+    </aside>
+  </div>
+
+  <!-- SCRIPT TABLET COMPLETO -->
+  <script>
+    const bancoOrcamentos = [
+      {
+        id: "orc-01",
+        num: "01",
+        empresa: "COMERCIAL SILVA MATERIAIS",
+        ident: "COT-2026-109",
+        data: "28/10/2026",
+        dataISO: "2026-10-28",
+        status: "cotacao",
+        statusLabel: "Cotação",
+        statusBadgeClass: "bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700",
+        total: 5850.00,
+        temFrete: true,
+        valorFrete: 0,
+        prazoFrete: "48h canteiro",
+        condicoes: "3X NO BOLETO OU PIX COM 5% DESC",
+        obs: "Frete grátis para entrega no canteiro em até 48h.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", preco: 34.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", preco: 92.00 },
+          { nome: "BRITA 1", qtd: "6 m³", preco: 101.66 }
+        ]
+      },
+      {
+        id: "orc-02",
+        num: "02",
+        empresa: "DEPÓSITO GOIÁS DA CONSTRUÇÃO",
+        ident: "PROP-8841",
+        data: "29/10/2026",
+        dataISO: "2026-10-29",
+        status: "aprovado",
+        statusLabel: "Aprovado",
+        statusBadgeClass: "bg-[#4bd08b]/15 text-[#10bd9d] border border-[#4bd08b]/30",
+        total: 5590.00,
+        temFrete: false,
+        valorFrete: 0,
+        prazoFrete: "",
+        condicoes: "À VISTA VIA PIX",
+        obs: "Excelente preço no cimento CP II (R$ 32,50/saco).",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", preco: 32.50 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", preco: 95.00 },
+          { nome: "BRITA 1", qtd: "6 m³", preco: 73.33 }
+        ]
+      },
+      {
+        id: "orc-03",
+        num: "03",
+        empresa: "CIMENTO & CIA ATACADISTA",
+        ident: "ORC-NOV-01",
+        data: "01/11/2026",
+        dataISO: "2026-11-01",
+        status: "recusado",
+        statusLabel: "Arquivado",
+        statusBadgeClass: "bg-amber-500/15 text-amber-500 border border-amber-500/30",
+        total: 6200.00,
+        temFrete: true,
+        valorFrete: 150.00,
+        prazoFrete: "24h express",
+        condicoes: "CARTÃO 10X COM JUROS",
+        obs: "Preço acima da média da região de Goiânia.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", preco: 36.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", preco: 98.00 },
+          { nome: "BRITA 1", qtd: "6 m³", preco: 106.66 }
+        ]
+      }
+    ];
+
+    let currentActionOrcId = null;
+
+    // Alternar Abas Tablet
+    function switchTabletTab(tab) {
+      const viewCadastrados = document.getElementById('t-view-cadastrados');
+      const viewComparador = document.getElementById('t-view-comparador');
+      const btnCad = document.getElementById('t-tab-btn-cadastrados');
+      const btnComp = document.getElementById('t-tab-btn-comparador');
+      const btnLimparTop = document.getElementById('t-btn-limpar-comparacao');
+      const btnJuntarTop = document.getElementById('t-btn-juntar');
+      const btnNovaCotacaoTop = document.getElementById('t-btn-nova-cotacao');
+
+      if (tab === 'cadastrados') {
+        viewCadastrados.classList.remove('hidden');
+        viewComparador.classList.add('hidden');
+        btnLimparTop.classList.add('hidden');
+        if (btnJuntarTop) btnJuntarTop.classList.add('hidden');
+        if (btnNovaCotacaoTop) btnNovaCotacaoTop.classList.remove('hidden');
+
+        btnCad.className = "flex-1 h-9 inline-flex items-center justify-center gap-2 rounded-lg bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all cursor-pointer";
+        btnComp.className = "flex-1 h-9 inline-flex items-center justify-center gap-2 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer hover:text-[#111c2d] dark:hover:text-white";
+      } else {
+        viewCadastrados.classList.add('hidden');
+        viewComparador.classList.remove('hidden');
+        btnLimparTop.classList.remove('hidden');
+        if (btnJuntarTop) btnJuntarTop.classList.remove('hidden');
+        if (btnNovaCotacaoTop) btnNovaCotacaoTop.classList.add('hidden');
+
+        btnComp.className = "flex-1 h-9 inline-flex items-center justify-center gap-2 rounded-lg bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all cursor-pointer";
+        btnCad.className = "flex-1 h-9 inline-flex items-center justify-center gap-2 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer hover:text-[#111c2d] dark:hover:text-white";
+      }
+    }
+
+    // Renderizar Lista de Orçamentos Tablet
+    function renderOrcamentosTablet(lista) {
+      const container = document.getElementById('t-orcamentos-list');
+      const countEl = document.getElementById('t-orc-total-count');
+      const tabCount = document.getElementById('t-tab-count-cadastrados');
+      
+      if (!container) return;
+      container.innerHTML = '';
+      countEl.textContent = lista.length;
+      tabCount.textContent = lista.length;
+
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 text-center text-[#707a82] space-y-2">
+            <span class="material-symbols-outlined text-[36px] text-[#707a82]/50">search_off</span>
+            <p class="text-xs font-semibold">Nenhum orçamento encontrado com os filtros aplicados.</p>
+          </div>
+        `;
+        return;
+      }
+
+      lista.forEach(orc => {
+        const itemRow = document.createElement('div');
+        itemRow.className = "py-4 flex items-center justify-between gap-4 hover:bg-[#f6f9fc]/50 dark:hover:bg-[#1a2535]/30 transition-colors";
+        
+        const isArquivado = orc.status === 'recusado';
+        const freteBadge = orc.temFrete 
+          ? `<span class="inline-flex items-center gap-1 text-[10px] text-[#0085db] bg-[#0085db]/10 px-2 py-0.5 rounded-md font-semibold"><span class="material-symbols-outlined text-[12px]">local_shipping</span> Frete ${orc.valorFrete > 0 ? 'R$ ' + orc.valorFrete.toFixed(2) : 'Grátis'}</span>`
+          : '';
+
+        itemRow.innerHTML = `
+          <div class="flex items-center gap-3.5 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center font-black text-xs shrink-0">
+              #${orc.num}
+            </div>
+            <div class="min-w-0 space-y-0.5">
+              <div class="flex items-center gap-2">
+                <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">${orc.empresa}</h3>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${orc.statusBadgeClass}">
+                  ${orc.statusLabel}
+                </span>
+                ${freteBadge}
+              </div>
+              <div class="flex items-center gap-2 text-[11px] text-[#707a82]">
+                <span class="font-mono text-[#0085db] font-semibold">${orc.ident}</span>
+                <span>•</span>
+                <span>${orc.data}</span>
+                <span>•</span>
+                <span>${orc.itens.length} materiais cotados</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 shrink-0">
+            <div class="text-right">
+              <span class="text-[10px] uppercase font-bold text-[#707a82] block">Valor Total</span>
+              <span class="text-base font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight">
+                R$ ${orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </span>
+            </div>
+
+            <!-- Botões de Ação Tablet -->
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                onclick="openModalDetalhesTablet('${orc.id}')"
+                class="w-8 h-8 rounded-lg text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 flex items-center justify-center transition-colors cursor-pointer"
+                title="Visualizar detalhes"
+              >
+                <span class="material-symbols-outlined text-[17px]">visibility</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="openModalEditarTablet('${orc.id}')"
+                class="w-8 h-8 rounded-lg text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 flex items-center justify-center transition-colors cursor-pointer"
+                title="Editar orçamento e frete"
+              >
+                <span class="material-symbols-outlined text-[17px]">edit</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="openModalConverterTablet('${orc.id}')"
+                class="h-8 px-2.5 rounded-lg text-xs font-bold text-white bg-[#10bd9d] hover:bg-[#0da68a] inline-flex items-center gap-1 shadow-xs transition-all cursor-pointer"
+                title="Converter em compra"
+              >
+                <span class="material-symbols-outlined text-[15px]">shopping_cart_checkout</span>
+                <span>Comprar</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="openModalArquivarTablet('${orc.id}')"
+                class="w-8 h-8 rounded-lg text-[#707a82] hover:text-amber-500 hover:bg-amber-500/10 flex items-center justify-center transition-colors cursor-pointer"
+                title="${isArquivado ? 'Desarquivar' : 'Arquivar'}"
+              >
+                <span class="material-symbols-outlined text-[17px]">${isArquivado ? 'unarchive' : 'archive'}</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="openModalExcluirTablet('${orc.id}')"
+                class="w-8 h-8 rounded-lg text-[#707a82] hover:text-rose-500 hover:bg-rose-500/10 flex items-center justify-center transition-colors cursor-pointer"
+                title="Excluir"
+              >
+                <span class="material-symbols-outlined text-[17px]">delete</span>
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(itemRow);
+      });
+    }
+
+    // Filtrar Orçamentos Tablet
+    function filtrarOrcamentosTablet() {
+      const search = (document.getElementById('t-search-input')?.value || '').toLowerCase().trim();
+      const status = document.getElementById('t-filter-status')?.value || 'todos';
+      const sort = document.getElementById('t-filter-sort')?.value || 'recente';
+
+      let filtrados = bancoOrcamentos.filter(orc => {
+        const matchStatus = (status === 'todos') || (orc.status === status);
+        const matchSearch = !search || (
+          orc.empresa.toLowerCase().includes(search) ||
+          orc.ident.toLowerCase().includes(search) ||
+          orc.data.includes(search) ||
+          orc.total.toString().includes(search) ||
+          orc.itens.some(it => it.nome.toLowerCase().includes(search))
+        );
+        return matchStatus && matchSearch;
+      });
+
+      if (sort === 'recente') {
+        filtrados.sort((a, b) => new Date(b.dataISO) - new Date(a.dataISO));
+      } else if (sort === 'antigo') {
+        filtrados.sort((a, b) => new Date(a.dataISO) - new Date(b.dataISO));
+      } else if (sort === 'menor-preco') {
+        filtrados.sort((a, b) => a.total - b.total);
+      } else if (sort === 'maior-preco') {
+        filtrados.sort((a, b) => b.total - a.total);
+      }
+
+      renderOrcamentosTablet(filtrados);
+    }
+
+    // MODAL NOVO ORÇAMENTO
+    function openModalNovoOrcamentoTablet() {
+      const modal = document.getElementById('t-modal-novo');
+      const form = document.getElementById('t-form-novo');
+      form.reset();
+      document.getElementById('t-novo-data').value = new Date().toISOString().split('T')[0];
+      document.getElementById('t-novo-frete-container').classList.add('hidden');
+      document.getElementById('t-novo-tem-frete').checked = false;
+      
+      const container = document.getElementById('t-novo-itens-container');
+      container.innerHTML = '';
+      adicionarLinhaItemNovoTablet('Cimento CP II 50kg', '100 sc', '');
+      adicionarLinhaItemNovoTablet('Areia Média Lavada', '20 m³', '');
+      recalcNovoTotalTablet();
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModalNovoOrcamentoTablet() {
+      document.getElementById('t-modal-novo').classList.add('hidden');
+    }
+
+    function toggleFreteNovoTablet() {
+      const check = document.getElementById('t-novo-tem-frete').checked;
+      const box = document.getElementById('t-novo-frete-container');
+      if (check) box.classList.remove('hidden'); else box.classList.add('hidden');
+      recalcNovoTotalTablet();
+    }
+
+    function adicionarLinhaItemNovoTablet(nome = '', qtd = '', preco = '') {
+      const container = document.getElementById('t-novo-itens-container');
+      const row = document.createElement('div');
+      row.className = "flex items-center gap-2 t-novo-item-row";
+      row.innerHTML = `
+        <input type="text" placeholder="Material" value="${nome}" class="flex-2 h-8 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white" required />
+        <input type="text" placeholder="Qtd" value="${qtd}" class="w-20 h-8 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white" required />
+        <input type="number" step="0.01" placeholder="R$ Unit" value="${preco}" oninput="recalcNovoTotalTablet()" class="w-24 h-8 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold" required />
+        <button type="button" onclick="this.parentElement.remove(); recalcNovoTotalTablet();" class="p-1 text-[#707a82] hover:text-rose-500"><span class="material-symbols-outlined text-[16px]">close</span></button>
+      `;
+      container.appendChild(row);
+    }
+
+    function recalcNovoTotalTablet() {
+      let total = 0;
+      const rows = document.querySelectorAll('.t-novo-item-row');
+      rows.forEach(r => {
+        const preco = parseFloat(r.querySelectorAll('input')[2].value) || 0;
+        const qtdStr = r.querySelectorAll('input')[1].value;
+        const qtdNum = parseFloat(qtdStr.replace(/[^\d.,]/g, '').replace(',', '.')) || 1;
+        total += (preco * qtdNum);
+      });
+      if (document.getElementById('t-novo-tem-frete')?.checked) {
+        const frete = parseFloat(document.getElementById('t-novo-valor-frete').value) || 0;
+        total += frete;
+      }
+      document.getElementById('t-novo-total-display').textContent = 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    }
+
+    function salvarNovoOrcamentoTablet(e) {
+      e.preventDefault();
+      const empresa = document.getElementById('t-novo-empresa').value;
+      const ident = document.getElementById('t-novo-ident').value || `COT-${Date.now().toString().slice(-4)}`;
+      const dataISO = document.getElementById('t-novo-data').value;
+      const status = document.getElementById('t-novo-status').value;
+      const temFrete = document.getElementById('t-novo-tem-frete').checked;
+      const valorFrete = temFrete ? (parseFloat(document.getElementById('t-novo-valor-frete').value) || 0) : 0;
+      const prazoFrete = temFrete ? document.getElementById('t-novo-prazo-frete').value : '';
+
+      const itens = [];
+      let totalItens = 0;
+      document.querySelectorAll('.t-novo-item-row').forEach(r => {
+        const inputs = r.querySelectorAll('input');
+        const nome = inputs[0].value;
+        const qtd = inputs[1].value;
+        const preco = parseFloat(inputs[2].value) || 0;
+        const qtdNum = parseFloat(qtd.replace(/[^\d.,]/g, '').replace(',', '.')) || 1;
+        totalItens += (preco * qtdNum);
+        itens.push({ nome, qtd, preco });
+      });
+
+      const totalFinal = totalItens + valorFrete;
+      const dParts = dataISO.split('-');
+      const dataFormatada = `${dParts[2]}/${dParts[1]}/${dParts[0]}`;
+
+      const novoOrc = {
+        id: `orc-${Date.now()}`,
+        num: String(bancoOrcamentos.length + 1).padStart(2, '0'),
+        empresa: empresa.toUpperCase(),
+        ident,
+        data: dataFormatada,
+        dataISO,
+        status,
+        statusLabel: status === 'aprovado' ? 'Aprovado' : 'Cotação',
+        statusBadgeClass: status === 'aprovado' ? 'bg-[#4bd08b]/15 text-[#10bd9d] border border-[#4bd08b]/30' : 'bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700',
+        total: totalFinal,
+        temFrete,
+        valorFrete,
+        prazoFrete,
+        condicoes: "PAGAMENTO A COMBINAR",
+        obs: "",
+        itens
+      };
+
+      bancoOrcamentos.unshift(novoOrc);
+      filtrarOrcamentosTablet();
+      closeModalNovoOrcamentoTablet();
+    }
+
+    // MODAL EDITAR
+    function openModalEditarTablet(id) {
+      const orc = bancoOrcamentos.find(o => o.id === id);
+      if (!orc) return;
+      currentActionOrcId = id;
+
+      document.getElementById('t-edit-id').value = orc.id;
+      document.getElementById('t-edit-empresa').value = orc.empresa;
+      document.getElementById('t-edit-ident').value = orc.ident;
+      document.getElementById('t-edit-data').value = orc.dataISO;
+      document.getElementById('t-edit-status').value = orc.status;
+
+      const temFrete = !!orc.temFrete;
+      document.getElementById('t-edit-tem-frete').checked = temFrete;
+      const freteBox = document.getElementById('t-edit-frete-container');
+      if (temFrete) {
+        freteBox.classList.remove('hidden');
+        document.getElementById('t-edit-valor-frete').value = orc.valorFrete || '';
+        document.getElementById('t-edit-prazo-frete').value = orc.prazoFrete || '';
+      } else {
+        freteBox.classList.add('hidden');
+        document.getElementById('t-edit-valor-frete').value = '';
+        document.getElementById('t-edit-prazo-frete').value = '';
+      }
+
+      const container = document.getElementById('t-edit-itens-container');
+      container.innerHTML = '';
+      orc.itens.forEach(it => {
+        adicionarLinhaItemEditTablet(it.nome, it.qtd, it.preco);
+      });
+
+      recalcEditTotalTablet();
+      document.getElementById('t-modal-editar').classList.remove('hidden');
+    }
+
+    function closeModalEditarTablet() {
+      document.getElementById('t-modal-editar').classList.add('hidden');
+    }
+
+    function toggleFreteEditTablet() {
+      const check = document.getElementById('t-edit-tem-frete').checked;
+      const box = document.getElementById('t-edit-frete-container');
+      if (check) box.classList.remove('hidden'); else box.classList.add('hidden');
+      recalcEditTotalTablet();
+    }
+
+    function adicionarLinhaItemEditTablet(nome = '', qtd = '', preco = '') {
+      const container = document.getElementById('t-edit-itens-container');
+      const row = document.createElement('div');
+      row.className = "flex items-center gap-2 t-edit-item-row";
+      row.innerHTML = `
+        <input type="text" placeholder="Material" value="${nome}" class="flex-2 h-8 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white" required />
+        <input type="text" placeholder="Qtd" value="${qtd}" class="w-20 h-8 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white" required />
+        <input type="number" step="0.01" placeholder="R$ Unit" value="${preco}" oninput="recalcEditTotalTablet()" class="w-24 h-8 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold" required />
+        <button type="button" onclick="this.parentElement.remove(); recalcEditTotalTablet();" class="p-1 text-[#707a82] hover:text-rose-500"><span class="material-symbols-outlined text-[16px]">close</span></button>
+      `;
+      container.appendChild(row);
+    }
+
+    function recalcEditTotalTablet() {
+      let total = 0;
+      document.querySelectorAll('.t-edit-item-row').forEach(r => {
+        const preco = parseFloat(r.querySelectorAll('input')[2].value) || 0;
+        const qtdStr = r.querySelectorAll('input')[1].value;
+        const qtdNum = parseFloat(qtdStr.replace(/[^\d.,]/g, '').replace(',', '.')) || 1;
+        total += (preco * qtdNum);
+      });
+      if (document.getElementById('t-edit-tem-frete')?.checked) {
+        const frete = parseFloat(document.getElementById('t-edit-valor-frete').value) || 0;
+        total += frete;
+      }
+      document.getElementById('t-edit-total-display').textContent = 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    }
+
+    function salvarEdicaoTablet(e) {
+      e.preventDefault();
+      const id = document.getElementById('t-edit-id').value;
+      const orc = bancoOrcamentos.find(o => o.id === id);
+      if (!orc) return;
+
+      orc.empresa = document.getElementById('t-edit-empresa').value.toUpperCase();
+      orc.ident = document.getElementById('t-edit-ident').value;
+      orc.dataISO = document.getElementById('t-edit-data').value;
+      const dParts = orc.dataISO.split('-');
+      orc.data = `${dParts[2]}/${dParts[1]}/${dParts[0]}`;
+      orc.status = document.getElementById('t-edit-status').value;
+      
+      if (orc.status === 'aprovado') {
+        orc.statusLabel = 'Aprovado';
+        orc.statusBadgeClass = 'bg-[#4bd08b]/15 text-[#10bd9d] border border-[#4bd08b]/30';
+      } else if (orc.status === 'recusado') {
+        orc.statusLabel = 'Arquivado';
+        orc.statusBadgeClass = 'bg-amber-500/15 text-amber-500 border border-amber-500/30';
+      } else {
+        orc.statusLabel = 'Cotação';
+        orc.statusBadgeClass = 'bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700';
+      }
+
+      orc.temFrete = document.getElementById('t-edit-tem-frete').checked;
+      orc.valorFrete = orc.temFrete ? (parseFloat(document.getElementById('t-edit-valor-frete').value) || 0) : 0;
+      orc.prazoFrete = orc.temFrete ? document.getElementById('t-edit-prazo-frete').value : '';
+
+      const itens = [];
+      let totalItens = 0;
+      document.querySelectorAll('.t-edit-item-row').forEach(r => {
+        const inputs = r.querySelectorAll('input');
+        const nome = inputs[0].value;
+        const qtd = inputs[1].value;
+        const preco = parseFloat(inputs[2].value) || 0;
+        const qtdNum = parseFloat(qtd.replace(/[^\d.,]/g, '').replace(',', '.')) || 1;
+        totalItens += (preco * qtdNum);
+        itens.push({ nome, qtd, preco });
+      });
+
+      orc.itens = itens;
+      orc.total = totalItens + orc.valorFrete;
+
+      filtrarOrcamentosTablet();
+      closeModalEditarTablet();
+    }
+
+    // MODAL DETALHES
+    function openModalDetalhesTablet(id) {
+      const orc = bancoOrcamentos.find(o => o.id === id);
+      if (!orc) return;
+
+      document.getElementById('t-det-empresa').textContent = orc.empresa;
+      document.getElementById('t-det-ident').textContent = `${orc.ident} • Cotado em ${orc.data}`;
+      document.getElementById('t-det-data').textContent = orc.data;
+      
+      const stEl = document.getElementById('t-det-status');
+      stEl.textContent = orc.statusLabel;
+      stEl.className = `inline-block px-2 py-0.5 rounded text-[10px] font-bold ${orc.statusBadgeClass}`;
+
+      const itensBox = document.getElementById('t-det-itens');
+      itensBox.innerHTML = '';
+      orc.itens.forEach(it => {
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between text-xs py-1";
+        row.innerHTML = `
+          <div><strong class="text-[#111c2d] dark:text-white">${it.nome}</strong> <span class="text-[#707a82] text-[10px]">(${it.qtd})</span></div>
+          <div class="font-bold text-[#111c2d] dark:text-white">R$ ${it.preco.toFixed(2)}</div>
+        `;
+        itensBox.appendChild(row);
+      });
+
+      if (orc.temFrete) {
+        const freteRow = document.createElement('div');
+        freteRow.className = "flex items-center justify-between text-xs py-1 border-t border-[#e6ecf1] dark:border-[#333f55] text-[#0085db]";
+        freteRow.innerHTML = `
+          <div><span class="material-symbols-outlined text-[13px] align-middle">local_shipping</span> Frete (${orc.prazoFrete || 'Entrega'})</div>
+          <div class="font-bold">${orc.valorFrete > 0 ? 'R$ ' + orc.valorFrete.toFixed(2) : 'Grátis'}</div>
+        `;
+        itensBox.appendChild(freteRow);
+      }
+
+      document.getElementById('t-det-total').textContent = 'R$ ' + orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      document.getElementById('t-modal-detalhes').classList.remove('hidden');
+    }
+
+    function closeModalDetalhesTablet() {
+      document.getElementById('t-modal-detalhes').classList.add('hidden');
+    }
+
+    // MODAL CONVERTER
+    function openModalConverterTablet(id) {
+      const orc = bancoOrcamentos.find(o => o.id === id);
+      if (!orc) return;
+      currentActionOrcId = id;
+      document.getElementById('t-conv-empresa').textContent = orc.empresa;
+      document.getElementById('t-conv-total').textContent = 'R$ ' + orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      document.getElementById('t-modal-converter').classList.remove('hidden');
+    }
+
+    function closeModalConverterTablet() {
+      document.getElementById('t-modal-converter').classList.add('hidden');
+    }
+
+    function confirmarConversaoTablet() {
+      const orc = bancoOrcamentos.find(o => o.id === currentActionOrcId);
+      if (orc) {
+        orc.status = 'aprovado';
+        orc.statusLabel = 'Aprovado';
+        orc.statusBadgeClass = 'bg-[#4bd08b]/15 text-[#10bd9d] border border-[#4bd08b]/30';
+        filtrarOrcamentosTablet();
+      }
+      closeModalConverterTablet();
+    }
+
+    // MODAL EXCLUIR
+    function openModalExcluirTablet(id) {
+      const orc = bancoOrcamentos.find(o => o.id === id);
+      if (!orc) return;
+      currentActionOrcId = id;
+      document.getElementById('t-exc-empresa').textContent = orc.empresa;
+      document.getElementById('t-exc-valor').textContent = 'R$ ' + orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      document.getElementById('t-modal-excluir').classList.remove('hidden');
+    }
+
+    function closeModalExcluirTablet() {
+      document.getElementById('t-modal-excluir').classList.add('hidden');
+    }
+
+    function confirmarExclusaoTablet() {
+      const idx = bancoOrcamentos.findIndex(o => o.id === currentActionOrcId);
+      if (idx !== -1) {
+        bancoOrcamentos.splice(idx, 1);
+        filtrarOrcamentosTablet();
+      }
+      closeModalExcluirTablet();
+    }
+
+    // MODAL ARQUIVAR / DESARQUIVAR
+    function openModalArquivarTablet(id) {
+      const orc = bancoOrcamentos.find(o => o.id === id);
+      if (!orc) return;
+      currentActionOrcId = id;
+      const isArq = orc.status === 'recusado';
+      document.getElementById('t-arq-title').textContent = isArq ? 'Desarquivar Orçamento' : 'Arquivar Orçamento';
+      document.getElementById('t-arq-icon').textContent = isArq ? 'unarchive' : 'archive';
+      document.getElementById('t-arq-msg').textContent = isArq 
+        ? `Deseja reativar a cotação de ${orc.empresa}? Ela voltará para a lista ativa.`
+        : `Deseja arquivar a proposta de ${orc.empresa}? Você poderá desarquivá-la quando quiser.`;
+      document.getElementById('t-arq-confirm-btn').textContent = isArq ? 'Desarquivar' : 'Arquivar';
+      document.getElementById('t-modal-arquivar').classList.remove('hidden');
+    }
+
+    function closeModalArquivarTablet() {
+      document.getElementById('t-modal-arquivar').classList.add('hidden');
+    }
+
+    function confirmarArquivamentoTablet() {
+      const orc = bancoOrcamentos.find(o => o.id === currentActionOrcId);
+      if (orc) {
+        if (orc.status === 'recusado') {
+          orc.status = 'cotacao';
+          orc.statusLabel = 'Cotação';
+          orc.statusBadgeClass = 'bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700';
+        } else {
+          orc.status = 'recusado';
+          orc.statusLabel = 'Arquivado';
+          orc.statusBadgeClass = 'bg-amber-500/15 text-amber-500 border border-amber-500/30';
+        }
+        filtrarOrcamentosTablet();
+      }
+      closeModalArquivarTablet();
+    }
+
+    // MODAL LIMPAR COMPARAÇÃO
+    function openModalLimparTablet() {
+      document.getElementById('t-modal-limpar').classList.remove('hidden');
+    }
+
+    function closeModalLimparTablet() {
+      document.getElementById('t-modal-limpar').classList.add('hidden');
+    }
+
+    function confirmarLimparTablet() {
+      closeModalLimparTablet();
+      switchTabletTab('cadastrados');
+    }
+
+    // MODAL JUNTAR
+    function openModalJuntarTablet() {
+      const listContainer = document.getElementById('t-juntar-list');
+      listContainer.innerHTML = '';
+      bancoOrcamentos.forEach(orc => {
+        const item = document.createElement('label');
+        item.className = "flex items-center justify-between p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-xs cursor-pointer";
+        item.innerHTML = `
+          <div class="flex items-center gap-2">
+            <input type="checkbox" checked class="rounded text-[#0085db] focus:ring-[#0085db]" />
+            <div>
+              <strong class="text-[#111c2d] dark:text-white uppercase">${orc.empresa}</strong>
+              <span class="text-[10px] text-[#707a82] block">${orc.ident} • ${orc.itens.length} itens</span>
+            </div>
+          </div>
+          <span class="font-bold text-[#111c2d] dark:text-white">R$ ${orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+        `;
+        listContainer.appendChild(item);
+      });
+      document.getElementById('t-modal-juntar').classList.remove('hidden');
+    }
+
+    function closeModalJuntarTablet() {
+      document.getElementById('t-modal-juntar').classList.add('hidden');
+    }
+
+    function confirmarJuntarTablet() {
+      closeModalJuntarTablet();
+      switchTabletTab('comparador');
+    }
+
+    // Paginação fake para tablet
+    function changeTabletPage(direction) {}
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      renderOrcamentosTablet(bancoOrcamentos);
+    });
+  </script>
+
+
+</body></html>

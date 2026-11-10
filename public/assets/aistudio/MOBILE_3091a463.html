@@ -1,0 +1,1470 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamentos — Mobile — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-headline { font-family: 'Outfit', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[884px] font-body antialiased flex flex-col pb-24" data-stitch-vh="min-h-[884px]===min-h-screen">
+
+  <!-- Header Superior Mobile Oficial Idêntico a Cartoes-Mobile.html -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-14 px-4 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+        N
+      </div>
+      <div>
+        <span class="block text-xs font-bold leading-tight uppercase">NATANAEL</span>
+        <span class="block text-[10px] text-[#707a82] leading-none">Master</span>
+      </div>
+    </div>
+
+    <!-- Canteiro Badge -->
+    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+      <span class="material-symbols-outlined text-[14px] text-[#0085db]">apartment</span>
+      <span class="text-[10px] font-bold uppercase truncate max-w-[130px]">Juscelino Mola</span>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal Mobile -->
+  <main class="p-4 space-y-4 flex-1">
+    
+    <!-- Título & Subtítulo -->
+    <div class="space-y-0.5">
+      <h1 class="text-xl font-bold text-[#111c2d] dark:text-white">
+        Orçamentos
+      </h1>
+      <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+        Cotações de materiais, confronto de preços e compras.
+      </p>
+    </div>
+
+    <!-- Botão de Ação Rápida Mobile -->
+    <div class="grid grid-cols-1 gap-2.5">
+      <button type="button" onclick="openModalNovoOrcamentoMobile()" class="h-10 px-4 inline-flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[18px]">add</span>
+        <span>Nova Cotação</span>
+      </button>
+    </div>
+
+    <!-- Segmented Control de Abas Mobile: Cadastrados vs Comparador -->
+    <div class="flex items-center h-10 p-1 bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl text-xs shadow-xs">
+      <button type="button" id="m-tab-btn-cadastrados" onclick="switchMobileTab(&#39;cadastrados&#39;)" class="flex-1 h-8 inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+        <span>Cadastrados</span>
+      </button>
+      <button type="button" id="m-tab-btn-comparador" onclick="switchMobileTab(&#39;comparador&#39;)" class="flex-1 h-8 inline-flex items-center justify-center gap-1.5 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[16px]">scale</span>
+        <span>Comparador</span>
+      </button>
+    </div>
+
+    <!-- ABA 1: CADASTRADOS MOBILE -->
+    <div id="m-view-cadastrados" class="space-y-3.5">
+      
+      <!-- Busca e Filtros Rápidos -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-3 shadow-[0px_2px_6px_rgba(37,83,185,0.04)] space-y-2.5">
+        <div class="relative">
+          <span class="material-symbols-outlined text-[18px] absolute left-3 top-1/2 -translate-y-1/2 text-[#707a82]">search</span>
+          <input type="text" id="m-search-input" oninput="filtrarOrcamentosMobile()" placeholder="Pesquisar por fornecedor, material, número..." class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:ring-2 focus:ring-[#0085db]">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <select id="m-filter-status" onchange="filtrarOrcamentosMobile()" class="w-full h-8 px-2 text-[11px] font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer">
+            <option value="todos">Todos Status</option>
+            <option value="cotacao">Cotação</option>
+            <option value="aprovado">Aprovado</option>
+            <option value="recusado">Arquivado</option>
+          </select>
+
+          <select id="m-filter-sort" onchange="filtrarOrcamentosMobile()" class="w-full h-8 px-2 text-[11px] font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer">
+            <option value="recente">Mais recente</option>
+            <option value="menor">Menor valor</option>
+            <option value="maior">Maior valor</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Barra de Paginação Solta e em Cima -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-3.5 py-2 flex items-center justify-between shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+        <div class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+          Página <strong id="m-pag-num" class="text-[#111c2d] dark:text-white">1</strong> de <strong id="m-pag-total" class="text-[#111c2d] dark:text-white">2</strong>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button type="button" id="m-btn-prev" onclick="changeMobilePage(-1)" disabled class="w-7 h-7 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] disabled:opacity-40 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+          </button>
+          <div id="m-pag-dots" class="flex items-center gap-1">
+            <span class="w-6 h-6 rounded-lg text-xs font-bold bg-[#0085db] text-white flex items-center justify-center">1</span>
+            <span class="w-6 h-6 rounded-lg text-xs font-semibold text-[#707a82] flex items-center justify-center">2</span>
+          </div>
+          <button type="button" id="m-btn-next" onclick="changeMobilePage(1)" class="w-7 h-7 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de Orçamentos em Cards Verticais Touch -->
+      <div id="m-orcamentos-list" class="space-y-3">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </div>
+
+    <!-- ABA 2: COMPARADOR MOBILE -->
+    <div id="m-view-comparador" class="hidden space-y-3.5">
+      
+      <!-- Top KPIs do Comparador Mobile -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <div class="p-3 rounded-2xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] shadow-xs">
+          <span class="text-[10px] font-bold text-[#707a82] uppercase tracking-wider block">Menor Valor Global</span>
+          <span id="m-kpi-menor-val" class="text-base font-black text-[#10bd9d] tabular-nums mt-0.5 block">R$ 5.590,00</span>
+          <span id="m-kpi-menor-loja" class="text-[9px] font-bold text-[#10bd9d] truncate block uppercase mt-0.5">DEPÓSITO GOIÁS</span>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] shadow-xs">
+          <span class="text-[10px] font-bold text-[#707a82] uppercase tracking-wider block">Economia Potencial</span>
+          <span id="m-kpi-economia" class="text-base font-black text-[#10bd9d] tabular-nums mt-0.5 block">R$ 610,00</span>
+          <span class="text-[9px] text-[#707a82] truncate block uppercase mt-0.5">Diferença máx.</span>
+        </div>
+      </div>
+
+      <!-- Barra de Ações do Comparador -->
+      <div class="flex items-center justify-between bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-3 shadow-xs">
+        <div class="flex items-center gap-1.5">
+          <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">Cotações em Confronto</span>
+          <span id="m-comp-count-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db]">3</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="openModalJuntarMobile()" class="px-2.5 py-1 text-xs font-bold text-white bg-[#0085db] rounded-lg flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px]">add</span>
+            <span>Juntar</span>
+          </button>
+          <button type="button" onclick="openModalLimparCompMobile()" class="px-2 py-1 text-xs font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/30 rounded-lg flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px]">restart_alt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Carrossel Deslizante de Cards em Confronto Lado a Lado -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-[11px] font-bold text-[#707a82] uppercase tracking-wider">Deslize para ver todas as cotações:</span>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="scrollMobileCompCards(-1)" class="w-6 h-6 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white active:scale-95 transition-all cursor-pointer shadow-2xs" title="Cotação anterior">
+              <span class="material-symbols-outlined text-[15px]">chevron_left</span>
+            </button>
+            <span id="m-slider-indicator" class="text-[10px] font-bold text-[#0085db] px-1 tabular-nums">1 de 3</span>
+            <button type="button" onclick="scrollMobileCompCards(1)" class="w-6 h-6 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] flex items-center justify-center text-[#111c2d] dark:text-white hover:text-[#0085db] active:scale-95 transition-all cursor-pointer shadow-2xs" title="Próxima cotação">
+              <span class="material-symbols-outlined text-[15px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="m-comp-slider" onscroll="updateCompIndicatorMobile()" class="flex gap-3 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+      </div>
+
+      <!-- Confronto Direto de Itens (Tabela Slim Mobile) -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-3.5 shadow-xs space-y-2.5">
+        <div class="flex items-center justify-between pb-2 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-[#0085db]">table_rows</span>
+            <span>Preço por Material</span>
+          </h3>
+          <span class="text-[10px] font-bold text-[#10bd9d] flex items-center gap-0.5">
+            <span class="material-symbols-outlined text-[13px]">check_circle</span>
+            <span>Menor destacado</span>
+          </span>
+        </div>
+
+        <div id="m-matriz-container" class="space-y-2">
+          <!-- Preenchido dinamicamente via JS -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Barra de Navegação Inferior Fixa Mobile Idêntica a Cartoes-Mobile.html -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-t border-[#e6ecf1] dark:border-[#333f55] h-16 flex items-center justify-around px-2 z-40">
+    <a href="../dashboard/Dashboard.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">grid_view</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Dashboard</span>
+    </a>
+
+    <a href="../despesas/Despesas.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">receipt</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Despesas</span>
+    </a>
+
+    <a href="../maodeobra/Diarias-Mobile.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">group</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Diárias</span>
+    </a>
+
+    <!-- Orçamentos Ativo -->
+    <a href="#" class="flex flex-col items-center justify-center flex-1 py-1 text-[#0085db] transition-colors">
+      <span class="material-symbols-outlined text-[24px]">balance</span>
+      <span class="text-[11px] font-bold tracking-tight mt-0.5">Orçamentos</span>
+    </a>
+
+    <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.remove(&#39;hidden&#39;)" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors relative cursor-pointer">
+      <div class="relative flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+        <span class="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#fb977d] border-2 border-white dark:border-[#111c2d]"></span>
+      </div>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Mais</span>
+    </button>
+  </nav>
+
+  <!-- Bottom Sheet Menu Mais (Módulos do Sistema) -->
+  <div id="bottom-sheet-menu" class="hidden fixed inset-0 z-50 flex flex-col justify-end">
+    <div onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+
+    <aside class="relative z-10 bg-white dark:bg-[#111c2d] rounded-t-[28px] border-t border-[#e6ecf1] dark:border-[#333f55] shadow-2xl p-5 pt-3 animate-in slide-in-from-bottom duration-200">
+      <div class="w-12 h-1.5 rounded-full bg-[#dbe4ec] dark:bg-[#333f55] mx-auto mb-4"></div>
+
+      <div class="flex items-center justify-between pb-3 border-b border-[#f0f4f8] dark:border-[#223147] mb-4">
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#526b84] dark:text-[#8fa3ba]">
+          Módulos do Sistema
+        </h2>
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 mb-5">
+        <a href="../recibos/Recibos.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">fact_check</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Recibos
+          </span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Materiais
+          </span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">build</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Produção
+          </span>
+        </a>
+
+        <a href="../cartoes/Cartoes-Mobile.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">credit_card</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Cartões
+          </span>
+        </a>
+
+        <a href="../despesas/Despesas.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">warning</span>
+          </div>
+          <div class="min-w-0 flex items-center gap-1.5">
+            <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+              Pendências
+            </span>
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#f87171] text-white text-[10px] font-bold leading-none">
+              3
+            </span>
+          </div>
+        </a>
+
+        <a href="../usuarios/Central-Permissoes.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">shield</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Permissões
+          </span>
+        </a>
+      </div>
+
+      <div class="pt-3 border-t border-[#f0f4f8] dark:border-[#223147] flex items-center justify-between">
+        <button type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#fb977d] hover:text-[#fa7a58] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span>Sair</span>
+        </button>
+
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="h-10 px-7 inline-flex items-center justify-center rounded-full bg-[#0085db] hover:bg-[#0074bf] text-white text-sm font-bold shadow-sm transition-colors active:scale-95 cursor-pointer">
+          Fechar
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ==================== MODAIS MOBILE ==================== -->
+
+  <!-- 1. Modal Converter Compra Mobile (Compacto com Forma de Pagamento) -->
+  <div id="m-modal-converter" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalConverterMobile()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200 space-y-3.5">
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#4bd08b]/15 text-[#10bd9d] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">Confirmar Compra</h3>
+            <p class="text-[10px] text-[#707a82]">Lança despesa na obra</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalConverterMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[18px]">close</span></button>
+      </div>
+
+      <div class="p-3 rounded-xl bg-[#4bd08b]/10 border border-[#4bd08b]/30 flex items-center justify-between text-xs">
+        <div>
+          <span id="m-conv-empresa" class="font-bold text-[#111c2d] dark:text-white block uppercase">Fornecedor</span>
+          <span id="m-conv-itens" class="text-[11px] text-[#707a82]">3 itens cotados</span>
+        </div>
+        <span id="m-conv-valor" class="text-sm font-black text-[#10bd9d] tabular-nums">R$ 0,00</span>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Forma de Pagamento</label>
+        <select id="m-conv-forma" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold">
+          <option value="pix">Pix (À vista)</option>
+          <option value="cartao">Cartão de Crédito</option>
+          <option value="boleto">Boleto Bancário</option>
+          <option value="dinheiro">Dinheiro</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="closeModalConverterMobile()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarCompraMobile()" class="px-4 py-2 text-xs font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] rounded-xl shadow-xs">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Modal Excluir Cotação Mobile (Compacto) -->
+  <div id="m-modal-excluir" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalExcluirMobile()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200 space-y-3.5">
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">Excluir Cotação</h3>
+            <p class="text-[10px] text-[#707a82]">Ação irreversível</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalExcluirMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[18px]">close</span></button>
+      </div>
+
+      <div class="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between text-xs">
+        <div>
+          <span id="m-del-empresa" class="font-bold text-[#111c2d] dark:text-white block uppercase">Fornecedor</span>
+          <span class="text-[11px] text-[#707a82]">Orçamento da obra</span>
+        </div>
+        <span id="m-del-valor" class="text-sm font-black text-rose-600 tabular-nums">R$ 0,00</span>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="closeModalExcluirMobile()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarExclusaoMobile()" class="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Modal Arquivar / Desarquivar Mobile (Compacto) -->
+  <div id="m-modal-arquivar" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalArquivarMobile()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200 space-y-3.5">
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <div id="m-arq-icon-box" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#707a82] flex items-center justify-center">
+            <span id="m-arq-icon" class="material-symbols-outlined text-[18px]">archive</span>
+          </div>
+          <div>
+            <h3 id="m-arq-title" class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">Arquivar Cotação</h3>
+            <p id="m-arq-sub" class="text-[10px] text-[#707a82]">Pode desarquivar depois</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalArquivarMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[18px]">close</span></button>
+      </div>
+
+      <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between text-xs">
+        <div>
+          <span id="m-arq-empresa" class="font-bold text-[#111c2d] dark:text-white block uppercase">Fornecedor</span>
+          <span class="text-[11px] text-[#707a82]">Cotação selecionada</span>
+        </div>
+        <span id="m-arq-valor" class="text-sm font-black text-[#111c2d] dark:text-white tabular-nums">R$ 0,00</span>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="closeModalArquivarMobile()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+        <button type="button" id="m-arq-btn-confirm" onclick="confirmarArquivamentoMobile()" class="px-4 py-2 text-xs font-bold text-white bg-slate-700 rounded-xl shadow-xs">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Modal Editar Orçamento Mobile (com Frete e Itens) -->
+  <div id="m-modal-editar" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalEditarMobile()"></div>
+    <div class="relative z-50 w-full max-w-md bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[751px] overflow-y-auto space-y-3.5" data-stitch-vh="max-h-[751px]===max-h-[85vh]">
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[17px] text-[#0085db]">edit</span>
+          <span>Editar Orçamento</span>
+        </h3>
+        <button type="button" onclick="closeModalEditarMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[18px]">close</span></button>
+      </div>
+
+      <form onsubmit="handleSalvarEdicaoMobile(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Fornecedor</label>
+          <input type="text" id="m-edit-empresa" required class="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Nº Cotação</label>
+            <input type="text" id="m-edit-ident" class="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-mono">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Data</label>
+            <input type="date" id="m-edit-data" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Condições</label>
+          <input type="text" id="m-edit-cond" class="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d]">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Observações</label>
+          <textarea id="m-edit-obs" rows="2" class="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"></textarea>
+        </div>
+
+        <!-- Frete / Entrega com Checkbox -->
+        <div class="p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="m-edit-chk-frete" onchange="toggleFreteMobile(this)" class="w-4 h-4 rounded text-[#0085db] border-[#e6ecf1] dark:border-[#333f55]">
+            <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px] text-[#0085db]">local_shipping</span>
+              <span>Tem valor de frete / entrega</span>
+            </span>
+          </label>
+
+          <div id="m-edit-box-frete" class="hidden pl-6 pt-1">
+            <div class="relative">
+              <span class="absolute left-3 top-2 text-xs font-bold text-[#707a82]">R$</span>
+              <input type="text" id="m-edit-input-frete" placeholder="0,00" oninput="recalcularEdicaoMobile()" class="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold tabular-nums">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] flex justify-between items-center text-xs">
+          <span class="font-medium text-[#707a82]">Valor Total:</span>
+          <div class="flex items-center gap-1">
+            <span class="font-bold text-[#0085db]">R$</span>
+            <input type="text" id="m-edit-valor-total" class="w-24 text-right font-black text-[#0085db] tabular-nums bg-transparent border-b border-dashed border-[#0085db]">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" onclick="closeModalEditarMobile()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] rounded-xl shadow-xs">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Modal Limpar Comparação Mobile (Compacto) -->
+  <div id="m-modal-limpar-comp" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalLimparCompMobile()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200 space-y-3.5">
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+          </div>
+          <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">Limpar Comparação</h3>
+        </div>
+        <button type="button" onclick="closeModalLimparCompMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[18px]">close</span></button>
+      </div>
+
+      <p class="text-xs text-[#707a82]">Tem certeza que deseja remover todos os orçamentos da mesa comparativa?</p>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="closeModalLimparCompMobile()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+        <button type="button" onclick="confirmarLimparCompMobile()" class="px-4 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow-xs">Limpar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Modal Nova Cotação Mobile In-Place -->
+  <div id="m-modal-nova-cotacao" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs" onclick="closeModalNovoOrcamentoMobile()"></div>
+    <div class="relative z-50 w-full max-w-md bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-5 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[795px] overflow-y-auto space-y-3.5" data-stitch-vh="max-h-[795px]===max-h-[90vh]">
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">add_circle</span>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">Nova Cotação</h3>
+            <p class="text-[10px] text-[#707a82]">Cadastre um fornecedor para comparar</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalNovoOrcamentoMobile()" class="text-[#707a82]"><span class="material-symbols-outlined text-[18px]">close</span></button>
+      </div>
+
+      <form onsubmit="handleSalvarNovaCotacaoMobile(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Fornecedor *</label>
+          <input type="text" id="m-new-empresa" required placeholder="Ex: Comercial Silva, Depósito Goiás..." class="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Nº Cotação</label>
+            <input type="text" id="m-new-ident" placeholder="COT-2026-042" class="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-mono">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Data *</label>
+            <input type="date" id="m-new-data" required value="2026-11-10" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Condições</label>
+          <input type="text" id="m-new-cond" placeholder="Ex: 3x no boleto, Pix com 5% desc" class="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d]">
+        </div>
+
+        <!-- Itens da Cotação -->
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px] text-[#0085db]">inventory_2</span>
+              <span>Itens Cotados</span>
+            </h4>
+            <button type="button" onclick="adicionarLinhaItemNovaCotacaoMobile()" class="px-2 py-0.5 text-[10px] font-bold text-white bg-[#0085db] rounded-lg flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[13px]">add</span>
+              <span>Item</span>
+            </button>
+          </div>
+
+          <div id="m-new-itens-container" class="space-y-2">
+            <div class="p-2 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-1.5 m-item-row">
+              <div class="flex items-center gap-1.5">
+                <select class="flex-1 px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold m-item-nome">
+                  <option value="CIMENTO CP II 50KG">CIMENTO CP II 50KG</option>
+                  <option value="AREIA MÉDIA LAVADA">AREIA MÉDIA LAVADA</option>
+                  <option value="BRITA 1">BRITA 1</option>
+                  <option value="AÇO CA-50 10MM (3/8\" )">AÇO CA-50 10MM (3/8&#34;)</option>
+                  <option value="BLOCO CERÂMICO 9X19X19">BLOCO CERÂMICO 9X19X19</option>
+                  <option value="CAL HIDRATADA CH-I 20KG">CAL HIDRATADA CH-I 20KG</option>
+                  <option value="TUBO ESGOTO PVC 100MM 6M">TUBO ESGOTO PVC 100MM 6M</option>
+                </select>
+                <button type="button" onclick="removerLinhaItemNovaCotacaoMobile(this)" class="w-6 h-6 text-[#707a82] hover:text-rose-500 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[15px]">delete</span>
+                </button>
+              </div>
+              <div class="grid grid-cols-3 gap-1.5">
+                <div>
+                  <label class="block text-[9px] text-[#707a82] uppercase">Qtd</label>
+                  <input type="number" min="1" value="50" oninput="recalcularTotalNovaCotacaoMobile()" class="w-full px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] m-item-qtd">
+                </div>
+                <div>
+                  <label class="block text-[9px] text-[#707a82] uppercase">Preço R$</label>
+                  <input type="number" min="0" step="any" value="34" oninput="recalcularTotalNovaCotacaoMobile()" class="w-full px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold m-item-preco">
+                </div>
+                <div class="text-right">
+                  <label class="block text-[9px] text-[#707a82] uppercase">Subtotal</label>
+                  <span class="text-xs font-bold text-[#111c2d] dark:text-white tabular-nums block pt-1 m-item-subtotal">R$ 1.700,00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Frete / Entrega com Checkbox -->
+        <div class="p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="m-new-chk-frete" onchange="toggleFreteNovoMobile(this)" class="w-4 h-4 rounded text-[#0085db] border-[#e6ecf1] dark:border-[#333f55]">
+            <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px] text-[#0085db]">local_shipping</span>
+              <span>Tem valor de frete / entrega</span>
+            </span>
+          </label>
+
+          <div id="m-new-box-frete" class="hidden pl-6 pt-1">
+            <div class="relative">
+              <span class="absolute left-3 top-2 text-xs font-bold text-[#707a82]">R$</span>
+              <input type="text" id="m-new-input-frete" placeholder="0,00" oninput="recalcularTotalNovaCotacaoMobile()" class="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold tabular-nums">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-[#111c2d] dark:text-white uppercase mb-1">Observações</label>
+          <textarea id="m-new-obs" rows="2" placeholder="Prazo de entrega, frete, vendedor..." class="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"></textarea>
+        </div>
+
+        <div class="p-3 rounded-xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] flex justify-between items-center text-xs">
+          <span class="font-medium text-[#707a82]">Total Geral:</span>
+          <span id="m-new-total-geral" class="text-base font-black text-[#0085db] tabular-nums">R$ 1.700,00</span>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" onclick="closeModalNovoOrcamentoMobile()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82]">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] rounded-xl shadow-xs">Salvar Cotação</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT MOBILE COMPLETO -->
+  <script>
+    // Banco Central de Orçamentos
+    const bancoOrcamentos = [
+      {
+        id: "orc-01",
+        num: "01",
+        empresa: "COMERCIAL SILVA MATERIAIS",
+        ident: "COT-2026-109",
+        data: "28/10/2026",
+        dataISO: "2026-10-28",
+        status: "cotacao",
+        statusLabel: "Cotação",
+        statusBadgeClass: "bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700",
+        total: 5850.00,
+        condicoes: "3X NO BOLETO OU PIX COM 5% DESC",
+        obs: "Frete grátis para entrega no canteiro em até 48h.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", preco: 34.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", preco: 92.00 },
+          { nome: "BRITA 1", qtd: "6 m³", preco: 101.66 }
+        ]
+      },
+      {
+        id: "orc-02",
+        num: "02",
+        empresa: "DEPÓSITO GOIÁS DA CONSTRUÇÃO",
+        ident: "PROP-8841",
+        data: "29/10/2026",
+        dataISO: "2026-10-29",
+        status: "aprovado",
+        statusLabel: "Aprovado",
+        statusBadgeClass: "bg-[#4bd08b]/15 text-[#10bd9d] border border-[#4bd08b]/30",
+        total: 5590.00,
+        condicoes: "À VISTA VIA PIX",
+        obs: "Excelente preço no cimento CP II (R$ 32,50/saco).",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", preco: 32.50 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", preco: 95.00 },
+          { nome: "BRITA 1", qtd: "6 m³", preco: 73.33 }
+        ]
+      },
+      {
+        id: "orc-03",
+        num: "03",
+        empresa: "CIMENTO & CIA ATACADISTA",
+        ident: "ORC-NOV-01",
+        data: "01/11/2026",
+        dataISO: "2026-11-01",
+        status: "recusado",
+        statusLabel: "Arquivado",
+        statusBadgeClass: "bg-rose-500/10 text-rose-600 border border-rose-500/25",
+        total: 6200.00,
+        condicoes: "CARTÃO EM ATÉ 4X SEM JUROS",
+        obs: "Preço acima da concorrência local.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", preco: 36.00 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", preco: 98.00 },
+          { nome: "BRITA 1", qtd: "6 m³", preco: 106.66 }
+        ]
+      },
+      {
+        id: "orc-04",
+        num: "04",
+        empresa: "VOTORAN DISTRIBUIDORA",
+        ident: "COT-VT-2026",
+        data: "02/11/2026",
+        dataISO: "2026-11-02",
+        status: "cotacao",
+        statusLabel: "Cotação",
+        statusBadgeClass: "bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700",
+        total: 5806.00,
+        condicoes: "BOLETO 30 DIAS OU CARTÃO 3X",
+        obs: "Descarga inclusa no canteiro da obra.",
+        itens: [
+          { nome: "Cimento CP II 50kg", qtd: "100 sc", preco: 33.50 },
+          { nome: "Areia Média Lavada", qtd: "20 m³", preco: 94.00 },
+          { nome: "BRITA 1", qtd: "6 m³", preco: 96.00 }
+        ]
+      }
+    ];
+
+    let orcamentosComparandoMobile = ["orc-01", "orc-02", "orc-03"];
+    let mobilePage = 1;
+    const mobilePerPage = 3;
+
+    // Alternar Abas Mobile
+    function switchMobileTab(tab) {
+      const btnCad = document.getElementById('m-tab-btn-cadastrados');
+      const btnComp = document.getElementById('m-tab-btn-comparador');
+      const viewCad = document.getElementById('m-view-cadastrados');
+      const viewComp = document.getElementById('m-view-comparador');
+
+      if (tab === 'cadastrados') {
+        viewCad.classList.remove('hidden');
+        viewComp.classList.add('hidden');
+        btnCad.className = "flex-1 h-8 inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all cursor-pointer";
+        btnComp.className = "flex-1 h-8 inline-flex items-center justify-center gap-1.5 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer";
+      } else {
+        viewCad.classList.add('hidden');
+        viewComp.classList.remove('hidden');
+        btnComp.className = "flex-1 h-8 inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all cursor-pointer";
+        btnCad.className = "flex-1 h-8 inline-flex items-center justify-center gap-1.5 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer";
+        renderComparadorMobile();
+      }
+    }
+
+    // Renderizar Lista de Cadastrados Mobile
+    function renderOrcamentosMobile() {
+      const container = document.getElementById('m-orcamentos-list');
+      if (!container) return;
+
+      const q = (document.getElementById('m-search-input')?.value || '').toLowerCase().trim();
+      const st = document.getElementById('m-filter-status')?.value || 'todos';
+      const sort = document.getElementById('m-filter-sort')?.value || 'recente';
+
+      let filtrados = bancoOrcamentos.filter(orc => {
+        if (q) {
+          const match = orc.empresa.toLowerCase().includes(q) ||
+                        orc.ident.toLowerCase().includes(q) ||
+                        orc.itens.some(i => i.nome.toLowerCase().includes(q));
+          if (!match) return false;
+        }
+        if (st !== 'todos' && orc.status !== st) return false;
+        return true;
+      });
+
+      filtrados.sort((a, b) => {
+        if (sort === 'menor') return a.total - b.total;
+        if (sort === 'maior') return b.total - a.total;
+        return new Date(b.dataISO).getTime() - new Date(a.dataISO).getTime();
+      });
+
+      const totalPages = Math.max(1, Math.ceil(filtrados.length / mobilePerPage));
+      if (mobilePage > totalPages) mobilePage = totalPages;
+
+      document.getElementById('m-pag-num').innerText = mobilePage;
+      document.getElementById('m-pag-total').innerText = totalPages;
+      document.getElementById('m-btn-prev').disabled = mobilePage === 1;
+      document.getElementById('m-btn-next').disabled = mobilePage === totalPages;
+
+      const start = (mobilePage - 1) * mobilePerPage;
+      const exibidos = filtrados.slice(start, start + mobilePerPage);
+
+      if (exibidos.length === 0) {
+        container.innerHTML = `
+          <div class="py-8 text-center text-xs text-[#707a82] bg-white dark:bg-[#111c2d] rounded-2xl border border-[#e6ecf1] dark:border-[#333f55]">
+            Nenhum orçamento encontrado.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = exibidos.map(orc => {
+        const isArquivado = orc.status === 'recusado';
+        const isAprovado = orc.status === 'aprovado';
+
+        return `
+          <div class="p-3.5 rounded-2xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] shadow-xs space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold text-[#0085db] bg-[#0085db]/10 px-1.5 py-0.5 rounded font-mono">${orc.num}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${orc.statusBadgeClass}">${orc.statusLabel}</span>
+              </div>
+              <span class="text-[11px] text-[#707a82]">${orc.data}</span>
+            </div>
+
+            <div>
+              <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">${orc.empresa}</h3>
+              <p class="text-[10px] text-[#707a82] truncate uppercase mt-0.5">${orc.condicoes}</p>
+            </div>
+
+            <!-- Resumo dos itens -->
+            <div class="p-2 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-1 text-[11px]">
+              ${orc.itens.slice(0, 2).map(i => `
+                <div class="flex justify-between items-center text-[10px]">
+                  <span class="truncate text-[#707a82]">${i.qtd} ${i.nome}</span>
+                  <span class="font-bold text-[#111c2d] dark:text-white tabular-nums">R$ ${i.preco.toFixed(2).replace('.', ',')}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="flex items-center justify-between pt-1 border-t border-[#e6ecf1] dark:border-[#333f55]">
+              <div>
+                <span class="text-[9px] text-[#707a82] uppercase tracking-wider block font-semibold">Total</span>
+                <span class="text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                  R$ ${orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-1">
+                ${!isArquivado ? `
+                  <button
+                    type="button"
+                    onclick="openModalConverterMobile('${orc.id}')"
+                    class="h-7 px-2.5 text-[11px] font-bold text-white bg-[#4bd08b] hover:bg-[#10bd9d] active:scale-95 rounded-lg flex items-center gap-1"
+                  >
+                    <span class="material-symbols-outlined text-[13px]">shopping_cart</span>
+                    <span>Comprar</span>
+                  </button>
+                  <button
+                    type="button"
+                    onclick="openModalArquivarMobile('${orc.id}', true)"
+                    class="h-7 w-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] flex items-center justify-center"
+                    title="Arquivar"
+                  >
+                    <span class="material-symbols-outlined text-[14px]">archive</span>
+                  </button>
+                ` : `
+                  <button
+                    type="button"
+                    onclick="openModalArquivarMobile('${orc.id}', false)"
+                    class="h-7 px-2.5 text-[11px] font-bold text-[#0085db] bg-[#0085db]/10 rounded-lg flex items-center gap-1"
+                  >
+                    <span class="material-symbols-outlined text-[13px]">unarchive</span>
+                    <span>Desarquivar</span>
+                  </button>
+                `}
+                <button
+                  type="button"
+                  onclick="openModalEditarMobile('${orc.id}')"
+                  class="h-7 w-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] flex items-center justify-center"
+                  title="Editar"
+                >
+                  <span class="material-symbols-outlined text-[14px]">edit</span>
+                </button>
+                <button
+                  type="button"
+                  onclick="openModalExcluirMobile('${orc.id}')"
+                  class="h-7 w-7 rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-rose-500 flex items-center justify-center"
+                  title="Excluir"
+                >
+                  <span class="material-symbols-outlined text-[14px]">delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filtrarOrcamentosMobile() {
+      mobilePage = 1;
+      renderOrcamentosMobile();
+    }
+
+    function changeMobilePage(delta) {
+      mobilePage += delta;
+      renderOrcamentosMobile();
+    }
+
+    // Renderizar Comparador Mobile (Slider + Matriz Slim)
+    function renderComparadorMobile() {
+      const ativos = bancoOrcamentos.filter(o => orcamentosComparandoMobile.includes(o.id));
+      const slider = document.getElementById('m-comp-slider');
+      const matriz = document.getElementById('m-matriz-container');
+      const badgeCount = document.getElementById('m-comp-count-badge');
+
+      if (badgeCount) badgeCount.innerText = ativos.length;
+
+      if (ativos.length === 0) {
+        slider.innerHTML = '<div class="p-6 text-center text-xs text-[#707a82] w-full">Nenhum orçamento reunido.</div>';
+        matriz.innerHTML = '';
+        return;
+      }
+
+      // KPIs
+      const totais = ativos.map(o => o.total);
+      const menor = Math.min(...totais);
+      const maior = Math.max(...totais);
+      const dif = maior - menor;
+      const orcMenor = ativos.find(o => o.total === menor);
+
+      document.getElementById('m-kpi-menor-val').innerText = `R$ ${menor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      document.getElementById('m-kpi-menor-loja').innerText = orcMenor ? orcMenor.empresa : '—';
+      document.getElementById('m-kpi-economia').innerText = `R$ ${dif.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+      // Slider de Cotações Lado a Lado
+      slider.innerHTML = ativos.map(orc => {
+        const isVencedor = orc.total === menor && ativos.length > 1;
+        return `
+          <div class="snap-center shrink-0 w-[85%] sm:w-[70%] p-4 rounded-2xl bg-white dark:bg-[#111c2d] border ${isVencedor ? 'border-[#4bd08b] shadow-md shadow-[#4bd08b]/15' : 'border-[#e6ecf1] dark:border-[#333f55]'} flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold text-[#0085db] bg-[#0085db]/10 px-1.5 py-0.5 rounded font-mono">${orc.num}</span>
+                ${isVencedor ? `
+                  <span class="text-[9px] font-black uppercase text-white bg-[#10bd9d] px-2 py-0.5 rounded-full">Melhor Preço</span>
+                ` : `
+                  <span class="text-[9px] font-bold uppercase ${orc.statusBadgeClass} px-2 py-0.5 rounded-full">${orc.statusLabel}</span>
+                `}
+              </div>
+              <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase truncate">${orc.empresa}</h4>
+              <p class="text-[10px] text-[#707a82] uppercase truncate mt-0.5">COND: ${orc.condicoes}</p>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+              <div>
+                <span class="text-[9px] text-[#707a82] uppercase block font-semibold">Total</span>
+                <span class="text-sm font-black ${isVencedor ? 'text-[#10bd9d]' : 'text-[#111c2d] dark:text-white'} tabular-nums">
+                  R$ ${orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+              <button
+                type="button"
+                onclick="openModalConverterMobile('${orc.id}')"
+                class="h-7 px-3 text-xs font-bold text-white bg-[#4bd08b] rounded-lg"
+              >
+                Comprar
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Matriz Slim de Materiais
+      const mapa = new Map();
+      ativos.forEach(o => o.itens.forEach(i => mapa.set(i.nome, i.nome)));
+      const mats = Array.from(mapa.values());
+
+      matriz.innerHTML = mats.map(nomeMat => {
+        const precos = ativos.map(o => {
+          const it = o.itens.find(i => i.nome === nomeMat);
+          return it ? { empresa: o.empresa, preco: it.preco } : null;
+        }).filter(Boolean);
+
+        const menorPreco = Math.min(...precos.map(p => p.preco));
+
+        return `
+          <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-1.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-[#111c2d] dark:text-white uppercase text-[11px] truncate max-w-[180px]">${nomeMat}</span>
+              <span class="font-extrabold text-[#10bd9d] text-xs tabular-nums">Menor: R$ ${menorPreco.toFixed(2).replace('.', ',')}</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1 pt-1 border-t border-[#e6ecf1]/60 dark:border-[#333f55]/60 text-[10px]">
+              ${ativos.map(o => {
+                const it = o.itens.find(i => i.nome === nomeMat);
+                if (!it) return `<span class="text-[#707a82] text-center">—</span>`;
+                const isMin = it.preco === menorPreco;
+                return `
+                  <div class="text-center p-1 rounded ${isMin ? 'bg-[#4bd08b]/15 text-[#10bd9d] font-bold' : 'text-[#707a82]'}">
+                    <span class="block truncate text-[9px] uppercase font-semibold">${o.num}</span>
+                    <span class="tabular-nums">R$ ${it.preco.toFixed(2).replace('.', ',')}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function scrollMobileCompCards(direction) {
+      const slider = document.getElementById('m-comp-slider');
+      if (!slider) return;
+      const cardWidth = slider.clientWidth * 0.85 + 12;
+      slider.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+    }
+
+    function updateCompIndicatorMobile() {
+      const slider = document.getElementById('m-comp-slider');
+      if (!slider) return;
+      const cardWidth = slider.clientWidth * 0.85 + 12;
+      const idx = Math.round(slider.scrollLeft / cardWidth);
+      const total = orcamentosComparandoMobile.length;
+      const current = Math.max(1, Math.min(total, idx + 1));
+      const indEl = document.getElementById('m-slider-indicator');
+      if (indEl) indEl.innerText = `${current} de ${total}`;
+    }
+
+    // Modais Funções
+    let selectedOrcIdMobile = null;
+
+    function openModalConverterMobile(orcId) {
+      selectedOrcIdMobile = orcId;
+      const orc = bancoOrcamentos.find(o => o.id === orcId);
+      if (orc) {
+        document.getElementById('m-conv-empresa').innerText = orc.empresa;
+        document.getElementById('m-conv-valor').innerText = `R$ ${orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+        document.getElementById('m-conv-itens').innerText = `${orc.itens.length} itens cotados`;
+      }
+      document.getElementById('m-modal-converter').classList.remove('hidden');
+    }
+
+    function closeModalConverterMobile() {
+      document.getElementById('m-modal-converter').classList.add('hidden');
+    }
+
+    function confirmarCompraMobile() {
+      const orc = bancoOrcamentos.find(o => o.id === selectedOrcIdMobile);
+      if (orc) {
+        orc.status = 'aprovado';
+        orc.statusLabel = 'Aprovado';
+        orc.statusBadgeClass = 'bg-[#4bd08b]/15 text-[#10bd9d] border border-[#4bd08b]/30';
+      }
+      closeModalConverterMobile();
+      renderOrcamentosMobile();
+      renderComparadorMobile();
+    }
+
+    function openModalExcluirMobile(orcId) {
+      selectedOrcIdMobile = orcId;
+      const orc = bancoOrcamentos.find(o => o.id === orcId);
+      if (orc) {
+        document.getElementById('m-del-empresa').innerText = orc.empresa;
+        document.getElementById('m-del-valor').innerText = `R$ ${orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      }
+      document.getElementById('m-modal-excluir').classList.remove('hidden');
+    }
+
+    function closeModalExcluirMobile() {
+      document.getElementById('m-modal-excluir').classList.add('hidden');
+    }
+
+    function confirmarExclusaoMobile() {
+      const idx = bancoOrcamentos.findIndex(o => o.id === selectedOrcIdMobile);
+      if (idx !== -1) {
+        bancoOrcamentos.splice(idx, 1);
+        orcamentosComparandoMobile = orcamentosComparandoMobile.filter(id => id !== selectedOrcIdMobile);
+      }
+      closeModalExcluirMobile();
+      renderOrcamentosMobile();
+      renderComparadorMobile();
+    }
+
+    let isArquivandoAcao = true;
+
+    function openModalArquivarMobile(orcId, arquivar) {
+      selectedOrcIdMobile = orcId;
+      isArquivandoAcao = arquivar;
+      const orc = bancoOrcamentos.find(o => o.id === orcId);
+      if (orc) {
+        document.getElementById('m-arq-empresa').innerText = orc.empresa;
+        document.getElementById('m-arq-valor').innerText = `R$ ${orc.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      }
+
+      const iconBox = document.getElementById('m-arq-icon-box');
+      const icon = document.getElementById('m-arq-icon');
+      const title = document.getElementById('m-arq-title');
+      const sub = document.getElementById('m-arq-sub');
+      const btn = document.getElementById('m-arq-btn-confirm');
+
+      if (arquivar) {
+        title.innerText = 'Arquivar Cotação';
+        sub.innerText = 'Pode desarquivar depois';
+        icon.innerText = 'archive';
+        iconBox.className = "w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#707a82] flex items-center justify-center";
+        btn.className = "px-4 py-2 text-xs font-bold text-white bg-slate-700 rounded-xl shadow-xs";
+        btn.innerText = 'Arquivar';
+      } else {
+        title.innerText = 'Desarquivar Cotação';
+        sub.innerText = 'Voltará para a lista ativa';
+        icon.innerText = 'unarchive';
+        iconBox.className = "w-8 h-8 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center";
+        btn.className = "px-4 py-2 text-xs font-bold text-white bg-[#0085db] rounded-xl shadow-xs";
+        btn.innerText = 'Desarquivar';
+      }
+
+      document.getElementById('m-modal-arquivar').classList.remove('hidden');
+    }
+
+    function closeModalArquivarMobile() {
+      document.getElementById('m-modal-arquivar').classList.add('hidden');
+    }
+
+    function confirmarArquivamentoMobile() {
+      const orc = bancoOrcamentos.find(o => o.id === selectedOrcIdMobile);
+      if (orc) {
+        if (isArquivandoAcao) {
+          orc.status = 'recusado';
+          orc.statusLabel = 'Arquivado';
+          orc.statusBadgeClass = 'bg-rose-500/10 text-rose-600 border border-rose-500/25';
+        } else {
+          orc.status = 'cotacao';
+          orc.statusLabel = 'Cotação';
+          orc.statusBadgeClass = 'bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700';
+        }
+      }
+      closeModalArquivarMobile();
+      renderOrcamentosMobile();
+      renderComparadorMobile();
+    }
+
+    function openModalEditarMobile(orcId) {
+      selectedOrcIdMobile = orcId;
+      const orc = bancoOrcamentos.find(o => o.id === orcId);
+      if (orc) {
+        document.getElementById('m-edit-empresa').value = orc.empresa;
+        document.getElementById('m-edit-ident').value = orc.ident;
+        document.getElementById('m-edit-data').value = orc.dataISO;
+        document.getElementById('m-edit-cond').value = orc.condicoes;
+        document.getElementById('m-edit-obs').value = orc.obs || '';
+        document.getElementById('m-edit-valor-total').value = orc.total.toFixed(2).replace('.', ',');
+      }
+
+      const chk = document.getElementById('m-edit-chk-frete');
+      const box = document.getElementById('m-edit-box-frete');
+      const input = document.getElementById('m-edit-input-frete');
+      if (chk) chk.checked = false;
+      if (box) box.classList.add('hidden');
+      if (input) input.value = '';
+
+      document.getElementById('m-modal-editar').classList.remove('hidden');
+    }
+
+    function closeModalEditarMobile() {
+      document.getElementById('m-modal-editar').classList.add('hidden');
+    }
+
+    function toggleFreteMobile(chk) {
+      const box = document.getElementById('m-edit-box-frete');
+      if (chk.checked) {
+        box.classList.remove('hidden');
+        document.getElementById('m-edit-input-frete').focus();
+      } else {
+        box.classList.add('hidden');
+        document.getElementById('m-edit-input-frete').value = '';
+      }
+      recalcularEdicaoMobile();
+    }
+
+    function recalcularEdicaoMobile() {
+      const orc = bancoOrcamentos.find(o => o.id === selectedOrcIdMobile);
+      let base = orc ? orc.total : 0;
+      const chk = document.getElementById('m-edit-chk-frete');
+      if (chk && chk.checked) {
+        const fVal = parseFloat((document.getElementById('m-edit-input-frete').value || '0').replace(',', '.')) || 0;
+        base += fVal;
+      }
+      document.getElementById('m-edit-valor-total').value = base.toFixed(2).replace('.', ',');
+    }
+
+    function handleSalvarEdicaoMobile(e) {
+      e.preventDefault();
+      const orc = bancoOrcamentos.find(o => o.id === selectedOrcIdMobile);
+      if (orc) {
+        orc.empresa = document.getElementById('m-edit-empresa').value.trim().toUpperCase();
+        orc.ident = document.getElementById('m-edit-ident').value.trim();
+        orc.dataISO = document.getElementById('m-edit-data').value;
+        if (orc.dataISO) {
+          orc.data = orc.dataISO.split('-').reverse().join('/');
+        }
+        orc.condicoes = document.getElementById('m-edit-cond').value.trim().toUpperCase();
+        orc.obs = document.getElementById('m-edit-obs').value.trim();
+        const v = parseFloat(document.getElementById('m-edit-valor-total').value.replace('.', '').replace(',', '.')) || orc.total;
+        orc.total = v;
+      }
+      closeModalEditarMobile();
+      renderOrcamentosMobile();
+      renderComparadorMobile();
+    }
+
+    function openModalLimparCompMobile() {
+      document.getElementById('m-modal-limpar-comp').classList.remove('hidden');
+    }
+
+    function closeModalLimparCompMobile() {
+      document.getElementById('m-modal-limpar-comp').classList.add('hidden');
+    }
+
+    function confirmarLimparCompMobile() {
+      orcamentosComparandoMobile = [];
+      closeModalLimparCompMobile();
+      renderComparadorMobile();
+    }
+
+    function openModalJuntarMobile() {
+      // Adiciona orçamentos não incluídos
+      bancoOrcamentos.forEach(o => {
+        if (!orcamentosComparandoMobile.includes(o.id)) {
+          orcamentosComparandoMobile.push(o.id);
+        }
+      });
+      renderComparadorMobile();
+    }
+
+    function openModalNovoOrcamentoMobile() {
+      document.getElementById('m-modal-nova-cotacao').classList.remove('hidden');
+    }
+
+    function closeModalNovoOrcamentoMobile() {
+      document.getElementById('m-modal-nova-cotacao').classList.add('hidden');
+    }
+
+    function toggleFreteNovoMobile(chk) {
+      const box = document.getElementById('m-new-box-frete');
+      if (chk.checked) {
+        box.classList.remove('hidden');
+        document.getElementById('m-new-input-frete').focus();
+      } else {
+        box.classList.add('hidden');
+        document.getElementById('m-new-input-frete').value = '';
+      }
+      recalcularTotalNovaCotacaoMobile();
+    }
+
+    function recalcularTotalNovaCotacaoMobile() {
+      const rows = document.querySelectorAll('#m-new-itens-container .m-item-row');
+      let totalGeral = 0;
+      rows.forEach(r => {
+        const qtd = parseFloat(r.querySelector('.m-item-qtd').value) || 0;
+        const preco = parseFloat(r.querySelector('.m-item-preco').value) || 0;
+        const sub = qtd * preco;
+        totalGeral += sub;
+        const subEl = r.querySelector('.m-item-subtotal');
+        if (subEl) subEl.innerText = `R$ ${sub.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      });
+
+      const chkFrete = document.getElementById('m-new-chk-frete');
+      if (chkFrete && chkFrete.checked) {
+        const fVal = parseFloat((document.getElementById('m-new-input-frete').value || '0').replace(',', '.')) || 0;
+        totalGeral += fVal;
+      }
+
+      document.getElementById('m-new-total-geral').innerText = `R$ ${totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    }
+
+    function adicionarLinhaItemNovaCotacaoMobile() {
+      const container = document.getElementById('m-new-itens-container');
+      const div = document.createElement('div');
+      div.className = "p-2 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-1.5 m-item-row animate-in fade-in";
+      div.innerHTML = `
+        <div class="flex items-center gap-1.5">
+          <select class="flex-1 px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold m-item-nome">
+            <option value="CIMENTO CP II 50KG">CIMENTO CP II 50KG</option>
+            <option value="AREIA MÉDIA LAVADA">AREIA MÉDIA LAVADA</option>
+            <option value="BRITA 1">BRITA 1</option>
+            <option value="AÇO CA-50 10MM (3/8\")">AÇO CA-50 10MM (3/8")</option>
+            <option value="BLOCO CERÂMICO 9X19X19">BLOCO CERÂMICO 9X19X19</option>
+            <option value="CAL HIDRATADA CH-I 20KG">CAL HIDRATADA CH-I 20KG</option>
+            <option value="TUBO ESGOTO PVC 100MM 6M">TUBO ESGOTO PVC 100MM 6M</option>
+          </select>
+          <button type="button" onclick="removerLinhaItemNovaCotacaoMobile(this)" class="w-6 h-6 text-[#707a82] hover:text-rose-500 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[15px]">delete</span>
+          </button>
+        </div>
+        <div class="grid grid-cols-3 gap-1.5">
+          <div>
+            <label class="block text-[9px] text-[#707a82] uppercase">Qtd</label>
+            <input type="number" min="1" value="1" oninput="recalcularTotalNovaCotacaoMobile()" class="w-full px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] m-item-qtd" />
+          </div>
+          <div>
+            <label class="block text-[9px] text-[#707a82] uppercase">Preço R$</label>
+            <input type="number" min="0" step="any" value="0" oninput="recalcularTotalNovaCotacaoMobile()" class="w-full px-2 py-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] font-bold m-item-preco" />
+          </div>
+          <div class="text-right">
+            <label class="block text-[9px] text-[#707a82] uppercase">Subtotal</label>
+            <span class="text-xs font-bold text-[#111c2d] dark:text-white tabular-nums block pt-1 m-item-subtotal">R$ 0,00</span>
+          </div>
+        </div>
+      `;
+      container.appendChild(div);
+      recalcularTotalNovaCotacaoMobile();
+    }
+
+    function removerLinhaItemNovaCotacaoMobile(btn) {
+      const rows = document.querySelectorAll('#m-new-itens-container .m-item-row');
+      if (rows.length > 1) {
+        btn.closest('.m-item-row').remove();
+        recalcularTotalNovaCotacaoMobile();
+      } else {
+        alert('A cotação deve ter ao menos um item.');
+      }
+    }
+
+    function handleSalvarNovaCotacaoMobile(e) {
+      e.preventDefault();
+      const empresa = document.getElementById('m-new-empresa').value.trim().toUpperCase();
+      const ident = document.getElementById('m-new-ident').value.trim() || 'COT-NOVA';
+      const data = document.getElementById('m-new-data').value;
+      const cond = document.getElementById('m-new-cond').value.trim().toUpperCase() || 'À VISTA';
+      const obs = document.getElementById('m-new-obs').value.trim();
+
+      const rows = document.querySelectorAll('#m-new-itens-container .m-item-row');
+      const itensArr = [];
+      let totalGeral = 0;
+
+      rows.forEach(r => {
+        const mat = r.querySelector('.m-item-nome').value;
+        const qtd = parseFloat(r.querySelector('.m-item-qtd').value) || 1;
+        const preco = parseFloat(r.querySelector('.m-item-preco').value) || 0;
+        const sub = qtd * preco;
+        totalGeral += sub;
+        itensArr.push({
+          nome: mat,
+          qtd: `${qtd} un`,
+          preco: preco
+        });
+      });
+
+      const chkFrete = document.getElementById('m-new-chk-frete');
+      if (chkFrete && chkFrete.checked) {
+        const fVal = parseFloat((document.getElementById('m-new-input-frete').value || '0').replace(',', '.')) || 0;
+        totalGeral += fVal;
+      }
+
+      const novoNum = (bancoOrcamentos.length + 1).toString().padStart(2, '0');
+      const dataFormatada = data ? data.split('-').reverse().join('/') : '10/11/2026';
+
+      bancoOrcamentos.unshift({
+        id: 'orc-' + novoNum,
+        num: novoNum,
+        empresa: empresa,
+        ident: ident,
+        data: dataFormatada,
+        dataISO: data || '2026-11-10',
+        status: 'cotacao',
+        statusLabel: 'Cotação',
+        statusBadgeClass: 'bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700',
+        total: totalGeral,
+        condicoes: cond,
+        obs: obs,
+        itens: itensArr
+      });
+
+      closeModalNovoOrcamentoMobile();
+      mobilePage = 1;
+      renderOrcamentosMobile();
+      renderComparadorMobile();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderOrcamentosMobile();
+    });
+    renderOrcamentosMobile();
+  </script>
+
+
+</body></html>

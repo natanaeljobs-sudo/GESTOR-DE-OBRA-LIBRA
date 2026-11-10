@@ -1,0 +1,1452 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartões &amp; Faturas — Visão Completa com Modais Integrados — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-headline { font-family: 'Outfit', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[1024px] font-body antialiased flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Header Superior Oficial -->
+  <header class="sticky top-0 z-30 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-16 shrink-0 flex items-center justify-between px-6">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-transparent hover:border-[#e6ecf1] dark:hover:border-[#333f55] transition-all cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+          N
+        </div>
+        <div class="text-left">
+          <span class="block text-xs font-bold text-[#111c2d] dark:text-white leading-tight uppercase">NATANAEL</span>
+          <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac] leading-none">Master</span>
+        </div>
+        <span class="material-symbols-outlined text-[16px] text-[#707a82]">expand_more</span>
+      </div>
+
+      <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer ml-1" aria-label="Alternar tema">
+        <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+      </button>
+
+      <button type="button" class="relative w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer" aria-label="Notificações">
+        <span class="material-symbols-outlined text-[18px]">notifications</span>
+        <span class="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#fb977d] text-white text-[9px] font-bold flex items-center justify-center">1</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Área de Trabalho: Sidebar + Conteúdo Principal -->
+  <div class="flex flex-1 min-h-[calc(1024px-4rem)]" data-stitch-vh="min-h-[calc(1024px-4rem)]===min-h-[calc(100vh-4rem)]">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="hidden lg:flex flex-col w-[265px] shrink-0 bg-white dark:bg-[#111c2d] border-r border-[#e6ecf1] dark:border-[#333f55] p-4 justify-between sticky top-16 h-[calc(1024px-4rem)] overflow-y-auto" data-stitch-vh="h-[calc(1024px-4rem)]===h-[calc(100vh-4rem)]">
+      <div class="space-y-4">
+        <div class="pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="w-full flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white border border-[#e6ecf1] dark:border-[#333f55]">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">apartment</span>
+              </div>
+              <div class="text-left min-w-0">
+                <span class="block text-xs font-bold text-[#111c2d] dark:text-white truncate uppercase">OBRA JUSCELINO MOLA</span>
+                <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac] uppercase font-semibold">Canteiro Ativo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="space-y-1">
+          <a href="#" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-[18px]">credit_card</span>
+              <span>Cartões</span>
+            </div>
+          </a>
+        </nav>
+      </div>
+
+      <div class="pt-4 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#fb977d] hover:bg-[#fb977d]/10 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span>Sair</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 p-6 lg:p-8 space-y-6 overflow-y-auto pb-20 lg:pb-8">
+
+      <!-- Header da Página -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white">
+            Cartões
+          </h1>
+          <p class="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+            Controle de faturas, parcelas e contas da obra.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <button type="button" onclick="openModalCadastro()" class="inline-flex items-center justify-center gap-2 h-10 px-5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span class="leading-none">Cadastrar Cartão / Conta</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Alerta Resumido e Compacto de Compras Pendentes em Caixa Alta -->
+      <div class="bg-[#f8c076]/10 border border-[#f8c076]/30 rounded-xl px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="material-symbols-outlined text-[18px] text-[#d9941a] dark:text-[#f8c076] shrink-0">warning</span>
+          <p class="text-[#111c2d] dark:text-white uppercase tracking-wider text-[11px] truncate">
+            <strong class="font-extrabold">1 COMPRA PENDENTE</strong> DE VÍNCULO COM CARTÃO OU PARCELAMENTO
+          </p>
+        </div>
+        <a href="../despesas/Despesas.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#0085db] hover:text-white bg-[#0085db]/10 hover:bg-[#0085db] rounded-lg transition-all whitespace-nowrap self-start sm:self-auto cursor-pointer active:scale-95 shrink-0">
+          <span>VER PENDÊNCIA</span>
+          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </a>
+      </div>
+
+      <!-- Barra de Filtro de Período da Obra Selecionada -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.04)] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full sm:w-auto flex-wrap">
+          <div class="flex items-center h-10 p-1 bg-[#f0f5f9] dark:bg-[#15263a] rounded-xl text-xs">
+            <button type="button" id="filter-periodo-mes-btn" onclick="setPeriodMode(&#39;mes&#39;)" class="h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs leading-none">
+              Mês / Ano
+            </button>
+            <button type="button" id="filter-periodo-todo-btn" onclick="setPeriodMode(&#39;todo&#39;)" class="h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer text-[#707a82] hover:text-[#111c2d] dark:hover:text-white font-semibold leading-none">
+              Todo o Período
+            </button>
+          </div>
+
+          <div id="filter-selects-container" class="flex items-center gap-2">
+            <select id="filter-mes-select" onchange="applyPeriodFilter()" class="h-10 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+              <option value="10">Outubro</option>
+              <option value="11" selected>Novembro</option>
+              <option value="12">Dezembro</option>
+            </select>
+            <select id="filter-ano-select" onchange="applyPeriodFilter()" class="h-10 px-3 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+              <option value="2026" selected>2026</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs text-[#707a82] dark:text-[#7c8fac]">
+          <span class="material-symbols-outlined text-[16px] text-[#0085db]">date_range</span>
+          <span>Período: <strong id="period-summary-label" class="text-[#111c2d] dark:text-white font-bold">Novembro / 2026</strong></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db] font-bold uppercase">Obra Juscelino Mola</span>
+        </div>
+      </div>
+
+      <!-- Seção de Cartões & Contas com Paginação Deslizante para a Direita -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="text-xs text-[#707a82] dark:text-[#7c8fac] font-semibold">
+            Cartões &amp; Contas Ativas (<span id="cards-count-label" class="text-[#111c2d] dark:text-white font-bold">3</span>)
+          </div>
+
+          <!-- Controles de Paginação -->
+          <div class="flex items-center gap-1.5">
+            <button type="button" id="btn-cards-prev" onclick="scrollCardsSlider(-1)" disabled title="Cartões Anteriores" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer shadow-2xs">
+              <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+            <button type="button" id="btn-cards-next" onclick="scrollCardsSlider(1)" title="Mais Cartões à Direita" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#0085db] transition-all cursor-pointer shadow-2xs">
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Carrossel Deslizante de Cartões -->
+        <div class="relative overflow-hidden">
+          <div id="cards-kpi-grid" class="flex items-stretch gap-5 overflow-x-auto scroll-smooth no-scrollbar pb-1">
+            <!-- Cartão 1: Nubank Natanael -->
+            <div class="card-item-box w-[300px] sm:w-[320px] md:w-[340px] shrink-0 relative overflow-hidden rounded-[20px] p-5 shadow-lg border border-[#333f55] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-[#020617] text-white flex flex-col justify-between h-[180px] transition-transform hover:-translate-y-1 hover:border-[#0085db]/40 group" data-card-id="card-nubank">
+              <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 blur-xl pointer-events-none"></div>
+              <div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-5 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-600 border border-amber-300/60 shadow-xs"></div>
+                    <span class="material-symbols-outlined text-[15px] text-zinc-400 rotate-90">wifi</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold text-zinc-300 tracking-wider">•••• 4821</span>
+                    <!-- Ações Editar e Excluir Cartão -->
+                    <div class="flex items-center gap-1 pl-1 border-l border-white/20">
+                      <button type="button" onclick="openModalEditarCartao(&#39;Nubank Natanael&#39;, &#39;Mastercard&#39;, &#39;4821&#39;, &#39;25&#39;, &#39;5&#39;, &#39;Natanael Master&#39;, this)" class="w-6 h-6 rounded-md bg-white/10 hover:bg-[#0085db] text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Editar cartão">
+                        <span class="material-symbols-outlined text-[14px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openModalExcluirCartao(&#39;Nubank Natanael&#39;, &#39;•••• 4821&#39;, &#39;Cartão de Crédito&#39;, this)" class="w-6 h-6 rounded-md bg-white/10 hover:bg-rose-600 text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Excluir cartão">
+                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <h2 class="text-sm font-bold text-white uppercase tracking-wide">Nubank Natanael</h2>
+                  <span class="text-[11px] text-zinc-400">Vence dia 05</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-white/10 flex items-baseline justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">FATURA</span>
+                <span id="card-fatura-nubank" class="text-lg font-black text-amber-300 tabular-nums">R$ 1.616,83</span>
+              </div>
+            </div>
+
+            <!-- Cartão 2: Inter Obra PJ -->
+            <div class="card-item-box w-[300px] sm:w-[320px] md:w-[340px] shrink-0 relative overflow-hidden rounded-[20px] p-5 shadow-lg border border-[#333f55] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-[#020617] text-white flex flex-col justify-between h-[180px] transition-transform hover:-translate-y-1 hover:border-[#0085db]/40 group" data-card-id="card-inter">
+              <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 blur-xl pointer-events-none"></div>
+              <div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-5 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-600 border border-amber-300/60 shadow-xs"></div>
+                    <span class="material-symbols-outlined text-[15px] text-zinc-400 rotate-90">wifi</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold text-zinc-300 tracking-wider">•••• 9034</span>
+                    <!-- Ações Editar e Excluir Cartão -->
+                    <div class="flex items-center gap-1 pl-1 border-l border-white/20">
+                      <button type="button" onclick="openModalEditarCartao(&#39;Inter Obra PJ&#39;, &#39;Mastercard&#39;, &#39;9034&#39;, &#39;20&#39;, &#39;1&#39;, &#39;Construtora Libra PJ&#39;, this)" class="w-6 h-6 rounded-md bg-white/10 hover:bg-[#0085db] text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Editar cartão">
+                        <span class="material-symbols-outlined text-[14px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openModalExcluirCartao(&#39;Inter Obra PJ&#39;, &#39;•••• 9034&#39;, &#39;Cartão de Crédito&#39;, this)" class="w-6 h-6 rounded-md bg-white/10 hover:bg-rose-600 text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Excluir cartão">
+                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <h2 class="text-sm font-bold text-white uppercase tracking-wide">Inter Obra PJ</h2>
+                  <span class="text-[11px] text-zinc-400">Vence dia 01</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-white/10 flex items-baseline justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">FATURA</span>
+                <span class="text-lg font-black text-emerald-400 tabular-nums">R$ 0,00</span>
+              </div>
+            </div>
+
+            <!-- Card 3: Conta Bradesco Pix -->
+            <div class="card-item-box w-[300px] sm:w-[320px] md:w-[340px] shrink-0 relative overflow-hidden rounded-[20px] p-5 shadow-lg border border-[#0085db]/25 bg-gradient-to-br from-white to-[#f0f6fc] dark:from-[#111c2d] dark:to-[#16253b] text-[#111c2d] dark:text-white flex flex-col justify-between h-[180px] transition-transform hover:-translate-y-1 hover:shadow-md group" data-card-id="card-bradesco">
+              <div class="absolute top-0 left-0 right-0 h-1 bg-[#0085db]"></div>
+              <div>
+                <div class="flex items-center justify-between pt-0.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[17px] text-[#0085db]">account_balance</span>
+                    <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">Conta Corrente</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[#10bd9d]/15 text-[#10bd9d]">
+                      <span class="material-symbols-outlined text-[11px]">bolt</span>
+                      <span>PIX</span>
+                    </span>
+                    <!-- Ações Editar e Excluir Conta -->
+                    <div class="flex items-center gap-1 pl-1 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                      <button type="button" onclick="openModalEditarCartao(&#39;Conta Bradesco Pix&#39;, &#39;Pix&#39;, &#39;1289&#39;, &#39;&#39;, &#39;&#39;, &#39;Construtora Libra Matriz&#39;, this, true)" class="w-6 h-6 rounded-md bg-[#f0f5f9] dark:bg-[#1a2535] hover:bg-[#0085db] text-[#707a82] hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Editar conta">
+                        <span class="material-symbols-outlined text-[14px]">edit</span>
+                      </button>
+                      <button type="button" onclick="openModalExcluirCartao(&#39;Conta Bradesco Pix&#39;, &#39;Chave Final 1289&#39;, &#39;Conta Bancária / Pix&#39;, this)" class="w-6 h-6 rounded-md bg-[#f0f5f9] dark:bg-[#1a2535] hover:bg-rose-600 text-[#707a82] hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Excluir conta">
+                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wide">Conta Bradesco Pix</h2>
+                  <span class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">Chave Final 1289</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-baseline justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[#707a82] dark:text-[#7c8fac]">PREVISÃO DE SAÍDA</span>
+                <span class="text-lg font-black text-[#0085db] tabular-nums">R$ 0,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de Paginação Solta e em Cima Idêntica a Diarias.html -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+        <div class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+          Página <strong id="parcelas-pag-current" class="text-[#111c2d] dark:text-white">1</strong> de <strong id="parcelas-pag-total" class="text-[#111c2d] dark:text-white">3</strong>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button type="button" id="btn-parcelas-prev" onclick="changeParcelasPage(-1)" disabled title="Página Anterior" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+          </button>
+
+          <!-- Janela de 3 pílulas -->
+          <div id="parcelas-pag-window" class="flex items-center gap-1 px-1 transition-all duration-300">
+            <button type="button" onclick="goToParcelasPage(1)" class="w-8 h-8 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-xs transition-all duration-200 cursor-pointer transform scale-105">1</button>
+            <button type="button" onclick="goToParcelasPage(2)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer">2</button>
+            <button type="button" onclick="goToParcelasPage(3)" class="w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer">3</button>
+          </div>
+
+          <button type="button" id="btn-parcelas-next" onclick="changeParcelasPage(1)" title="Próxima Página" class="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabela: Parcelas & Vencimentos -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4">
+        
+        <div class="pb-4 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-[#0085db]">calendar_today</span>
+            <h2 class="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white leading-none uppercase tracking-wider">
+              PARCELAS &amp; VENCIMENTOS
+            </h2>
+          </div>
+          <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-1.5 uppercase tracking-wider font-semibold">
+            TOTAL A VENCER: <strong id="total-a-vencer" class="text-[#fb977d] tabular-nums font-bold">R$ 3.233,67</strong> · TOTAL QUITADO: <strong id="total-quitado" class="text-[#4bd08b] tabular-nums font-bold">R$ 1.616,83</strong>
+          </p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] font-bold text-[11px] uppercase tracking-wider">
+                <th class="pb-3">Vencimento</th>
+                <th class="pb-3">Descrição</th>
+                <th class="pb-3">Parcela</th>
+                <th class="pb-3">Cartão</th>
+                <th class="pb-3 text-right">Valor da Parcela</th>
+                <th class="pb-3 text-center">Status</th>
+                <th class="pb-3 text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="parcelas-tbody" class="divide-y divide-[#e6ecf1] dark:divide-[#333f55]">
+              
+              <!-- Parcela 1: Paga -->
+              <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors" data-parcela-id="parc-01-1" data-mes="10" data-ano="2026" data-vencimento="05/10/2026" data-valor="1616.83" data-status="paga" data-cartao="nubank">
+                <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                  <span>05/10/2026</span>
+                  <span class="block text-[10px] text-[#707a82]">Segunda-feira</span>
+                </td>
+                <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">
+                  COMPRA INICIAL CIMENTO E AREIA (1/3)
+                </td>
+                <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                  1 de 3
+                </td>
+                <td class="py-3 text-[#707a82] dark:text-[#7c8fac] font-medium">
+                  Nubank Natanael
+                </td>
+                <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 1.616,83
+                </td>
+                <td class="py-3 text-center">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4bd08b]/20 text-[#10bd9d] dark:text-[#4bd08b]">
+                    <span class="material-symbols-outlined text-[12px]">check_circle</span>
+                    <span>Paga</span>
+                  </span>
+                </td>
+                <td class="py-3 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button type="button" onclick="openModalEditar(&#39;COMPRA INICIAL CIMENTO E AREIA (1/3)&#39;, 1, 3, &#39;1616.83&#39;, &#39;2026-10-05&#39;, &#39;paga&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer transition-colors" title="Editar parcela">
+                      <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
+                    <button type="button" onclick="openModalExcluir(this, &#39;COMPRA INICIAL CIMENTO E AREIA (1/3)&#39;, &#39;R$ 1.616,83&#39;, &#39;05/10/2026&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer transition-colors" title="Excluir parcela">
+                      <span class="material-symbols-outlined text-[16px]">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Parcela 2: A Vencer -->
+              <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors" data-parcela-id="parc-01-2" data-mes="11" data-ano="2026" data-vencimento="05/11/2026" data-valor="1616.83" data-status="avencer" data-cartao="nubank">
+                <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                  <span>05/11/2026</span>
+                  <span class="block text-[10px] text-[#707a82]">Quinta-feira</span>
+                </td>
+                <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">
+                  COMPRA INICIAL CIMENTO E AREIA (2/3)
+                </td>
+                <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                  2 de 3
+                </td>
+                <td class="py-3 text-[#707a82] dark:text-[#7c8fac] font-medium">
+                  Nubank Natanael
+                </td>
+                <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 1.616,83
+                </td>
+                <td class="py-3 text-center">
+                  <span class="status-badge inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076]">
+                    <span class="material-symbols-outlined text-[12px]">schedule</span>
+                    <span>A Vencer</span>
+                  </span>
+                </td>
+                <td class="py-3 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button type="button" onclick="openModalEditar(&#39;COMPRA INICIAL CIMENTO E AREIA (2/3)&#39;, 2, 3, &#39;1616.83&#39;, &#39;2026-11-05&#39;, &#39;avencer&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer transition-colors" title="Editar parcela">
+                      <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
+                    <button type="button" onclick="openModalExcluir(this, &#39;COMPRA INICIAL CIMENTO E AREIA (2/3)&#39;, &#39;R$ 1.616,83&#39;, &#39;05/11/2026&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer transition-colors" title="Excluir parcela">
+                      <span class="material-symbols-outlined text-[16px]">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Parcela 3: A Vencer -->
+              <tr class="hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors" data-parcela-id="parc-01-3" data-mes="12" data-ano="2026" data-vencimento="05/12/2026" data-valor="1616.84" data-status="avencer" data-cartao="nubank">
+                <td class="py-3 font-semibold text-[#111c2d] dark:text-white whitespace-nowrap">
+                  <span>05/12/2026</span>
+                  <span class="block text-[10px] text-[#707a82]">Sábado</span>
+                </td>
+                <td class="py-3 font-bold text-[#111c2d] dark:text-white uppercase">
+                  COMPRA INICIAL CIMENTO E AREIA (3/3)
+                </td>
+                <td class="py-3 text-[#707a82] dark:text-[#7c8fac] tabular-nums">
+                  3 de 3
+                </td>
+                <td class="py-3 text-[#707a82] dark:text-[#7c8fac] font-medium">
+                  Nubank Natanael
+                </td>
+                <td class="py-3 text-right font-black text-[#111c2d] dark:text-white tabular-nums">
+                  R$ 1.616,84
+                </td>
+                <td class="py-3 text-center">
+                  <span class="status-badge inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076]">
+                    <span class="material-symbols-outlined text-[12px]">schedule</span>
+                    <span>A Vencer</span>
+                  </span>
+                </td>
+                <td class="py-3 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button type="button" onclick="openModalEditar(&#39;COMPRA INICIAL CIMENTO E AREIA (3/3)&#39;, 3, 3, &#39;1616.84&#39;, &#39;2026-12-05&#39;, &#39;avencer&#39;)" class="p-1 text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 rounded cursor-pointer transition-colors" title="Editar parcela">
+                      <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
+                    <button type="button" onclick="openModalExcluir(this, &#39;COMPRA INICIAL CIMENTO E AREIA (3/3)&#39;, &#39;R$ 1.616,84&#39;, &#39;05/12/2026&#39;)" class="p-1 text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/15 rounded cursor-pointer transition-colors" title="Excluir parcela">
+                      <span class="material-symbols-outlined text-[16px]">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 1: CADASTRAR CARTÃO OU CONTA (Integrado)                             -->
+  <!-- ========================================================================= -->
+  <div id="modal-cadastrar-cartao" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalCadastro()"></div>
+
+    <div class="relative z-50 w-full max-w-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Cabeçalho -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d]">
+        <div class="flex items-center gap-3">
+          <div id="modal-icon-badge" class="w-10 h-10 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span id="modal-cad-icon" class="material-symbols-outlined text-[22px]">credit_card</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-[#111c2d] dark:text-white font-headline">
+              Cadastrar Cartão / Conta
+            </h3>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+              Controle de vencimento de faturas e saídas financeiras da obra.
+            </p>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeModalCadastro()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Formulário de Cadastro -->
+      <form onsubmit="handleSaveCardIntegrated(event)" class="p-6 space-y-4">
+        
+        <!-- Tipo de Cadastro -->
+        <div class="p-4 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-3">
+          <div class="flex items-center gap-2 pb-2 border-b border-[#e6ecf1] dark:border-[#333f55]">
+            <span class="material-symbols-outlined text-[18px] text-[#0085db]">category</span>
+            <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+              TIPO DE CADASTRO
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <label class="relative flex items-center p-3 rounded-xl border border-[#0085db] bg-[#0085db]/5 cursor-pointer transition-all" id="label-cad-cartao">
+              <input type="radio" name="tipo_reg" value="cartao" checked onchange="toggleTipoCad(&#39;cartao&#39;)" class="sr-only">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-[#0085db] text-white flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[18px]">credit_card</span>
+                </div>
+                <div>
+                  <span class="block text-xs font-bold text-[#111c2d] dark:text-white">Cartão de Crédito</span>
+                  <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac]">Fatura e parcelas</span>
+                </div>
+              </div>
+            </label>
+
+            <label class="relative flex items-center p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] cursor-pointer hover:border-[#0085db]/40 transition-all" id="label-cad-conta">
+              <input type="radio" name="tipo_reg" value="conta" onchange="toggleTipoCad(&#39;conta&#39;)" class="sr-only">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-[#f0f5f9] dark:bg-[#15263a] text-[#707a82] dark:text-[#7c8fac] flex items-center justify-center shrink-0" id="icon-cad-conta-box">
+                  <span class="material-symbols-outlined text-[18px]">account_balance</span>
+                </div>
+                <div>
+                  <span class="block text-xs font-bold text-[#111c2d] dark:text-white">Conta Bancária / Pix</span>
+                  <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac]">Débito direto (D+0)</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Campos de Dados -->
+        <div class="p-4 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-3.5">
+          <div class="flex items-center gap-2 pb-2 border-b border-[#e6ecf1] dark:border-[#333f55]">
+            <span class="material-symbols-outlined text-[18px] text-[#0085db]">badge</span>
+            <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider" id="cad-section-title">
+              DADOS DO CARTÃO
+            </span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+              NOME / APELIDO DE IDENTIFICAÇÃO *
+            </label>
+            <input type="text" required id="cad-apelido" placeholder="Ex: NUBANK NATANAEL, INTER OBRA PJ..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white uppercase font-bold focus:ring-2 focus:ring-[#0085db]">
+          </div>
+
+          <!-- Campos Cartão -->
+          <div id="cad-campos-cartao" class="space-y-3.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                  BANDEIRA
+                </label>
+                <select id="cad-bandeira" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+                  <option value="Mastercard">Mastercard</option>
+                  <option value="Visa">Visa</option>
+                  <option value="Elo">Elo</option>
+                  <option value="Hipercard">Hipercard</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                  4 ÚLTIMOS DÍGITOS
+                </label>
+                <input type="text" id="cad-digitos" maxlength="4" placeholder="4821" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-mono font-bold tracking-wider">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                  DIA DE FECHAMENTO *
+                </label>
+                <input type="number" id="cad-fechamento" min="1" max="31" value="25" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                  DIA DE VENCIMENTO *
+                </label>
+                <input type="number" id="cad-vencimento" min="1" max="31" value="5" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold">
+              </div>
+            </div>
+          </div>
+
+          <!-- Campos Conta -->
+          <div id="cad-campos-conta" class="hidden space-y-3.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                  BANCO
+                </label>
+                <select id="cad-banco" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+                  <option value="Bradesco">Bradesco</option>
+                  <option value="Itaú">Itaú</option>
+                  <option value="Banco do Brasil">Banco do Brasil</option>
+                  <option value="Caixa Econômica">Caixa Econômica</option>
+                  <option value="Inter">Inter Empresas</option>
+                  <option value="Nubank PJ">Nubank PJ</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                  TIPO DE CHAVE PIX
+                </label>
+                <select class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+                  <option value="CNPJ">CNPJ da Empresa</option>
+                  <option value="CPF">CPF do Titular</option>
+                  <option value="E-mail">E-mail</option>
+                  <option value="Telefone">Telefone</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                  FINAL DA CHAVE / CONTA
+                </label>
+                <input type="text" id="cad-chave" placeholder="Ex: 1289" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-mono font-bold">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                  AGÊNCIA &amp; CONTA (OPCIONAL)
+                </label>
+                <input type="text" placeholder="Ex: Ag. 2381 / CC 10293-8" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+              </div>
+            </div>
+          </div>
+
+          <!-- Titular & Obra -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                TITULAR RESPONSÁVEL
+              </label>
+              <input type="text" id="cad-titular" value="Natanael" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                OBRA VINCULADA
+              </label>
+              <select class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+                <option value="juscelino">Obra Juscelino Mola</option>
+                <option value="alphaville">Obra Alphaville 02</option>
+                <option value="todas">Todas as Obras (Geral)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeModalCadastro()" class="h-10 px-4 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-all cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="h-10 px-5 inline-flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">check</span>
+            <span id="cad-btn-label">Cadastrar Cartão</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 2: EDITAR PARCELA (Integrado)                                       -->
+  <!-- ========================================================================= -->
+  <div id="modal-editar-parcela" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalEditar()"></div>
+
+    <div class="relative z-50 w-full max-w-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Cabeçalho -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d]">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[22px]">edit_note</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-[#111c2d] dark:text-white font-headline">
+              Editar Parcela de Cartão
+            </h3>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+              Atualize vencimento, valor, cartão vinculado ou status de quitação.
+            </p>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeModalEditar()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Formulário de Edição -->
+      <form onsubmit="handleSaveEditar(event)" class="p-6 space-y-4">
+        
+        <div class="p-4 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-3.5">
+          <div class="flex items-center justify-between pb-2 border-b border-[#e6ecf1] dark:border-[#333f55]">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-[#0085db]">credit_card</span>
+              <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+                DADOS DA PARCELA
+              </span>
+            </div>
+            <span id="edit-badge-status" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f8c076]/20 text-[#d9941a] dark:text-[#f8c076] uppercase">
+              A Vencer
+            </span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+              DESCRIÇÃO DA COMPRA *
+            </label>
+            <input type="text" id="edit-descricao" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                CARTÃO VINCULADO
+              </label>
+              <select id="edit-cartao" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+                <option value="nubank">Nubank Natanael (•••• 4821)</option>
+                <option value="inter">Inter Obra PJ (•••• 9034)</option>
+                <option value="bradesco">Conta Bradesco Pix (Final 1289)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                NÚMERO DA PARCELA
+              </label>
+              <div class="flex items-center gap-2">
+                <input type="number" id="edit-num-parc" value="2" min="1" class="w-20 px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold text-center">
+                <span class="text-xs text-[#707a82] font-semibold">de</span>
+                <input type="number" id="edit-total-parc" value="3" min="1" class="w-20 px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold text-center">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                DATA DE VENCIMENTO
+              </label>
+              <input type="date" id="edit-vencimento" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+                VALOR DA PARCELA (R$)
+              </label>
+              <input type="number" step="0.01" id="edit-valor" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+              SITUAÇÃO DO PAGAMENTO
+            </label>
+            <select id="edit-status" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+              <option value="avencer">A Vencer (Fatura Aberta)</option>
+              <option value="paga">Paga (Fatura Liquidada)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeModalEditar()" class="h-10 px-4 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-all cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="h-10 px-5 inline-flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">check</span>
+            <span>Salvar Alterações</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 3: EXCLUIR PARCELA (Integrado)                                      -->
+  <!-- ========================================================================= -->
+  <div id="modal-excluir-parcela" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalExcluir()"></div>
+
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center gap-3 pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[20px]">delete_forever</span>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+            Excluir Parcela
+          </h2>
+          <p class="text-[11px] text-[#707a82]">Ação irreversível no cronograma</p>
+        </div>
+      </div>
+
+      <div class="py-4 space-y-3">
+        <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+          Deseja remover a parcela de <strong id="delete-desc-text" class="text-[#111c2d] dark:text-white">Compra inicial cimento e areia (2/3)</strong>?
+        </p>
+
+        <div class="flex items-center justify-between p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs">
+          <div>
+            <span class="block text-[#111c2d] dark:text-white font-bold">Nubank Natanael</span>
+            <span id="delete-venc-text" class="text-[11px] text-[#707a82]">Vencimento: 05/11/2026</span>
+          </div>
+          <span id="delete-valor-text" class="font-black text-[#111c2d] dark:text-white tabular-nums text-sm">R$ 1.616,83</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModalExcluir()" class="h-9 px-3.5 inline-flex items-center justify-center text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl transition-all cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" onclick="confirmarExclusao()" class="h-9 px-4 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">delete</span>
+          <span>Excluir</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR CARTÃO / CONTA BANCÁRIA -->
+  <div id="modal-editar-cartao" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalEditarCartao()"></div>
+    <div class="relative z-50 w-full max-w-lg bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]" id="edit-cartao-icon">credit_card</span>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-[#111c2d] dark:text-white" id="edit-cartao-modal-title">
+              Editar Cartão / Meio de Pagamento
+            </h2>
+            <p class="text-xs text-[#707a82]">Atualize o apelido, dados da fatura ou chave</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalEditarCartao()" class="w-8 h-8 rounded-full text-[#707a82] hover:bg-[#f6f9fc] flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleSalvarEdicaoCartao(event)" class="space-y-4 pt-4">
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+            NOME / APELIDO DE IDENTIFICAÇÃO *
+          </label>
+          <input type="text" required id="edit-cartao-apelido" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white uppercase font-bold focus:ring-2 focus:ring-[#0085db]">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+              BANDEIRA / TIPO
+            </label>
+            <select id="edit-cartao-tipo" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer">
+              <option value="Mastercard">Mastercard</option>
+              <option value="Visa">Visa</option>
+              <option value="Elo">Elo</option>
+              <option value="Pix">Conta Corrente / Pix</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+              DÍGITOS / FINAL DA CHAVE
+            </label>
+            <input type="text" id="edit-cartao-digitos" maxlength="4" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-mono font-bold tracking-wider">
+          </div>
+        </div>
+
+        <div id="edit-cartao-datas" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+              DIA DE FECHAMENTO
+            </label>
+            <input type="number" id="edit-cartao-fechamento" min="1" max="31" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+              DIA DE VENCIMENTO
+            </label>
+            <input type="number" id="edit-cartao-vencimento" min="1" max="31" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1.5 uppercase tracking-wider">
+            TITULAR RESPONSÁVEL
+          </label>
+          <input type="text" id="edit-cartao-titular" class="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" onclick="closeModalEditarCartao()" class="h-10 px-4 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="h-10 px-5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] active:scale-95 rounded-xl shadow-sm transition-all cursor-pointer">
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRMAR EXCLUSÃO DO CARTÃO / CONTA -->
+  <div id="modal-excluir-cartao" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity" onclick="closeModalExcluirCartao()"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[24px] shadow-2xl p-6 overflow-hidden text-center animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 mx-auto flex items-center justify-center mb-3">
+        <span class="material-symbols-outlined text-[24px]">delete</span>
+      </div>
+
+      <h3 class="text-base font-bold text-[#111c2d] dark:text-white">
+        Excluir Cartão / Conta?
+      </h3>
+      <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mt-1 leading-relaxed">
+        Você tem certeza que deseja remover este meio de pagamento da obra?
+      </p>
+
+      <div class="my-4 p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-left text-xs space-y-1">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-[#111c2d] dark:text-white" id="del-cartao-nome">Nubank Natanael</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-[#707a82] font-semibold" id="del-cartao-tipo">Cartão de Crédito</span>
+        </div>
+        <p class="text-[11px] text-[#707a82]" id="del-cartao-info">Identificação: •••• 4821</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5">
+        <button type="button" onclick="closeModalExcluirCartao()" class="h-10 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" onclick="confirmarExclusaoCartao()" class="h-10 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-bold shadow-sm transition-all cursor-pointer flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">delete</span>
+          <span>Excluir</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Feedback Idêntica ao Diarias.html -->
+  <div id="toast-notification" class="hidden fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-[#111c2d] text-white px-4 py-3 rounded-2xl shadow-xl border border-zinc-700 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div class="w-8 h-8 rounded-xl bg-[#10bd9d]/20 text-[#10bd9d] flex items-center justify-center shrink-0">
+      <span class="material-symbols-outlined text-[20px]">check_circle</span>
+    </div>
+    <div class="pr-2">
+      <h4 id="toast-title" class="text-xs font-bold leading-tight">Sucesso</h4>
+      <p id="toast-desc" class="text-[11px] text-zinc-400 leading-tight mt-0.5">Operação realizada com sucesso.</p>
+    </div>
+    <button type="button" onclick="hideToast()" class="text-zinc-400 hover:text-white cursor-pointer">
+      <span class="material-symbols-outlined text-[16px]">close</span>
+    </button>
+  </div>
+
+  <!-- Scripts Interativos Integrados -->
+  <script>
+    let currentPeriodMode = 'mes';
+    let targetRowToDelete = null;
+
+    const monthNames = {
+      '01': 'Janeiro', '02': 'Fevereiro', '03': 'Março', '04': 'Abril',
+      '05': 'Maio', '06': 'Junho', '07': 'Julho', '08': 'Agosto',
+      '09': 'Setembro', '10': 'Outubro', '11': 'Novembro', '12': 'Dezembro'
+    };
+
+    function setPeriodMode(mode) {
+      currentPeriodMode = mode;
+      const mesBtn = document.getElementById('filter-periodo-mes-btn');
+      const todoBtn = document.getElementById('filter-periodo-todo-btn');
+      const container = document.getElementById('filter-selects-container');
+
+      if (mode === 'mes') {
+        mesBtn.className = "h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs leading-none";
+        todoBtn.className = "h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer text-[#707a82] hover:text-[#111c2d] dark:hover:text-white font-semibold leading-none";
+        container.style.display = 'flex';
+      } else {
+        todoBtn.className = "h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-bold shadow-xs leading-none";
+        mesBtn.className = "h-8 px-3.5 inline-flex items-center justify-center rounded-lg transition-colors cursor-pointer text-[#707a82] hover:text-[#111c2d] dark:hover:text-white font-semibold leading-none";
+        container.style.display = 'none';
+      }
+      applyPeriodFilter();
+    }
+
+    function applyPeriodFilter() {
+      const mesSelect = document.getElementById('filter-mes-select');
+      const anoSelect = document.getElementById('filter-ano-select');
+      const summaryLabel = document.getElementById('period-summary-label');
+      
+      const mes = mesSelect ? mesSelect.value : '11';
+      const ano = anoSelect ? anoSelect.value : '2026';
+
+      if (summaryLabel) {
+        if (currentPeriodMode === 'todo') {
+          summaryLabel.innerText = "Todo o Período da Obra";
+        } else {
+          summaryLabel.innerText = `${monthNames[mes] || mes} / ${ano}`;
+        }
+      }
+
+      const rows = document.querySelectorAll('#parcelas-tbody tr');
+      let periodoAVencer = 0;
+      let periodoQuitado = 0;
+      let nubankFaturaPeriodo = 0;
+
+      rows.forEach(tr => {
+        const rMes = tr.getAttribute('data-mes');
+        const rAno = tr.getAttribute('data-ano');
+        const rValor = parseFloat(tr.getAttribute('data-valor') || '0');
+        const rStatus = tr.getAttribute('data-status');
+        const rCartao = tr.getAttribute('data-cartao');
+
+        let match = false;
+        if (currentPeriodMode === 'todo') {
+          match = true;
+        } else {
+          match = (rMes === mes && rAno === ano);
+        }
+
+        if (match) {
+          tr.style.display = '';
+          if (rStatus === 'paga') {
+            periodoQuitado += rValor;
+          } else {
+            periodoAVencer += rValor;
+            if (rCartao === 'nubank') {
+              nubankFaturaPeriodo += rValor;
+            }
+          }
+        } else {
+          tr.style.display = 'none';
+        }
+      });
+
+      const formatoBRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+      
+      const elAVencer = document.getElementById('total-a-vencer');
+      if (elAVencer) elAVencer.innerText = formatoBRL.format(periodoAVencer);
+
+      const elQuitado = document.getElementById('total-quitado');
+      if (elQuitado) elQuitado.innerText = formatoBRL.format(periodoQuitado);
+
+      const cardNubank = document.getElementById('card-fatura-nubank');
+      if (cardNubank) cardNubank.innerText = formatoBRL.format(nubankFaturaPeriodo);
+    }
+
+    // Controles do Modal Cadastrar
+    function openModalCadastro() {
+      document.getElementById('modal-cadastrar-cartao').classList.remove('hidden');
+    }
+    function closeModalCadastro() {
+      document.getElementById('modal-cadastrar-cartao').classList.add('hidden');
+    }
+
+    function toggleTipoCad(tipo) {
+      const labelCartao = document.getElementById('label-cad-cartao');
+      const labelConta = document.getElementById('label-cad-conta');
+      const iconContaBox = document.getElementById('icon-cad-conta-box');
+      const camposCartao = document.getElementById('cad-campos-cartao');
+      const camposConta = document.getElementById('cad-campos-conta');
+      const title = document.getElementById('cad-section-title');
+      const icon = document.getElementById('modal-cad-icon');
+      const btnLabel = document.getElementById('cad-btn-label');
+
+      if (tipo === 'cartao') {
+        labelCartao.className = "relative flex items-center p-3 rounded-xl border border-[#0085db] bg-[#0085db]/5 cursor-pointer transition-all";
+        labelConta.className = "relative flex items-center p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] cursor-pointer hover:border-[#0085db]/40 transition-all";
+        if (iconContaBox) iconContaBox.className = "w-8 h-8 rounded-lg bg-[#f0f5f9] dark:bg-[#15263a] text-[#707a82] dark:text-[#7c8fac] flex items-center justify-center shrink-0";
+        
+        camposCartao.classList.remove('hidden');
+        camposConta.classList.add('hidden');
+        title.innerText = "DADOS DO CARTÃO";
+        icon.innerText = "credit_card";
+        btnLabel.innerText = "Cadastrar Cartão";
+      } else {
+        labelConta.className = "relative flex items-center p-3 rounded-xl border border-[#0085db] bg-[#0085db]/5 cursor-pointer transition-all";
+        labelCartao.className = "relative flex items-center p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] cursor-pointer hover:border-[#0085db]/40 transition-all";
+        if (iconContaBox) iconContaBox.className = "w-8 h-8 rounded-lg bg-[#0085db] text-white flex items-center justify-center shrink-0";
+
+        camposCartao.classList.add('hidden');
+        camposConta.classList.remove('hidden');
+        title.innerText = "DADOS DA CONTA BANCÁRIA";
+        icon.innerText = "account_balance";
+        btnLabel.innerText = "Cadastrar Conta";
+      }
+    }
+
+    function handleSaveCardIntegrated(e) {
+      e.preventDefault();
+      const apelido = document.getElementById('cad-apelido').value.trim();
+      const digitos = document.getElementById('cad-digitos').value.trim() || '****';
+      const vencimento = document.getElementById('cad-vencimento').value || '5';
+      const isConta = document.querySelector('input[name="tipo_reg"]:checked').value === 'conta';
+
+      const grid = document.getElementById('cards-kpi-grid');
+      const cardEl = document.createElement('div');
+
+      if (isConta) {
+        cardEl.className = "w-[300px] sm:w-[320px] md:w-[340px] shrink-0 relative overflow-hidden rounded-[20px] p-5 shadow-lg border border-[#0085db]/25 bg-gradient-to-br from-white to-[#f0f6fc] dark:from-[#111c2d] dark:to-[#16253b] text-[#111c2d] dark:text-white flex flex-col justify-between h-[180px] transition-transform hover:-translate-y-1 hover:shadow-md animate-in fade-in";
+        cardEl.innerHTML = `
+          <div class="absolute top-0 left-0 right-0 h-1 bg-[#0085db]"></div>
+          <div>
+            <div class="flex items-center justify-between pt-0.5">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[17px] text-[#0085db]">account_balance</span>
+                <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase">Conta Corrente</span>
+              </div>
+              <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[#10bd9d]/15 text-[#10bd9d]">
+                <span class="material-symbols-outlined text-[11px]">bolt</span>
+                <span>PIX</span>
+              </span>
+            </div>
+            <div class="mt-3">
+              <h2 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-wide">${apelido}</h2>
+              <span class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">Chave Final ${digitos}</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-baseline justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#707a82] dark:text-[#7c8fac]">PREVISÃO DE SAÍDA</span>
+            <span class="text-lg font-black text-[#0085db] tabular-nums">R$ 0,00</span>
+          </div>
+        `;
+      } else {
+        cardEl.className = "w-[300px] sm:w-[320px] md:w-[340px] shrink-0 relative overflow-hidden rounded-[20px] p-5 shadow-lg border border-[#333f55] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-[#020617] text-white flex flex-col justify-between h-[180px] transition-transform hover:-translate-y-1 hover:border-[#0085db]/40 animate-in fade-in";
+        cardEl.innerHTML = `
+          <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 blur-xl pointer-events-none"></div>
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-5 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-600 border border-amber-300/60 shadow-xs"></div>
+                <span class="material-symbols-outlined text-[15px] text-zinc-400 rotate-90">wifi</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-zinc-300 tracking-wider">•••• ${digitos}</span>
+            </div>
+            <div class="mt-3">
+              <h2 class="text-sm font-bold text-white uppercase tracking-wide">${apelido}</h2>
+              <span class="text-[11px] text-zinc-400">Vence dia ${vencimento}</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-white/10 flex items-baseline justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">FATURA</span>
+            <span class="text-lg font-black text-emerald-400 tabular-nums">R$ 0,00</span>
+          </div>
+        `;
+      }
+
+      grid.appendChild(cardEl);
+      const countEl = document.getElementById('cards-count-label');
+      if (countEl) countEl.innerText = parseInt(countEl.innerText || '3') + 1;
+
+      closeModalCadastro();
+      showToast('Cadastrado com sucesso', `${apelido} foi adicionado à obra.`);
+      updateCardsSliderButtons();
+    }
+
+    // Controles do Modal Editar
+    function openModalEditar(descricao, parcNum, parcTotal, valor, vencimento, status) {
+      document.getElementById('edit-descricao').value = descricao;
+      document.getElementById('edit-num-parc').value = parcNum;
+      document.getElementById('edit-total-parc').value = parcTotal;
+      document.getElementById('edit-valor').value = valor;
+      document.getElementById('edit-vencimento').value = vencimento;
+      document.getElementById('edit-status').value = status;
+      document.getElementById('modal-editar-parcela').classList.remove('hidden');
+    }
+    function closeModalEditar() {
+      document.getElementById('modal-editar-parcela').classList.add('hidden');
+    }
+    function handleSaveEditar(e) {
+      e.preventDefault();
+      closeModalEditar();
+      showToast('Parcela atualizada', 'Os dados do lançamento foram alterados com sucesso.');
+    }
+
+    // Controles do Modal Excluir
+    function openModalExcluir(btn, descricao, valorFormatado, vencimentoFormatado) {
+      targetRowToDelete = btn.closest('tr');
+      document.getElementById('delete-desc-text').innerText = descricao;
+      document.getElementById('delete-valor-text').innerText = valorFormatado;
+      document.getElementById('delete-venc-text').innerText = `Vencimento: ${vencimentoFormatado}`;
+      document.getElementById('modal-excluir-parcela').classList.remove('hidden');
+    }
+    function closeModalExcluir() {
+      document.getElementById('modal-excluir-parcela').classList.add('hidden');
+      targetRowToDelete = null;
+    }
+    function confirmarExclusao() {
+      if (targetRowToDelete) {
+        targetRowToDelete.remove();
+        applyPeriodFilter();
+      }
+      closeModalExcluir();
+      showToast('Parcela excluída', 'O registro foi removido com sucesso.');
+    }
+
+    // Carrossel de Cartões
+    function scrollCardsSlider(direction) {
+      const grid = document.getElementById('cards-kpi-grid');
+      if (!grid) return;
+      grid.scrollBy({ left: direction * 340, behavior: 'smooth' });
+      setTimeout(updateCardsSliderButtons, 300);
+    }
+    function updateCardsSliderButtons() {
+      const grid = document.getElementById('cards-kpi-grid');
+      const prevBtn = document.getElementById('btn-cards-prev');
+      const nextBtn = document.getElementById('btn-cards-next');
+      if (!grid || !prevBtn || !nextBtn) return;
+      prevBtn.disabled = grid.scrollLeft <= 10;
+      nextBtn.disabled = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 10;
+    }
+
+    // Paginação de Parcelas
+    let currentParcelasPage = 1;
+    const totalParcelasPages = 3;
+
+    function goToParcelasPage(page) {
+      if (page < 1 || page > totalParcelasPages) return;
+      currentParcelasPage = page;
+      updateParcelasPaginationUI();
+    }
+    function changeParcelasPage(delta) {
+      goToParcelasPage(currentParcelasPage + delta);
+    }
+    function updateParcelasPaginationUI() {
+      const currentText = document.getElementById('parcelas-pag-current');
+      const prevBtn = document.getElementById('btn-parcelas-prev');
+      const nextBtn = document.getElementById('btn-parcelas-next');
+      const container = document.getElementById('parcelas-pag-window');
+
+      if (currentText) currentText.innerText = currentParcelasPage;
+      if (prevBtn) prevBtn.disabled = currentParcelasPage === 1;
+      if (nextBtn) nextBtn.disabled = currentParcelasPage === totalParcelasPages;
+
+      if (container) {
+        const buttons = container.querySelectorAll('button');
+        buttons.forEach((btn, idx) => {
+          if (idx + 1 === currentParcelasPage) {
+            btn.className = "w-8 h-8 rounded-xl text-xs font-bold bg-[#0085db] text-white shadow-xs transition-all duration-200 cursor-pointer transform scale-105";
+          } else {
+            btn.className = "w-8 h-8 rounded-xl text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white transition-all duration-200 cursor-pointer";
+          }
+        });
+      }
+    }
+
+    // Funções de Edição e Exclusão de Cartões
+    let cardPendingEdit = null;
+    let cardPendingDelete = null;
+
+    function openModalEditarCartao(nome, tipo, digitos, fechamento, vencimento, titular, btn, isConta = false) {
+      cardPendingEdit = btn.closest('.card-item-box');
+      document.getElementById('edit-cartao-apelido').value = nome;
+      document.getElementById('edit-cartao-tipo').value = tipo;
+      document.getElementById('edit-cartao-digitos').value = digitos;
+      document.getElementById('edit-cartao-fechamento').value = fechamento || '';
+      document.getElementById('edit-cartao-vencimento').value = vencimento || '';
+      document.getElementById('edit-cartao-titular').value = titular || 'Natanael Master';
+
+      const datasDiv = document.getElementById('edit-cartao-datas');
+      const icon = document.getElementById('edit-cartao-icon');
+      const title = document.getElementById('edit-cartao-modal-title');
+
+      if (isConta) {
+        datasDiv.classList.add('hidden');
+        icon.innerText = 'account_balance';
+        title.innerText = 'Editar Conta Bancária / Pix';
+      } else {
+        datasDiv.classList.remove('hidden');
+        icon.innerText = 'credit_card';
+        title.innerText = 'Editar Cartão de Crédito';
+      }
+
+      document.getElementById('modal-editar-cartao').classList.remove('hidden');
+    }
+
+    function closeModalEditarCartao() {
+      document.getElementById('modal-editar-cartao').classList.add('hidden');
+      cardPendingEdit = null;
+    }
+
+    function handleSalvarEdicaoCartao(e) {
+      e.preventDefault();
+      const novoNome = document.getElementById('edit-cartao-apelido').value.trim();
+      const novosDigitos = document.getElementById('edit-cartao-digitos').value.trim();
+      const novoVenc = document.getElementById('edit-cartao-vencimento').value;
+
+      if (cardPendingEdit) {
+        const titleEl = cardPendingEdit.querySelector('h2');
+        if (titleEl) titleEl.innerText = novoNome;
+
+        const digitosEl = cardPendingEdit.querySelector('.font-mono');
+        if (digitosEl && novosDigitos) digitosEl.innerText = `•••• ${novosDigitos}`;
+
+        const vencEl = cardPendingEdit.querySelector('span.text-\\[11px\\]');
+        if (vencEl && novoVenc) vencEl.innerText = `Vence dia ${novoVenc.padStart(2, '0')}`;
+      }
+
+      closeModalEditarCartao();
+      showToast('Alterações salvas', `Os dados de "${novoNome}" foram atualizados.`);
+    }
+
+    function openModalExcluirCartao(nome, info, tipo, btn) {
+      cardPendingDelete = btn.closest('.card-item-box');
+      document.getElementById('del-cartao-nome').innerText = nome;
+      document.getElementById('del-cartao-tipo').innerText = tipo;
+      document.getElementById('del-cartao-info').innerText = `Identificação: ${info}`;
+      document.getElementById('modal-excluir-cartao').classList.remove('hidden');
+    }
+
+    function closeModalExcluirCartao() {
+      document.getElementById('modal-excluir-cartao').classList.add('hidden');
+      cardPendingDelete = null;
+    }
+
+    function confirmarExclusaoCartao() {
+      if (cardPendingDelete) {
+        const nome = document.getElementById('del-cartao-nome').innerText;
+        cardPendingDelete.remove();
+        const countEl = document.getElementById('cards-count-label');
+        if (countEl) {
+          const count = document.querySelectorAll('.card-item-box').length;
+          countEl.innerText = count;
+        }
+        showToast('Cartão removido', `"${nome}" foi excluído com sucesso.`);
+      }
+      closeModalExcluirCartao();
+    }
+
+    // Toast
+    function showToast(title, desc) {
+      const toast = document.getElementById('toast-notification');
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-desc').innerText = desc;
+      toast.classList.remove('hidden');
+      setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+    }
+    function hideToast() {
+      document.getElementById('toast-notification').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      applyPeriodFilter();
+      const grid = document.getElementById('cards-kpi-grid');
+      if (grid) {
+        grid.addEventListener('scroll', updateCardsSliderButtons);
+        window.addEventListener('resize', updateCardsSliderButtons);
+        updateCardsSliderButtons();
+      }
+      updateParcelasPaginationUI();
+    });
+  </script>
+
+
+</body></html>
