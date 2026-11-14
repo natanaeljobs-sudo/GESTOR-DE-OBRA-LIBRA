@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { Obra, Despesa, Trabalhador, Diaria, ReciboPagamento, Material, ProducaoItem, CartaoConta, Usuario } from '../types';
+import { Obra, Despesa, Trabalhador, Diaria, ReciboPagamento, Material, ProducaoItem, CartaoConta, Usuario, PerfilUsuario } from '../types';
 
 export const ObrasService = {
   async listar(): Promise<Obra[]> {
@@ -841,6 +841,7 @@ export const UsuariosService = {
         nome: row.nome,
         email: row.email,
         perfil: perfilRole,
+        avatarColor: '#0085db',
         ativo: true,
         dataCadastro: row.created_at ? row.created_at.split('T')[0] : '2026-01-01',
         permissoes: {

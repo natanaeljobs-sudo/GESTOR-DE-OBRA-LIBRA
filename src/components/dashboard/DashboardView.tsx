@@ -55,9 +55,9 @@ export const DashboardView: React.FC = () => {
     despesas.forEach(d => {
       if (d.itens && d.itens.length > 0) {
         d.itens.forEach(it => {
-          const nomeKey = it.descricao.trim().toUpperCase();
+          const nomeKey = (it.materialNome || 'MATERIAL').trim().toUpperCase();
           const existente = mapa.get(nomeKey) || {
-            nome: it.descricao.trim(),
+            nome: it.materialNome || 'Material',
             categoria: d.categoria || 'Geral',
             cor: '#0085db',
             quantidade: 0,
@@ -65,7 +65,7 @@ export const DashboardView: React.FC = () => {
             valorTotal: 0,
           };
           existente.quantidade += Number(it.quantidade) || 0;
-          existente.valorTotal += Number(it.subtotal) || 0;
+          existente.valorTotal += Number(it.valorTotal) || 0;
           mapa.set(nomeKey, existente);
         });
       }
@@ -149,9 +149,9 @@ export const DashboardView: React.FC = () => {
   const cartoesExibidos = useMemo(() => {
     if (cartoes && cartoes.length > 0) {
       return cartoes.map(c => ({
-        nome: c.nome.toUpperCase(),
-        parcelas: `${c.parcelas || 6}x`,
-        valorTotal: formatBRL(c.valorFaturaTotal || c.limite || 0),
+        nome: (c.apelido || c.titular || 'CARTÃO').toUpperCase(),
+        parcelas: `${c.tipo === 'credito' ? 'Crédito' : 'Débito'}`,
+        valorTotal: formatBRL(c.limite || 0),
       }));
     }
     return [
@@ -226,10 +226,10 @@ export const DashboardView: React.FC = () => {
       return [...diarias].sort((a, b) => b.data.localeCompare(a.data));
     }
     return [
-      { id: '1', trabalhadorNome: 'MANOEL DA SILVA', funcao: 'Pedreiro', data: '2026-10-23', fracao: 1, valorTotal: 180, statusPagamento: 'pago' },
-      { id: '2', trabalhadorNome: 'CARLOS SILVA', funcao: 'Ajudante', data: '2026-10-24', fracao: 2, valorTotal: 360, statusPagamento: 'pendente' },
-      { id: '3', trabalhadorNome: 'ANTONIO FERREIRA', funcao: 'Armador', data: '2026-10-22', fracao: 1, valorTotal: 200, statusPagamento: 'pago' },
-      { id: '4', trabalhadorNome: 'JOSÉ MARIANO', funcao: 'Carpinteiro', data: '2026-10-21', fracao: 0.5, valorTotal: 100, statusPagamento: 'pago' },
+      { id: '1', trabalhadorNome: 'MANOEL DA SILVA', data: '2026-10-23', fracao: 1, valorTotal: 180, statusPagamento: 'pago' },
+      { id: '2', trabalhadorNome: 'CARLOS SILVA', data: '2026-10-24', fracao: 2, valorTotal: 360, statusPagamento: 'pendente' },
+      { id: '3', trabalhadorNome: 'ANTONIO FERREIRA', data: '2026-10-22', fracao: 1, valorTotal: 200, statusPagamento: 'pago' },
+      { id: '4', trabalhadorNome: 'JOSÉ MARIANO', data: '2026-10-21', fracao: 0.5, valorTotal: 100, statusPagamento: 'pago' },
     ];
   }, [diarias]);
 
@@ -1045,9 +1045,9 @@ export const DashboardView: React.FC = () => {
                         {dia.trabalhadorNome}
                       </p>
                       <div className="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                        <span className="truncate font-medium">{dia.funcao || 'Operador'}</span>
+                        <span className="truncate font-medium">{formatDateBR(dia.data)}</span>
                         <span>·</span>
-                        <span>{formatDateBR(dia.data)} · {dia.fracao === 1 ? 'Integral' : `${dia.fracao} Diárias`}</span>
+                        <span>{dia.fracao === 1 ? 'Integral' : `${dia.fracao} Diárias`}</span>
                       </div>
                     </div>
                   </div>
