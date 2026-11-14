@@ -35,6 +35,7 @@ import {
 import { valorPorExtenso } from '../utils/currency';
 import { getTodayISO } from '../utils/date';
 import { ObrasService, DespesasService, TrabalhadoresService } from '../services/supabaseApi';
+import { supabase } from '../lib/supabase';
 
 export type TabType = 
   | 'dashboard' 
@@ -301,6 +302,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const logout = () => {
+    supabase.auth.signOut().catch(() => {});
     setIsAuthenticated(false);
     setStored('isAuthenticated', false);
   };
@@ -478,7 +480,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   useEffect(() => {
+    // Escutar alterações de autenticação no Supabase
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setIsAuthenticated(true);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setIsAuthenticated(true);
+      }
+    });
+
     sincronizarComSupabase();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const showToast = (message: string, type: 'success' | 'warning' | 'error' | 'info' = 'success', title?: string) => {

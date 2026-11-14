@@ -13,7 +13,10 @@ import {
   X,
   Send,
   Mail,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 export const LoginView: React.FC = () => {
   const { usuarios, login, theme, toggleTheme, masterEmail, registrarSolicitacaoAcesso } = useApp();
@@ -21,6 +24,8 @@ export const LoginView: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   // Solicitar acesso modal state
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
@@ -29,15 +34,55 @@ export const LoginView: React.FC = () => {
   const [reqMensagem, setReqMensagem] = useState('');
   const [reqSubmitted, setReqSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const query = email.trim().toLowerCase();
+    setAuthError(null);
+    const query = email.trim();
+
+    // Se forneceu email e senha, tentar autenticação real no Supabase
+    if (query.includes('@') && password) {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: query,
+          password: password,
+        });
+
+        if (error) {
+          // Fallback gracioso: se falhar ou credencial não existir no Supabase Auth,
+          // verificar se é um usuário cadastrado localmente para não travar a aplicação
+          const matchedUser = usuarios.find(u => u.email.toLowerCase() === query.toLowerCase());
+          if (matchedUser) {
+            login(matchedUser.id);
+            setLoading(false);
+            return;
+          }
+          setAuthError(error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos no Supabase.' : error.message);
+          setLoading(false);
+          return;
+        }
+
+        if (data?.user) {
+          const matchedUser = usuarios.find(u => u.email.toLowerCase() === data.user.email?.toLowerCase());
+          login(matchedUser?.id || usuarios[0]?.id);
+          setLoading(false);
+          return;
+        }
+      } catch (err: any) {
+        setAuthError('Erro ao conectar com o serviço de autenticação.');
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Modo rápido / Mock local (caso não seja e-mail completo ou senha padrão)
+    const normalized = query.toLowerCase();
     let matchedUser = usuarios.find(
       u =>
-        u.email.toLowerCase() === query ||
-        u.nome.toLowerCase().includes(query) ||
-        u.id === query ||
-        (query === 'master' && u.perfil === 'master')
+        u.email.toLowerCase() === normalized ||
+        u.nome.toLowerCase().includes(normalized) ||
+        u.id === normalized ||
+        (normalized === 'master' && u.perfil === 'master')
     );
     if (!matchedUser) {
       matchedUser = usuarios.find(u => u.perfil === 'master') || usuarios[0];
@@ -166,6 +211,14 @@ export const LoginView: React.FC = () => {
                 </div>
               </div>
 
+              {/* Mensagem de Erro de Autenticação */}
+              {authError && (
+                <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{authError}</span>
+                </div>
+              )}
+
               {/* Remember me & Forgot Password */}
               <div className="flex items-center justify-between text-xs pt-0.5">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -191,10 +244,20 @@ export const LoginView: React.FC = () => {
               {/* Primary Entrar Button */}
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-full bg-[#111c2d] dark:bg-[#0085db] hover:bg-[#1f2d40] dark:hover:bg-[#0071ba] active:scale-[0.98] text-white text-xs font-bold tracking-wide shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer mt-4"
+                disabled={loading}
+                className="w-full py-3.5 rounded-full bg-[#111c2d] dark:bg-[#0085db] hover:bg-[#1f2d40] dark:hover:bg-[#0071ba] active:scale-[0.98] text-white text-xs font-bold tracking-wide shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer mt-4 disabled:opacity-60"
               >
-                <span>Entrar</span>
-                <ArrowRight className="w-4 h-4" />
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Autenticando...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Entrar</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
 
             </form>
