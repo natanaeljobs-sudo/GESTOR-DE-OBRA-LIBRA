@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { Obra, Despesa, Trabalhador, Diaria, ReciboPagamento, Material, ProducaoItem, CartaoConta } from '../types';
+import { Obra, Despesa, Trabalhador, Diaria, ReciboPagamento, Material, ProducaoItem, CartaoConta, Usuario } from '../types';
 
 export const ObrasService = {
   async listar(): Promise<Obra[]> {
@@ -816,6 +816,93 @@ export const CartoesService = {
 
     if (error) {
       console.error('Erro ao remover cartão no Supabase:', error);
+      return false;
+    }
+    return true;
+  }
+};
+
+export const UsuariosService = {
+  async listar(): Promise<Usuario[]> {
+    const { data, error } = await supabase
+      .from('usuarios_perfis')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Erro ao listar perfis de usuários no Supabase:', error);
+      return [];
+    }
+
+    return (data || []).map(row => {
+      const perfilRole = row.role === 'admin' ? 'admin' : row.role === 'operador' ? 'operador' : 'master';
+      return {
+        id: row.id,
+        nome: row.nome,
+        email: row.email,
+        perfil: perfilRole,
+        ativo: true,
+        dataCadastro: row.created_at ? row.created_at.split('T')[0] : '2026-01-01',
+        permissoes: {
+          dashboard: { visualizar: true, criar: perfilRole !== 'operador', editar: perfilRole !== 'operador', excluir: perfilRole === 'master' },
+          despesas: { visualizar: true, criar: true, editar: true, excluir: perfilRole === 'master' },
+          materiais: { visualizar: true, criar: true, editar: true, excluir: perfilRole === 'master' },
+          maoDeObra: { visualizar: true, criar: true, editar: true, excluir: perfilRole === 'master' },
+          recibos: { visualizar: true, criar: true, editar: true, excluir: perfilRole === 'master' },
+          orcamentos: { visualizar: true, criar: true, editar: true, excluir: perfilRole === 'master' },
+          producao: { visualizar: true, criar: true, editar: true, excluir: perfilRole === 'master' },
+          cartoes: { visualizar: true, criar: perfilRole !== 'operador', editar: perfilRole !== 'operador', excluir: perfilRole === 'master' },
+          usuarios: { visualizar: perfilRole !== 'operador', criar: perfilRole === 'master', editar: perfilRole === 'master', excluir: perfilRole === 'master' },
+          relatorios: { visualizar: true, criar: true, editar: true, excluir: perfilRole === 'master' },
+        },
+      };
+    });
+  },
+
+  async sincronizarPerfil(usuario: Partial<Usuario>): Promise<boolean> {
+    if (!usuario.id || !usuario.email) return false;
+
+    const roleMap = usuario.perfil === 'master' ? 'admin' : usuario.perfil === 'admin' ? 'admin' : 'operador';
+    const payload = {
+      id: usuario.id,
+      nome: usuario.nome || usuario.email.split('@')[0],
+      email: usuario.email,
+      role: roleMap,
+    };
+
+    const { error } = await supabase
+      .from('usuarios_perfis')
+      .upsert(payload, { onConflict: 'id' });
+
+    if (error) {
+      console.error('Erro ao sincronizar perfil de usuário no Supabase:', error);
+      return false;
+    }
+    return true;
+  },
+
+  async atualizarRole(id: string, perfil: PerfilUsuario): Promise<boolean> {
+    const roleMap = perfil === 'master' ? 'admin' : perfil === 'admin' ? 'admin' : 'operador';
+    const { error } = await supabase
+      .from('usuarios_perfis')
+      .update({ role: roleMap })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao atualizar papel do usuário no Supabase:', error);
+      return false;
+    }
+    return true;
+  },
+
+  async remover(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from('usuarios_perfis')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao remover perfil de usuário no Supabase:', error);
       return false;
     }
     return true;

@@ -34,7 +34,7 @@ import {
 } from '../data/initialData';
 import { valorPorExtenso } from '../utils/currency';
 import { getTodayISO } from '../utils/date';
-import { ObrasService, DespesasService, TrabalhadoresService, DiariasService, RecibosService, MateriaisService, ProducaoService, CartoesService } from '../services/supabaseApi';
+import { ObrasService, DespesasService, TrabalhadoresService, DiariasService, RecibosService, MateriaisService, ProducaoService, CartoesService, UsuariosService } from '../services/supabaseApi';
 import { supabase } from '../lib/supabase';
 
 export type TabType = 
@@ -526,6 +526,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             return Array.from(mapa.values());
           });
         }
+
+        // 9. Carregar Perfis de Usuários
+        const usuariosRemotos = await UsuariosService.listar();
+        if (usuariosRemotos.length > 0) {
+          setUsuarios(prev => {
+            const mapa = new Map(prev.map(u => [u.id, u]));
+            usuariosRemotos.forEach(u => mapa.set(u.id, { ...mapa.get(u.id), ...u }));
+            return Array.from(mapa.values());
+          });
+        }
       }
     } catch (err) {
       console.warn('Falha na sincronização em nuvem (mantendo offline/local):', err);
@@ -731,15 +741,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const addUsuario = (user: Usuario) => {
     setUsuarios(prev => [...prev, user]);
+    UsuariosService.sincronizarPerfil(user);
+    showToast(`Usuário "${user.nome}" cadastrado com sucesso.`, 'success', 'Usuário adicionado');
   };
 
   const updateUsuario = (user: Usuario) => {
     setUsuarios(prev => prev.map(u => (u.id === user.id ? user : u)));
+    UsuariosService.sincronizarPerfil(user);
+    showToast(`Perfil de "${user.nome}" atualizado.`, 'success', 'Usuário atualizado');
   };
 
   const deleteUsuario = (id: string) => {
     const user = usuarios.find(u => u.id === id);
     setUsuarios(prev => prev.filter(u => u.id !== id));
+    UsuariosService.remover(id);
     if (user) {
       showToast(`Usuário "${user.nome}" excluído com sucesso.`, 'success', 'Usuário excluído');
     }
