@@ -11,6 +11,8 @@ import {
   Check,
   LogOut,
   LayoutDashboard,
+  RefreshCw,
+  Cloud,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -27,6 +29,9 @@ export const Header: React.FC = () => {
     navigateToTabWithFilter,
     logout,
     setActiveTab,
+    isSyncing,
+    sincronizarComSupabase,
+    showToast,
   } = useApp();
 
   const [showObraMenu, setShowObraMenu] = useState(false);
@@ -104,6 +109,22 @@ export const Header: React.FC = () => {
 
         {/* Zone 3: Actions (Alerts, User switch, Theme toggle) */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+
+          {/* Botão Sincronizar Supabase */}
+          <button
+            onClick={async () => {
+              await sincronizarComSupabase();
+              showToast('Dados sincronizados com o Supabase!', 'success', 'Nuvem Conectada');
+            }}
+            disabled={isSyncing}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] text-xs font-semibold text-[#0085db] transition-all cursor-pointer ${
+              isSyncing ? 'opacity-70 cursor-not-allowed' : ''
+            }`}
+            title="Sincronizar com Banco Supabase"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">{isSyncing ? 'Sincronizando...' : 'Supabase'}</span>
+          </button>
 
           {/* Active User Switcher */}
           <div className="relative">

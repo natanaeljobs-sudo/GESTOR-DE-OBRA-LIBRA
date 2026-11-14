@@ -34,6 +34,7 @@ import {
 } from '../data/initialData';
 import { valorPorExtenso } from '../utils/currency';
 import { getTodayISO } from '../utils/date';
+import { ObrasService, DespesasService, TrabalhadoresService } from '../services/supabaseApi';
 
 export type TabType = 
   | 'dashboard' 
@@ -190,6 +191,10 @@ interface AppContextType {
   toast: ToastNotification | null;
   showToast: (message: string, type?: 'success' | 'warning' | 'error' | 'info', title?: string) => void;
   hideToast: () => void;
+
+  // Supabase Sync
+  isSyncing: boolean;
+  sincronizarComSupabase: () => Promise<void>;
 
   // Reset
   resetToSampleData: () => void;
@@ -427,6 +432,54 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Toast state
   const [toast, setToast] = useState<ToastNotification | null>(null);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+
+  // Sincronização inicial e bidirecional com o Supabase
+  const sincronizarComSupabase = async () => {
+    setIsSyncing(true);
+    try {
+      // 1. Carregar Obras
+      const obrasRemotas = await ObrasService.listar();
+      if (obrasRemotas.length > 0) {
+        setObras(prev => {
+          const mapa = new Map(prev.map(o => [o.id, o]));
+          obrasRemotas.forEach(o => mapa.set(o.id, { ...mapa.get(o.id), ...o }));
+          return Array.from(mapa.values());
+        });
+      }
+
+      // 2. Carregar Trabalhadores
+      const trabRemotos = await TrabalhadoresService.listarPorObra();
+      if (trabRemotos.length > 0) {
+        setTrabalhadores(prev => {
+          const mapa = new Map(prev.map(t => [t.id, t]));
+          trabRemotos.forEach(t => mapa.set(t.id, { ...mapa.get(t.id), ...t }));
+          return Array.from(mapa.values());
+        });
+      }
+
+      // 3. Carregar Despesas da Obra Ativa se existir
+      if (activeObraId) {
+        const despRemotas = await DespesasService.listarPorObra(activeObraId);
+        if (despRemotas.length > 0) {
+          setDespesas(prev => {
+            const outrasObras = prev.filter(d => d.obraId !== activeObraId);
+            const mapa = new Map(prev.filter(d => d.obraId === activeObraId).map(d => [d.id, d]));
+            despRemotas.forEach(d => mapa.set(d.id, { ...mapa.get(d.id), ...d }));
+            return [...Array.from(mapa.values()), ...outrasObras];
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Falha na sincronização em nuvem (mantendo offline/local):', err);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  useEffect(() => {
+    sincronizarComSupabase();
+  }, []);
 
   const showToast = (message: string, type: 'success' | 'warning' | 'error' | 'info' = 'success', title?: string) => {
     const defaultTitle =
@@ -567,16 +620,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const addObra = (novaObra: Obra) => {
     setObras(prev => [novaObra, ...prev]);
     setActiveObraId(novaObra.id);
+    ObrasService.criar(novaObra).then(salva => {
+      if (salva) {
+        setObras(prev => prev.map(o => (o.id === novaObra.id ? { ...o, id: salva.id } : o)));
+        if (activeObraId === novaObra.id) {
+          setActiveObraId(salva.id);
+        }
+      }
+    });
   };
 
   const updateObra = (obra: Obra) => {
     setObras(prev => prev.map(o => (o.id === obra.id ? obra : o)));
+    ObrasService.atualizar(obra.id, obra);
   };
 
   const deleteObra = (id: string) => {
     if (obras.length <= 1) return;
     const obra = obras.find(o => o.id === id);
     setObras(prev => prev.filter(o => o.id !== id));
+    ObrasService.remover(id);
     if (activeObraId === id) {
       const remaining = obras.filter(o => o.id !== id);
       if (remaining.length > 0) setActiveObraId(remaining[0].id);
@@ -762,6 +825,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     setDespesas(prev => [nova, ...prev]);
 
+    // Persistência assíncrona no Supabase
+    DespesasService.criar(nova).then(salva => {
+      if (salva) {
+        setDespesas(prev => prev.map(d => (d.id === nova.id ? { ...d, id: salva.id } : d)));
+      }
+    });
+
     // Check if alerts should be generated
     if (Math.abs(diferenca) > 0.05) {
       const alerta: AlertaPendencia = {
@@ -803,6 +873,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const desp = despesas.find(d => d.id === id);
     setDespesas(prev => prev.filter(d => d.id !== id));
     setAlertas(prev => prev.filter(a => a.entidadeId !== id));
+    DespesasService.remover(id);
     if (desp) {
       showToast(`Despesa "${desp.descricao}" excluída com sucesso.`, 'success', 'Despesa excluída');
     }
@@ -815,10 +886,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       dataAdmissao: getTodayISO(),
     };
     setTrabalhadores(prev => [...prev, novo]);
+    TrabalhadoresService.criar(novo, activeObraId).then(salvo => {
+      if (salvo) {
+        setTrabalhadores(prev => prev.map(t => (t.id === novo.id ? { ...t, id: salvo.id } : t)));
+      }
+    });
   };
 
   const updateTrabalhador = (trab: Trabalhador) => {
     setTrabalhadores(prev => prev.map(t => (t.id === trab.id ? trab : t)));
+    TrabalhadoresService.atualizar(trab.id, trab);
   };
 
   const addDiaria = (diariaData: Omit<Diaria, 'id'>) => {
@@ -1162,6 +1239,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         toast,
         showToast,
         hideToast,
+        isSyncing,
+        sincronizarComSupabase,
       }}
     >
       {children}

@@ -1,32 +1,45 @@
-# Status da Sessão de Migração — SISTEMA LIBRA - OBRAS
+# Checkpoint de Sessão — SISTEMA LIBRA - OBRAS
 
-> Data de salvamento: 2026-11-14 11:47 (Horário de Brasília)
+> **Última Atualização**: 2026-11-14 12:18 (Horário de Brasília)
+> **Branch**: `main`
+> **Último Commit**: `69eec8a` — `FEAT(MIGRACAO): ENGENHARIA REVERSA SDD, SPECS E SETUP SUPABASE`
+> **Status Remoto**: Sincronizado com `origin/main` (GitHub)
 
 ---
 
-## 1. O que foi concluído até aqui:
-1. **Engenharia Reversa e Time de Descoberta**:
-   - 100% concluído em `_reversa_sdd/`.
+## 1. O que foi concluído nesta sessão:
+1. **Engenharia Reversa (Reversa)**:
+   - 100% dos módulos do legado mapeados e documentados em `_reversa_sdd/`.
 2. **Time de Migração (`/reversa-migrate`)**:
-   - 100% dos 6 agentes executados (`paradigm_advisor`, `curator`, `strategist`, `designer`, `screen_translator`, `inspector`).
-   - Todos os artefatos de migração gerados em `_reversa_sdd/migration/` (incluindo `handoff.md`, `target_screens.md`, `parity_specs.md`).
-3. **Fundação do Banco de Dados (Supabase / PostgreSQL)**:
-   - Script SQL com as 9 tabelas, foreign keys e RLS criado em `_reversa_sdd/migration/schema.sql` e executado com sucesso no Supabase.
-4. **Setup da Conexão no Frontend**:
-   - Dependência `@supabase/supabase-js` instalada.
-   - Variáveis configuradas em `.env` (URL e Publishable Key).
-   - Cliente instanciado em `src/lib/supabase.ts`.
-   - Camada inicial de serviços criada em `src/services/supabaseApi.ts` (testado e sem erros de TypeScript).
+   - 6 agentes executados com sucesso:
+     - `paradigm_advisor` (decisão de paradigma web moderno);
+     - `curator` (regras a migrar e descarte de código obsoleto);
+     - `strategist` (estratégia e plano de cutover);
+     - `designer` (topologia e modelo de dados relacional);
+     - `screen_translator` (12 telas em Modo 2 Modernizado e 4 estados);
+     - `inspector` (critérios de homologação e testes de paridade Gherkin).
+   - Documento consolidado gerado: `_reversa_sdd/migration/handoff.md`.
+3. **Banco de Dados (Supabase / PostgreSQL)**:
+   - Script `_reversa_sdd/migration/schema.sql` gerado e executado com sucesso no SQL Editor do Supabase (9 tabelas, chaves e políticas RLS).
+4. **Setup do Frontend**:
+   - Pacote `@supabase/supabase-js` instalado.
+   - Variáveis configuradas em `.env`.
+   - Cliente inicializado em `src/lib/supabase.ts`.
+   - Camada de serviços criada em `src/services/supabaseApi.ts` (`ObrasService`, `DespesasService`, `TrabalhadoresService`).
+   - Verificação TypeScript aprovada com zero erros.
+5. **Git e Segurança**:
+   - `SUPABASE.txt` adicionado ao `.gitignore` para proteção das credenciais em repositório público.
+   - Commit em caixa alta e push concluído no GitHub: `FEAT(MIGRACAO): ENGENHARIA REVERSA SDD, SPECS E SETUP SUPABASE`.
 
 ---
 
-## 2. Ponto exato de retomada:
-Na próxima sessão, o foco é a **integração do frontend ao banco Supabase**:
-- **Opção A**: Conectar o `src/context/AppContext.tsx` para persistir e buscar dados reais de Obras e Despesas no Supabase (substituindo gradualmente o `localStorage`).
-- **Opção B**: Criar/adaptar telas modulares conforme o `_reversa_sdd/migration/target_screens.md` para carregar do Supabase.
+## 2. Ponto de Retomada na Próxima Sessão:
+Na próxima sessão, o objetivo é **integrar o front-end ao banco de dados Supabase**:
+- **Opção 1**: Atualizar o `src/context/AppContext.tsx` para carregar e salvar as despesas e obras diretamente no Supabase em vez de usar apenas o `localStorage`.
+- **Opção 2**: Criar as telas modernizadas por módulo (iniciando por Auth/Login ou Despesas) consumindo os métodos de `src/services/supabaseApi.ts`.
 
 ---
 
-## 3. Como retomar na próxima sessão:
-Basta abrir o chat e dizer:
-> *"Continuar a migração do Sistema Libra a partir da integração com o Supabase (conforme _reversa_sdd/migration/session_checkpoint.md)"*
+## 3. Instrução rápida para abrir a próxima sessão:
+Basta dizer no chat:
+> *"Continuar a migração do Sistema Libra a partir de _reversa_sdd/migration/session_checkpoint.md"*
