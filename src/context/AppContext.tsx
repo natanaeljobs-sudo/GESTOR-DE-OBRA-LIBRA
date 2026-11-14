@@ -34,7 +34,7 @@ import {
 } from '../data/initialData';
 import { valorPorExtenso } from '../utils/currency';
 import { getTodayISO } from '../utils/date';
-import { ObrasService, DespesasService, TrabalhadoresService, DiariasService, RecibosService } from '../services/supabaseApi';
+import { ObrasService, DespesasService, TrabalhadoresService, DiariasService, RecibosService, MateriaisService, ProducaoService } from '../services/supabaseApi';
 import { supabase } from '../lib/supabase';
 
 export type TabType = 
@@ -493,6 +493,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             return [...Array.from(mapa.values()), ...outrasObras];
           });
         }
+
+        // 6. Carregar Materiais da Obra Ativa / Geral
+        const materiaisRemotos = await MateriaisService.listarPorObra(activeObraId);
+        if (materiaisRemotos.length > 0) {
+          setMateriais(prev => {
+            const mapa = new Map(prev.map(m => [m.id, m]));
+            materiaisRemotos.forEach(m => mapa.set(m.id, { ...mapa.get(m.id), ...m }));
+            return Array.from(mapa.values());
+          });
+        }
+
+        // 7. Carregar Produção da Obra Ativa
+        const producaoRemota = await ProducaoService.listarPorObra(activeObraId);
+        if (producaoRemota.length > 0) {
+          setProducao(prev => {
+            const outrasObras = prev.filter(p => p.obraId !== activeObraId);
+            const mapa = new Map(prev.filter(p => p.obraId === activeObraId).map(p => [p.id, p]));
+            producaoRemota.forEach(p => mapa.set(p.id, { ...mapa.get(p.id), ...p }));
+            return [...Array.from(mapa.values()), ...outrasObras];
+          });
+        }
       }
     } catch (err) {
       console.warn('Falha na sincronização em nuvem (mantendo offline/local):', err);
@@ -743,16 +764,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       dataCadastro: getTodayISO(),
     };
     setMateriais(prev => [...prev, novo]);
+    MateriaisService.criar(novo, activeObraId).then(salvo => {
+      if (salvo) {
+        setMateriais(prev => prev.map(m => (m.id === novo.id ? { ...m, id: salvo.id } : m)));
+      }
+    });
     return novo;
   };
 
   const updateMaterial = (material: Material) => {
     setMateriais(prev => prev.map(m => (m.id === material.id ? material : m)));
+    MateriaisService.atualizar(material.id, material);
   };
 
   const deleteMaterial = (id: string) => {
     const mat = materiais.find(m => m.id === id);
     setMateriais(prev => prev.filter(m => m.id !== id));
+    MateriaisService.remover(id);
     if (mat) {
       showToast(`Material "${mat.nome}" foi excluído`, 'success');
     }
@@ -1163,16 +1191,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       id: `prod-${Date.now()}`,
     };
     setProducao(prev => [novo, ...prev]);
+    ProducaoService.criar(novo).then(salvo => {
+      if (salvo) {
+        setProducao(prev => prev.map(p => (p.id === novo.id ? { ...p, id: salvo.id } : p)));
+      }
+    });
     showToast('Lote de produção registrado com sucesso!', 'success', 'Produção registrada');
   };
 
   const updateProducao = (item: ProducaoItem) => {
     setProducao(prev => prev.map(p => (p.id === item.id ? item : p)));
+    ProducaoService.atualizar(item.id, item);
     showToast('Registro de produção atualizado com sucesso!', 'success', 'Produção atualizada');
   };
 
   const deleteProducao = (id: string) => {
     setProducao(prev => prev.filter(p => p.id !== id));
+    ProducaoService.remover(id);
     showToast('Registro de produção excluído com sucesso.', 'success', 'Produção excluída');
   };
 

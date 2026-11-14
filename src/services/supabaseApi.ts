@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { Obra, Despesa, Trabalhador, Diaria, ReciboPagamento } from '../types';
+import { Obra, Despesa, Trabalhador, Diaria, ReciboPagamento, Material, ProducaoItem } from '../types';
 
 export const ObrasService = {
   async listar(): Promise<Obra[]> {
@@ -526,6 +526,194 @@ export const RecibosService = {
 
     if (error) {
       console.error('Erro ao excluir recibo no Supabase:', error);
+      return false;
+    }
+    return true;
+  }
+};
+
+export const MateriaisService = {
+  async listarPorObra(obraId?: string): Promise<Material[]> {
+    let query = supabase.from('materiais').select('*');
+    if (obraId) {
+      query = query.eq('obra_id', obraId);
+    }
+    const { data, error } = await query.order('nome', { ascending: true });
+
+    if (error) {
+      console.error('Erro ao buscar materiais no Supabase:', error);
+      return [];
+    }
+
+    return (data || []).map(row => ({
+      id: row.id,
+      nome: row.nome,
+      unidadePadrao: row.unidade_medida || 'un',
+      categoriaSugerida: row.categoria_sugerida || undefined,
+      dataCadastro: row.created_at ? row.created_at.split('T')[0] : '',
+    }));
+  },
+
+  async criar(mat: Omit<Material, 'id' | 'dataCadastro'>, obraId?: string): Promise<Material | null> {
+    const payload: any = {
+      nome: mat.nome,
+      unidade_medida: mat.unidadePadrao,
+      categoria_sugerida: mat.categoriaSugerida,
+    };
+    if (obraId) {
+      payload.obra_id = obraId;
+    }
+
+    const { data, error } = await supabase
+      .from('materiais')
+      .insert(payload)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erro ao cadastrar material no Supabase:', error);
+      return null;
+    }
+
+    return {
+      id: data.id,
+      nome: data.nome,
+      unidadePadrao: data.unidade_medida,
+      categoriaSugerida: data.categoria_sugerida || undefined,
+      dataCadastro: data.created_at ? data.created_at.split('T')[0] : '',
+    };
+  },
+
+  async atualizar(id: string, mat: Partial<Material>): Promise<boolean> {
+    const payload: any = {};
+    if (mat.nome !== undefined) payload.nome = mat.nome;
+    if (mat.unidadePadrao !== undefined) payload.unidade_medida = mat.unidadePadrao;
+    if (mat.categoriaSugerida !== undefined) payload.categoria_sugerida = mat.categoriaSugerida;
+
+    const { error } = await supabase
+      .from('materiais')
+      .update(payload)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao atualizar material no Supabase:', error);
+      return false;
+    }
+    return true;
+  },
+
+  async remover(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from('materiais')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao remover material no Supabase:', error);
+      return false;
+    }
+    return true;
+  }
+};
+
+export const ProducaoService = {
+  async listarPorObra(obraId: string): Promise<ProducaoItem[]> {
+    const { data, error } = await supabase
+      .from('producao_apontamentos')
+      .select('*')
+      .eq('obra_id', obraId)
+      .order('data_apontamento', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao buscar produção no Supabase:', error);
+      return [];
+    }
+
+    return (data || []).map(row => ({
+      id: row.id,
+      obraId: row.obra_id,
+      produto: row.produto || row.item_etapa,
+      quantidade: Number(row.quantidade_executada || 0),
+      comprimentoMetros: row.comprimento_metros ? Number(row.comprimento_metros) : undefined,
+      especificacao: row.especificacao || undefined,
+      data: row.data_apontamento,
+      destino: row.destino || 'Obra Juscelino Mola',
+      observacoes: row.observacoes || undefined,
+      criadoPor: row.criado_por || 'Sistema',
+    }));
+  },
+
+  async criar(item: Partial<ProducaoItem>): Promise<ProducaoItem | null> {
+    const { data, error } = await supabase
+      .from('producao_apontamentos')
+      .insert({
+        obra_id: item.obraId,
+        data_apontamento: item.data || new Date().toISOString().split('T')[0],
+        item_etapa: item.produto || 'Produção',
+        quantidade_executada: item.quantidade || 0,
+        unidade: 'un',
+        produto: item.produto,
+        comprimento_metros: item.comprimentoMetros,
+        especificacao: item.especificacao,
+        destino: item.destino,
+        observacoes: item.observacoes,
+        criado_por: item.criadoPor,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erro ao registrar produção no Supabase:', error);
+      return null;
+    }
+
+    return {
+      id: data.id,
+      obraId: data.obra_id,
+      produto: data.produto || data.item_etapa,
+      quantidade: Number(data.quantidade_executada || 0),
+      comprimentoMetros: data.comprimento_metros ? Number(data.comprimento_metros) : undefined,
+      especificacao: data.especificacao || undefined,
+      data: data.data_apontamento,
+      destino: data.destino || 'Obra',
+      observacoes: data.observacoes || undefined,
+      criadoPor: data.criado_por || 'Sistema',
+    };
+  },
+
+  async atualizar(id: string, item: Partial<ProducaoItem>): Promise<boolean> {
+    const payload: any = {};
+    if (item.produto !== undefined) {
+      payload.produto = item.produto;
+      payload.item_etapa = item.produto;
+    }
+    if (item.quantidade !== undefined) payload.quantidade_executada = item.quantidade;
+    if (item.comprimentoMetros !== undefined) payload.comprimento_metros = item.comprimentoMetros;
+    if (item.especificacao !== undefined) payload.especificacao = item.especificacao;
+    if (item.data !== undefined) payload.data_apontamento = item.data;
+    if (item.destino !== undefined) payload.destino = item.destino;
+    if (item.observacoes !== undefined) payload.observacoes = item.observacoes;
+
+    const { error } = await supabase
+      .from('producao_apontamentos')
+      .update(payload)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao atualizar produção no Supabase:', error);
+      return false;
+    }
+    return true;
+  },
+
+  async remover(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from('producao_apontamentos')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao excluir apontamento de produção no Supabase:', error);
       return false;
     }
     return true;
