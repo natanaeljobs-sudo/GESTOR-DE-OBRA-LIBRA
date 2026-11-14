@@ -1,0 +1,46 @@
+schemaVersion: 1
+generatedAt: 2026-11-13T19:23:45-03:00
+reversa:
+  version: "1.3.6"
+producedBy: screen-translator
+sourcePlatform: react-spa-tailwind
+targetPlatform: web-spa-react19
+oracleAvailable: false
+oracleHash: null
+oracleCommand: null
+
+normalizationRules:
+  - lineEndings: "\n"
+  - trimTrailingSpaces: false
+  - stripAnsiColors: false
+  - normalizeUtf8: true
+  - injectClock: "2026-01-01T00:00:00Z"
+  - seedRandom: 42
+
+screens:
+  - name: LoginModal
+    legacyOrigin: "src/components/auth/LoginView.tsx"
+    capture:
+      command: "npm run dev & curl http://localhost:5173"
+      expectedExitCode: 0
+      determinismStrategy: "fake-clock + fixed-seed"
+    file: "login-modal.html"
+    format: "html-css-snapshot"
+    present: false
+    sha256: null
+    deviations: [DEV-001]
+    notes: "Captura de snapshot HTML/CSS da tela de login"
+
+  - name: RecibosView
+    legacyOrigin: "src/components/recibos/ReciboPreviewModal.tsx"
+    capture:
+      command: "npm run dev & curl http://localhost:5173"
+      expectedExitCode: 0
+      determinismStrategy: "fake-clock + fixed-seed"
+    file: "recibo-a4.html"
+    format: "html-css-snapshot"
+    present: false
+    sha256: null
+    deviations: [DEV-002]
+    notes: "Visualização A4 de recibo"
+

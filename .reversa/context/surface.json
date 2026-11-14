@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-11-13T16:08:00-03:00",
+  "project_root": "c:/Users/Natanael/Desktop/SISTEMA LIBRA - OBRAS",
+  "languages": [
+    { "name": "TypeScript", "extensions": [".ts", ".tsx"], "file_count": 33 },
+    { "name": "HTML", "extensions": [".html"], "file_count": 3 },
+    { "name": "CSS", "extensions": [".css"], "file_count": 1 }
+  ],
+  "primary_language": "TypeScript",
+  "frameworks": [
+    { "name": "React", "version": "19.0.1", "source": "package.json" },
+    { "name": "Vite", "version": "8.3.0", "source": "package.json" },
+    { "name": "Tailwind CSS", "version": "4.3.3", "source": "package.json" },
+    { "name": "vite-plugin-pwa", "version": "2.0.0", "source": "package.json" }
+  ],
+  "package_manager": "bun",
+  "entry_points": [
+    { "path": "index.html", "type": "html_entry" },
+    { "path": "src/main.tsx", "type": "app_entry" },
+    { "path": "src/App.tsx", "type": "root_component" }
+  ],
+  "config_files": [
+    "package.json",
+    "vite.config.ts",
+    "tsconfig.json",
+    ".env.example"
+  ],
+  "ci_cd": [],
+  "database_hints": [],
+  "test_framework": null,
+  "test_file_count": 0,
+  "modules": [
+    "auth",
+    "dashboard",
+    "alertas",
+    "cartoes",
+    "despesas",
+    "maodeobra",
+    "materiais",
+    "orcamentos",
+    "producao",
+    "recibos",
+    "relatorios",
+    "usuarios"
+  ],
+  "total_files": 37,
+  "organization_suggestion": {
+    "granularity": "module",
+    "rationale": "A estrutura de src/components/ está organizada por pastas de domínio: auth, dashboard, alertas, cartoes, despesas, maodeobra, materiais, orcamentos, producao, recibos, relatorios e usuarios.",
+    "signals": [
+      {
+        "type": "top_level_domain_folders",
+        "evidence": [
+          "src/components/auth/",
+          "src/components/dashboard/",
+          "src/components/despesas/",
+          "src/components/maodeobra/",
+          "src/components/materiais/",
+          "src/components/orcamentos/",
+          "src/components/producao/",
+          "src/components/recibos/",
+          "src/components/relatorios/",
+          "src/components/usuarios/"
+        ]
+      }
+    ],
+    "features": []
+  }
+}
+

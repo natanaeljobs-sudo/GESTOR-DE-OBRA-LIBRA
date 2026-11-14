@@ -1,0 +1,42 @@
+{
+  "startedAt": "2026-11-13T17:17:35-03:00",
+  "engine": "antigravity",
+  "reversaVersion": "1.3.6",
+  "currentAgent": {
+    "agent": null,
+    "phase": null,
+    "status": "complete",
+    "topologyApproved": true,
+    "screenModeApproved": true
+  },
+  "completedAgents": [
+    "paradigm_advisor",
+    "curator",
+    "strategist",
+    "designer",
+    "screen_translator",
+    "inspector"
+  ],
+  "pendingAgents": [],
+  "lastCheckpoint": "pipeline_completed",
+  "artifacts": {
+    "migration_brief.md": "sha256:migration-brief-libra-obras",
+    "paradigm_decision.md": "sha256:paradigm-decision-libra-obras",
+    "target_business_rules.md": "sha256:target-business-rules-libra-obras",
+    "discard_log.md": "sha256:discard-log-libra-obras",
+    "ambiguity_log.md": "sha256:ambiguity-log-libra-obras",
+    "migration_strategy.md": "sha256:migration-strategy-libra-obras",
+    "risk_register.md": "sha256:risk-register-libra-obras",
+    "cutover_plan.md": "sha256:cutover-plan-libra-obras",
+    "topology_decision.md": "sha256:topology-decision-libra-obras",
+    "target_architecture.md": "sha256:target-architecture-libra-obras",
+    "target_domain_model.md": "sha256:target-domain-model-libra-obras",
+    "target_data_model.md": "sha256:target-data-model-libra-obras",
+    "data_migration_plan.md": "sha256:data-migration-plan-libra-obras",
+    "screen_modernization_decision.md": "sha256:screen-modernization-decision-libra-obras",
+    "target_screens.md": "sha256:target-screens-libra-obras",
+    "screen_deviation_log.md": "sha256:screen-deviation-log-libra-obras",
+    "parity_specs.md": "sha256:parity-specs-libra-obras",
+    "handoff.md": "sha256:handoff-libra-obras"
+  }
+}

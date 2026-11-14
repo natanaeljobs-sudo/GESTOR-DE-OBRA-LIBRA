@@ -1,0 +1,114 @@
+{
+  "generated_at": "2026-11-13T16:12:30-03:00",
+  "modules": [
+    {
+      "name": "auth",
+      "path": "src/components/auth",
+      "purpose": "Autenticação de usuários e solicitação de acesso",
+      "primary_files": ["src/components/auth/LoginView.tsx"],
+      "entities": ["Usuario", "SolicitacaoAcesso"],
+      "dependencies": ["usuarios"],
+      "complexity": "medium"
+    },
+    {
+      "name": "dashboard",
+      "path": "src/components/dashboard",
+      "purpose": "Painel executivo da obra, orçamento, etapas e indicadores",
+      "primary_files": ["src/components/dashboard/DashboardView.tsx"],
+      "entities": ["Obra", "Etapa", "Despesa", "Diaria", "AlertaPendencia"],
+      "dependencies": ["despesas", "maodeobra", "alertas"],
+      "complexity": "medium"
+    },
+    {
+      "name": "alertas",
+      "path": "src/components/alertas",
+      "purpose": "Exibição e navegação para pendências e alertas financeiros",
+      "primary_files": ["src/components/alertas/AlertasView.tsx"],
+      "entities": ["AlertaPendencia"],
+      "dependencies": ["despesas", "maodeobra", "cartoes"],
+      "complexity": "low"
+    },
+    {
+      "name": "cartoes",
+      "path": "src/components/cartoes",
+      "purpose": "Gestão de cartões/contas e parcelas de despesas",
+      "primary_files": ["src/components/cartoes/CartoesView.tsx"],
+      "entities": ["CartaoConta", "Parcela"],
+      "dependencies": ["despesas"],
+      "complexity": "medium"
+    },
+    {
+      "name": "despesas",
+      "path": "src/components/despesas",
+      "purpose": "Lançamento de despesas, rateio de itens e conferência",
+      "primary_files": ["src/components/despesas/DespesasView.tsx"],
+      "entities": ["Despesa", "ItemDespesa"],
+      "dependencies": ["materiais", "cartoes"],
+      "complexity": "high"
+    },
+    {
+      "name": "maodeobra",
+      "path": "src/components/maodeobra",
+      "purpose": "Gestão de trabalhadores e lançamento de diárias",
+      "primary_files": ["src/components/maodeobra/MaoDeObraView.tsx"],
+      "entities": ["Trabalhador", "Diaria"],
+      "dependencies": ["recibos"],
+      "complexity": "high"
+    },
+    {
+      "name": "materiais",
+      "path": "src/components/materiais",
+      "purpose": "Catálogo de materiais e unidades padrão",
+      "primary_files": ["src/components/materiais/MateriaisView.tsx"],
+      "entities": ["Material"],
+      "dependencies": [],
+      "complexity": "low"
+    },
+    {
+      "name": "orcamentos",
+      "path": "src/components/orcamentos",
+      "purpose": "Cotações de fornecedores e conversão em despesa",
+      "primary_files": ["src/components/orcamentos/OrcamentosView.tsx"],
+      "entities": ["Orcamento", "ItemOrcamento"],
+      "dependencies": ["despesas", "materiais"],
+      "complexity": "medium"
+    },
+    {
+      "name": "producao",
+      "path": "src/components/producao",
+      "purpose": "Controle de produção própria de insumos/trilhos",
+      "primary_files": ["src/components/producao/ProducaoView.tsx"],
+      "entities": ["ProducaoItem"],
+      "dependencies": [],
+      "complexity": "low"
+    },
+    {
+      "name": "recibos",
+      "path": "src/components/recibos",
+      "purpose": "Emissão, visualização e impressão de recibos de pagamento",
+      "primary_files": ["src/components/recibos/RecibosView.tsx", "src/components/recibos/ReciboPreviewModal.tsx"],
+      "entities": ["ReciboPagamento"],
+      "dependencies": ["maodeobra"],
+      "complexity": "high"
+    },
+    {
+      "name": "relatorios",
+      "path": "src/components/relatorios",
+      "purpose": "Relatórios gerenciais da obra e exportação para impressão",
+      "primary_files": ["src/components/relatorios/RelatoriosView.tsx", "src/components/relatorios/RelatorioObraImpresso.tsx"],
+      "entities": ["Obra", "Despesa", "Diaria", "Etapa"],
+      "dependencies": ["despesas", "maodeobra"],
+      "complexity": "medium"
+    },
+    {
+      "name": "usuarios",
+      "path": "src/components/usuarios",
+      "purpose": "Gestão de usuários, perfis e permissões por módulo",
+      "primary_files": ["src/components/usuarios/UsuariosView.tsx"],
+      "entities": ["Usuario", "PermissaoModulo", "SolicitacaoAcesso"],
+      "dependencies": ["auth"],
+      "complexity": "medium"
+    }
+  ]
+}
+

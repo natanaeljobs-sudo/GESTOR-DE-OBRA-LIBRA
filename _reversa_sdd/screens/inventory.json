@@ -1,0 +1,14 @@
+[
+  { "id": "auth", "name": "LoginModal", "file": "components/LoginModal.tsx", "route": "/login" },
+  { "id": "dashboard", "name": "DashboardView", "file": "components/DashboardView.tsx", "route": "/" },
+  { "id": "despesas", "name": "DespesasView", "file": "components/DespesasView.tsx", "route": "/despesas" },
+  { "id": "cartoes", "name": "CartoesView", "file": "components/CartoesView.tsx", "route": "/cartoes" },
+  { "id": "maodeobra", "name": "MaoDeObraView", "file": "components/MaoDeObraView.tsx", "route": "/maodeobra" },
+  { "id": "recibos", "name": "RecibosView", "file": "components/RecibosView.tsx", "route": "/recibos" },
+  { "id": "materiais", "name": "MateriaisView", "file": "components/MateriaisView.tsx", "route": "/materiais" },
+  { "id": "orcamentos", "name": "OrcamentosView", "file": "components/OrcamentosView.tsx", "route": "/orcamentos" },
+  { "id": "producao", "name": "ProducaoView", "file": "components/ProducaoView.tsx", "route": "/producao" },
+  { "id": "alertas", "name": "AlertasView", "file": "components/AlertasView.tsx", "route": "/alertas" },
+  { "id": "relatorios", "name": "RelatoriosView", "file": "components/RelatoriosView.tsx", "route": "/relatorios" },
+  { "id": "usuarios", "name": "UsuariosView", "file": "components/UsuariosView.tsx", "route": "/usuarios" }
+]
