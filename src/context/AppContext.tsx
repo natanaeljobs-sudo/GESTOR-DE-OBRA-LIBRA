@@ -34,7 +34,7 @@ import {
 } from '../data/initialData';
 import { valorPorExtenso } from '../utils/currency';
 import { getTodayISO } from '../utils/date';
-import { ObrasService, DespesasService, TrabalhadoresService } from '../services/supabaseApi';
+import { ObrasService, DespesasService, TrabalhadoresService, DiariasService, RecibosService } from '../services/supabaseApi';
 import { supabase } from '../lib/supabase';
 
 export type TabType = 
@@ -468,6 +468,28 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const outrasObras = prev.filter(d => d.obraId !== activeObraId);
             const mapa = new Map(prev.filter(d => d.obraId === activeObraId).map(d => [d.id, d]));
             despRemotas.forEach(d => mapa.set(d.id, { ...mapa.get(d.id), ...d }));
+            return [...Array.from(mapa.values()), ...outrasObras];
+          });
+        }
+
+        // 4. Carregar Diárias da Obra Ativa
+        const diariasRemotas = await DiariasService.listarPorObra(activeObraId);
+        if (diariasRemotas.length > 0) {
+          setDiarias(prev => {
+            const outrasObras = prev.filter(d => d.obraId !== activeObraId);
+            const mapa = new Map(prev.filter(d => d.obraId === activeObraId).map(d => [d.id, d]));
+            diariasRemotas.forEach(d => mapa.set(d.id, { ...mapa.get(d.id), ...d }));
+            return [...Array.from(mapa.values()), ...outrasObras];
+          });
+        }
+
+        // 5. Carregar Recibos da Obra Ativa
+        const recibosRemotos = await RecibosService.listarPorObra(activeObraId);
+        if (recibosRemotos.length > 0) {
+          setRecibos(prev => {
+            const outrasObras = prev.filter(r => r.obraId !== activeObraId);
+            const mapa = new Map(prev.filter(r => r.obraId === activeObraId).map(r => [r.id, r]));
+            recibosRemotos.forEach(r => mapa.set(r.id, { ...mapa.get(r.id), ...r }));
             return [...Array.from(mapa.values()), ...outrasObras];
           });
         }
@@ -926,14 +948,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       id: `diaria-${Date.now()}`,
     };
     setDiarias(prev => [nova, ...prev]);
+    DiariasService.criar(nova).then(salva => {
+      if (salva) {
+        setDiarias(prev => prev.map(d => (d.id === nova.id ? { ...d, id: salva.id } : d)));
+      }
+    });
   };
 
   const updateDiaria = (diaria: Diaria) => {
     setDiarias(prev => prev.map(d => (d.id === diaria.id ? diaria : d)));
+    DiariasService.atualizar(diaria.id, diaria);
   };
 
   const deleteDiaria = (id: string) => {
     setDiarias(prev => prev.filter(d => d.id !== id));
+    DiariasService.remover(id);
     showToast(`Diária excluída com sucesso.`, 'success', 'Diária excluída');
   };
 
@@ -952,6 +981,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         return d;
       })
     );
+    // Atualizar no Supabase
+    diariasIds.forEach(id => {
+      DiariasService.atualizar(id, {
+        statusPagamento: 'pago',
+        comprovanteUrl: comprovanteUrl,
+      });
+    });
     // Dismiss corresponding alerts
     setAlertas(prev => prev.filter(a => !diariasIds.includes(a.entidadeId)));
   };
@@ -1003,6 +1039,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     setRecibos(prev => [novoRecibo, ...prev]);
 
+    RecibosService.criar(novoRecibo).then(salvo => {
+      if (salvo) {
+        setRecibos(prev => prev.map(r => (r.id === novoRecibo.id ? { ...r, id: salvo.id } : r)));
+        // Atualizar recibo_id nas diárias vinculadas
+        if (dados.diariasIds.length > 0) {
+          dados.diariasIds.forEach(diaId => {
+            DiariasService.atualizar(diaId, { reciboId: salvo.id });
+          });
+        }
+      }
+    });
+
     if (dados.marcarComoPagas && dados.diariasIds.length > 0) {
       marcarDiariasPagas(dados.diariasIds);
     }
@@ -1023,9 +1071,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setDiarias(prev =>
         prev.map(d => (rec.diariasIds.includes(d.id) ? { ...d, statusPagamento: 'pendente', dataPagamento: undefined } : d))
       );
+      rec.diariasIds.forEach(diaId => {
+        DiariasService.atualizar(diaId, { statusPagamento: 'pendente' });
+      });
     }
 
     setRecibos(prev => prev.filter(r => r.id !== id));
+    RecibosService.remover(id);
     showToast(`Recibo "${rec.numeroRecibo}" excluído do histórico.`, 'success', 'Recibo excluído');
   };
 
