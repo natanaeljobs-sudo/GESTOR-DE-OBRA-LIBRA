@@ -34,7 +34,7 @@ import {
 } from '../data/initialData';
 import { valorPorExtenso } from '../utils/currency';
 import { getTodayISO } from '../utils/date';
-import { ObrasService, DespesasService, TrabalhadoresService, DiariasService, RecibosService, MateriaisService, ProducaoService } from '../services/supabaseApi';
+import { ObrasService, DespesasService, TrabalhadoresService, DiariasService, RecibosService, MateriaisService, ProducaoService, CartoesService } from '../services/supabaseApi';
 import { supabase } from '../lib/supabase';
 
 export type TabType = 
@@ -163,7 +163,9 @@ interface AppContextType {
   // Cartões & Parcelas
   cartoes: CartaoConta[];
   parcelas: Parcela[];
-  addCartao: (cartao: Omit<CartaoConta, 'id'>) => void;
+  addCartao: (cartao: Omit<CartaoConta, 'id'>) => CartaoConta;
+  updateCartao: (cartao: CartaoConta) => void;
+  deleteCartao: (id: string) => void;
   pagarParcela: (parcelaId: string) => void;
 
   // Alertas
@@ -512,6 +514,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const mapa = new Map(prev.filter(p => p.obraId === activeObraId).map(p => [p.id, p]));
             producaoRemota.forEach(p => mapa.set(p.id, { ...mapa.get(p.id), ...p }));
             return [...Array.from(mapa.values()), ...outrasObras];
+          });
+        }
+
+        // 8. Carregar Cartões da Obra / Gerais
+        const cartoesRemotos = await CartoesService.listarPorObra(activeObraId);
+        if (cartoesRemotos.length > 0) {
+          setCartoes(prev => {
+            const mapa = new Map(prev.map(c => [c.id, c]));
+            cartoesRemotos.forEach(c => mapa.set(c.id, { ...mapa.get(c.id), ...c }));
+            return Array.from(mapa.values());
           });
         }
       }
@@ -1211,12 +1223,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     showToast('Registro de produção excluído com sucesso.', 'success', 'Produção excluída');
   };
 
-  const addCartao = (cartao: Omit<CartaoConta, 'id'>) => {
+  const addCartao = (cartao: Omit<CartaoConta, 'id'>): CartaoConta => {
     const novo: CartaoConta = {
       ...cartao,
       id: `cartao-${Date.now()}`,
     };
     setCartoes(prev => [...prev, novo]);
+    CartoesService.criar(novo, activeObraId).then(salvo => {
+      if (salvo) {
+        setCartoes(prev => prev.map(c => (c.id === novo.id ? { ...c, id: salvo.id } : c)));
+      }
+    });
+    showToast(`Cartão/Conta "${novo.apelido}" adicionado com sucesso.`, 'success', 'Cartão Cadastrado');
+    return novo;
+  };
+
+  const updateCartao = (cartao: CartaoConta) => {
+    setCartoes(prev => prev.map(c => (c.id === cartao.id ? cartao : c)));
+    CartoesService.atualizar(cartao.id, cartao);
+    showToast(`Dados de "${cartao.apelido}" atualizados.`, 'success', 'Cartão Atualizado');
+  };
+
+  const deleteCartao = (id: string) => {
+    const card = cartoes.find(c => c.id === id);
+    setCartoes(prev => prev.filter(c => c.id !== id));
+    CartoesService.remover(id);
+    if (card) {
+      showToast(`"${card.apelido}" removido.`, 'success', 'Cartão Removido');
+    }
   };
 
   const pagarParcela = (parcelaId: string) => {
@@ -1327,6 +1361,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         cartoes,
         parcelas,
         addCartao,
+        updateCartao,
+        deleteCartao,
         pagarParcela,
         alertas,
         resolverAlerta,

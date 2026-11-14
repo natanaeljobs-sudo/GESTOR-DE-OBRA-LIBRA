@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { Obra, Despesa, Trabalhador, Diaria, ReciboPagamento, Material, ProducaoItem } from '../types';
+import { Obra, Despesa, Trabalhador, Diaria, ReciboPagamento, Material, ProducaoItem, CartaoConta } from '../types';
 
 export const ObrasService = {
   async listar(): Promise<Obra[]> {
@@ -714,6 +714,108 @@ export const ProducaoService = {
 
     if (error) {
       console.error('Erro ao excluir apontamento de produção no Supabase:', error);
+      return false;
+    }
+    return true;
+  }
+};
+
+export const CartoesService = {
+  async listarPorObra(obraId?: string): Promise<CartaoConta[]> {
+    let query = supabase
+      .from('cartoes')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (obraId) {
+      query = query.eq('obra_id', obraId);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      console.error('Erro ao buscar cartões no Supabase:', error);
+      return [];
+    }
+
+    return (data || []).map(row => ({
+      id: row.id,
+      apelido: row.nome,
+      tipo: row.tipo || (row.limite_total > 0 ? 'credito' : 'conta_corrente'),
+      bandeira: row.bandeira || 'Mastercard',
+      ultimosDigitos: row.ultimos_digitos || '',
+      diaFechamento: row.dia_fechamento || 25,
+      diaVencimento: row.dia_vencimento || 5,
+      limite: Number(row.limite_total || 0),
+      titular: row.titular || 'Natanael Master',
+    }));
+  },
+
+  async criar(cartao: Partial<CartaoConta>, obraId?: string): Promise<CartaoConta | null> {
+    const payload: any = {
+      nome: cartao.apelido || 'Novo Cartão',
+      ultimos_digitos: cartao.ultimosDigitos || '',
+      limite_total: cartao.limite || 0,
+      dia_fechamento: cartao.diaFechamento || 25,
+      dia_vencimento: cartao.diaVencimento || 5,
+      ativo: true,
+    };
+
+    if (obraId) {
+      payload.obra_id = obraId;
+    }
+
+    const { data, error } = await supabase
+      .from('cartoes')
+      .insert(payload)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erro ao cadastrar cartão no Supabase:', error);
+      return null;
+    }
+
+    return {
+      id: data.id,
+      apelido: data.nome,
+      tipo: data.tipo || (data.limite_total > 0 ? 'credito' : 'conta_corrente'),
+      bandeira: data.bandeira || cartao.bandeira || 'Mastercard',
+      ultimosDigitos: data.ultimos_digitos || '',
+      diaFechamento: data.dia_fechamento || 25,
+      diaVencimento: data.dia_vencimento || 5,
+      limite: Number(data.limite_total || 0),
+      titular: data.titular || cartao.titular || 'Natanael Master',
+    };
+  },
+
+  async atualizar(id: string, cartao: Partial<CartaoConta>): Promise<boolean> {
+    const payload: any = {};
+    if (cartao.apelido !== undefined) payload.nome = cartao.apelido;
+    if (cartao.ultimosDigitos !== undefined) payload.ultimos_digitos = cartao.ultimosDigitos;
+    if (cartao.limite !== undefined) payload.limite_total = cartao.limite;
+    if (cartao.diaFechamento !== undefined) payload.dia_fechamento = cartao.diaFechamento;
+    if (cartao.diaVencimento !== undefined) payload.dia_vencimento = cartao.diaVencimento;
+
+    const { error } = await supabase
+      .from('cartoes')
+      .update(payload)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao atualizar cartão no Supabase:', error);
+      return false;
+    }
+    return true;
+  },
+
+  async remover(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from('cartoes')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao remover cartão no Supabase:', error);
       return false;
     }
     return true;

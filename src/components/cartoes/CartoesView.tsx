@@ -234,7 +234,7 @@ const DEFAULT_PARCELAS: Parcela[] = [
 ];
 
 export const CartoesView: React.FC = () => {
-  const { navigateToTabWithFilter } = useApp();
+  const { cartoes, addCartao, updateCartao, deleteCartao, navigateToTabWithFilter } = useApp();
 
   // Load Material Symbols Font if not already present
   useEffect(() => {
@@ -248,8 +248,25 @@ export const CartoesView: React.FC = () => {
     }
   }, []);
 
-  // Cards local state com os dados oficiais do modelo
-  const [cardsList, setCardsList] = useState<ExtendedCartao[]>(DEFAULT_CARDS);
+  // Sincroniza cardsList com o estado do AppContext / Supabase
+  const [cardsList, setCardsList] = useState<ExtendedCartao[]>(() => {
+    if (cartoes && cartoes.length > 0) {
+      return cartoes.map(c => ({
+        ...c,
+        isConta: c.tipo === 'conta_corrente',
+      }));
+    }
+    return DEFAULT_CARDS;
+  });
+
+  useEffect(() => {
+    if (cartoes && cartoes.length > 0) {
+      setCardsList(cartoes.map(c => ({
+        ...c,
+        isConta: c.tipo === 'conta_corrente',
+      })));
+    }
+  }, [cartoes]);
 
   // Parcelas local state com os dados oficiais do modelo
   const [parcelasList, setParcelasList] = useState<Parcela[]>(DEFAULT_PARCELAS);
@@ -419,6 +436,7 @@ export const CartoesView: React.FC = () => {
     };
 
     setCardsList((prev) => [...prev, newCard]);
+    addCartao(newCard);
     setIsCadastroModalOpen(false);
     showToast('Cadastrado com sucesso', `${newCard.apelido} foi adicionado à obra.`);
 
@@ -446,24 +464,22 @@ export const CartoesView: React.FC = () => {
     if (!editingCartao) return;
 
     const isConta = editCardTipo === 'Pix';
+    const updatedCard: ExtendedCartao = {
+      ...editingCartao,
+      apelido: editCardNome.trim().toUpperCase(),
+      bandeira: editCardTipo,
+      tipo: isConta ? 'conta_corrente' : 'credito',
+      isConta,
+      ultimosDigitos: editCardDigitos.trim(),
+      diaFechamento: isConta ? 1 : editCardFechamento,
+      diaVencimento: isConta ? 1 : editCardVencimento,
+      titular: editCardTitular.trim(),
+    };
+
     setCardsList((prev) =>
-      prev.map((c) => {
-        if (c.id === editingCartao.id) {
-          return {
-            ...c,
-            apelido: editCardNome.trim().toUpperCase(),
-            bandeira: editCardTipo,
-            tipo: isConta ? 'conta_corrente' : 'credito',
-            isConta,
-            ultimosDigitos: editCardDigitos.trim(),
-            diaFechamento: isConta ? 1 : editCardFechamento,
-            diaVencimento: isConta ? 1 : editCardVencimento,
-            titular: editCardTitular.trim(),
-          };
-        }
-        return c;
-      })
+      prev.map((c) => (c.id === editingCartao.id ? updatedCard : c))
     );
+    updateCartao(updatedCard);
 
     setIsEditarCartaoModalOpen(false);
     setEditingCartao(null);
@@ -479,7 +495,9 @@ export const CartoesView: React.FC = () => {
   const handleConfirmDeleteCartao = () => {
     if (!deletingCartao) return;
     const nome = deletingCartao.apelido;
-    setCardsList((prev) => prev.filter((c) => c.id !== deletingCartao.id));
+    const id = deletingCartao.id;
+    setCardsList((prev) => prev.filter((c) => c.id !== id));
+    deleteCartao(id);
     setIsExcluirCartaoModalOpen(false);
     setDeletingCartao(null);
     showToast('Cartão removido', `"${nome}" foi excluído com sucesso.`);
