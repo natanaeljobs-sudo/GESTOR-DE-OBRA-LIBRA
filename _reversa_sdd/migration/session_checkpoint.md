@@ -1,8 +1,8 @@
 # Checkpoint de Sessão — SISTEMA LIBRA - OBRAS
 
-> **Última Atualização**: 2026-11-14 18:22 (Horário de Brasília)
+> **Última Atualização**: 2026-11-14 18:53 (Horário de Brasília)
 > **Branch**: `main`
-> **Último Commit**: `1be84d8` — `TEST(PARIDADE): HOMOLOGACAO DE PARIDADE FUNCIONAL E REGRAS DE NEGOCIO CONCLUIDA COM SUCESSO`
+> **Último Commit**: `22c9645` — `CHORE: INSTALA GOOGLE STITCH SDK PARA INTEGRACAO DE TELAS`
 > **Status Remoto**: Sincronizado com `origin/main` (GitHub)
 
 ---
@@ -16,7 +16,7 @@
    - Bucket `comprovantes` ativo para upload e armazenamento de notas fiscais e fotos de recibos.
    - Tabelas alinhadas e com suporte a sincronização offline/online.
 3. **Módulos Migrados com Persistência em Tempo Real**:
-   - **Autenticação**: Login real Supabase Auth + persistência de sessão.
+   - **Autenticação**: Login real Supabase Auth + persistência de sessão. Removido o bloco "Acesso Rápido para Teste" de `src/components/auth/LoginView.tsx`.
    - **Obras**: Cadastro, listagem e seleção de obra ativa.
    - **Despesas**: Cadastro com discriminador de itens, edição, exclusão e upload de comprovantes no Supabase Storage.
    - **Mão de Obra e Recibos**: Gestão de trabalhadores, diárias, cálculo de frações, bônus, emissão de recibos e rastreabilidade com vinculação de `recibo_id`.
@@ -26,16 +26,24 @@
    - **Orçamentos & Cotações**: Comparador de propostas, cadastro de cotações com múltiplos itens e conversão com persistência assíncrona automática em despesas reais no Supabase.
    - **Relatórios & Fechamentos Gerenciais**: Consolidação dinâmica por centros de custo, filtros por intervalo e etapa, exportação e impressão estruturada em A4.
    - **Usuários, Perfis e Permissões**: Integração do `UsuariosService` com `public.usuarios_perfis`, controle granular por nível de acesso (Master, Admin, Operador) e sincronização contínua.
-4. **Homologação de Paridade Concluída**:
-   - Todos os 3 cenários de paridade crítica (`PAR-01`, `PAR-02` e `PAR-03`) validados com 100% de sucesso.
-   - Relatório formal registrado em `_reversa_sdd/migration/relatorio_homologacao.md`.
-5. **Compilação e Deploy Git**:
+4. **Homologação de Paridade**:
+   - 100% dos cenários de paridade crítica (`PAR-01`, `PAR-02` e `PAR-03`) validados com sucesso e documentados em `_reversa_sdd/migration/relatorio_homologacao.md`.
+5. **Integração Google Stitch (MCP)**:
+   - `@google/stitch-sdk` instalado e autenticado com a API Key.
+   - Conexão estabelecida com o projeto oficial do Stitch (ID: `15694303215980426716`, contendo 50 telas mapeadas para Desktop, Tablet e Mobile).
+   - Teste de download de telas via MCP executado com sucesso.
+6. **Plan.md Atualizado**:
+   - `.reversa/plan.md` atualizado com todas as fases de Migração e Implementação registradas como concluídas.
+7. **Compilação e Deploy Git**:
    - Build de produção verificado com sucesso pelo Vite (`npm run build`).
    - Commits enviados para o repositório GitHub (`origin/main`).
 
 ---
 
-## 2. Próximo Passo:
-Avançar para a **Ativação e Publicação em Produção (Go-Live / Cutover)**:
-- Conectar o repositório GitHub à plataforma de hospedagem (Vercel, Netlify ou Cloudflare Pages).
-- Configurar as variáveis de ambiente de produção (`VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`).
+## 2. Ponto de Retomada na Próxima Sessão:
+- **Atualização de Telas com os designs do Stitch**:
+  - Iniciar a importação dos componentes visuais do projeto Stitch (`15694303215980426716`) para o código React:
+    1. `Dashboard — Oficial GitHub` (Desktop, Tablet e Mobile + Modais de Categorias e Semanas).
+    2. Telas de `Despesas`, `Mão de Obra`, `Cartões` e `Comparador`.
+  - Preservar todas as conexões já estabelecidas com o Supabase e com o `AppContext`.
+- **Go-Live / Cutover final** após a atualização visual.
