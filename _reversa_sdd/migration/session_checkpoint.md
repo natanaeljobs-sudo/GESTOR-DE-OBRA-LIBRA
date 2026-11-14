@@ -1,8 +1,8 @@
 # Checkpoint de Sessão — SISTEMA LIBRA - OBRAS
 
-> **Última Atualização**: 2026-11-14 17:09 (Horário de Brasília)
+> **Última Atualização**: 2026-11-14 17:13 (Horário de Brasília)
 > **Branch**: `main`
-> **Último Commit**: `bdf0899` — `FEAT(CARTOES): SINCRONIZACAO E PERSISTENCIA DE CARTOES E CONTAS NO SUPABASE`
+> **Último Commit**: `3adc475` — `FEAT(ORCAMENTOS): CONVERSAO DIRETA EM DESPESAS E INTEGRACAO REATIVA NO APPCONTEXT`
 > **Status Remoto**: Sincronizado com `origin/main` (GitHub)
 
 ---
@@ -23,6 +23,7 @@
    - **Materiais & Estoque**: CRUD sincronizado com `public.materiais`.
    - **Produção de Trilhos/Placas**: Apontamento e controle de lotes conectados a `public.producao_apontamentos`.
    - **Cartões & Contas Corporativas**: Cadastro, edição, remoção e listagem conectados a `public.cartoes` com reatividade no `AppContext`.
+   - **Orçamentos & Cotações**: Comparador de propostas, cadastro de cotações com múltiplos itens e conversão com persistência assíncrona automática em despesas reais no Supabase.
 4. **Compilação e Deploy Git**:
    - Build de produção verificado com sucesso pelo Vite (`npm run build`).
    - Commits enviados para o repositório GitHub (`origin/main`).
@@ -30,6 +31,6 @@
 ---
 
 ## 2. Próximo Passo:
-Avançar para o **Módulo de Orçamentos e Cotações** (`src/components/orcamentos/OrcamentosView.tsx`):
-- Persistência e conversão direta de orçamentos aprovados em despesas reais.
-- Mapeamento e exportação de relatórios consolidados da obra.
+Avançar para o **Módulo de Relatórios & Fechamentos Gerenciais** (`src/components/relatorios/RelatoriosView.tsx`):
+- Consolidação dos centros de custo por etapa e categoria.
+- Exportação e impressão de relatórios de fechamento da obra.
