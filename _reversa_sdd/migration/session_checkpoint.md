@@ -1,8 +1,8 @@
 # Checkpoint de Sessão — SISTEMA LIBRA - OBRAS
 
-> **Última Atualização**: 2026-11-14 17:16 (Horário de Brasília)
+> **Última Atualização**: 2026-11-14 17:41 (Horário de Brasília)
 > **Branch**: `main`
-> **Último Commit**: `6cce65f` — `FEAT(RELATORIOS): CONSOLIDACAO DINAMICA DE CENTROS DE CUSTO E DATA ATIVA DA OBRA`
+> **Último Commit**: `06cc563` — `FEAT(USUARIOS): PERSISTENCIA E SINCRONIZACAO DE PERFIS DE USUARIOS NO SUPABASE`
 > **Status Remoto**: Sincronizado com `origin/main` (GitHub)
 
 ---
@@ -25,13 +25,12 @@
    - **Cartões & Contas Corporativas**: Cadastro, edição, remoção e listagem conectados a `public.cartoes` com reatividade no `AppContext`.
    - **Orçamentos & Cotações**: Comparador de propostas, cadastro de cotações com múltiplos itens e conversão com persistência assíncrona automática em despesas reais no Supabase.
    - **Relatórios & Fechamentos Gerenciais**: Consolidação dinâmica por centros de custo, filtros por intervalo e etapa, exportação e impressão estruturada em A4.
+   - **Usuários, Perfis e Permissões**: Integração do `UsuariosService` com `public.usuarios_perfis`, controle granular por nível de acesso (Master, Admin, Operador) e sincronização contínua.
 4. **Compilação e Deploy Git**:
    - Build de produção verificado com sucesso pelo Vite (`npm run build`).
    - Commits enviados para o repositório GitHub (`origin/main`).
 
 ---
 
-## 2. Próximo Passo:
-Avançar para o **Módulo de Usuários, Perfis e Controle de Permissões** (`src/components/usuarios/UsuariosView.tsx`):
-- Persistência de usuários e solicitação de acesso integrada ao Supabase Auth e tabela `public.usuarios_perfis`.
-- Controle granular de permissões por perfil (Master, Admin, Operador).
+## 2. Status Geral da Migração:
+**100% dos módulos principais do SISTEMA LIBRA - OBRAS foram migrados para a stack moderna (React 19 + TypeScript + Tailwind CSS + Supabase/PostgreSQL) e sincronizados no repositório remoto.**
