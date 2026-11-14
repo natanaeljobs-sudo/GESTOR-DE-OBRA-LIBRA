@@ -1,8 +1,8 @@
 # Checkpoint de Sessão — SISTEMA LIBRA - OBRAS
 
-> **Última Atualização**: 2026-11-14 17:13 (Horário de Brasília)
+> **Última Atualização**: 2026-11-14 17:16 (Horário de Brasília)
 > **Branch**: `main`
-> **Último Commit**: `3adc475` — `FEAT(ORCAMENTOS): CONVERSAO DIRETA EM DESPESAS E INTEGRACAO REATIVA NO APPCONTEXT`
+> **Último Commit**: `6cce65f` — `FEAT(RELATORIOS): CONSOLIDACAO DINAMICA DE CENTROS DE CUSTO E DATA ATIVA DA OBRA`
 > **Status Remoto**: Sincronizado com `origin/main` (GitHub)
 
 ---
@@ -24,6 +24,7 @@
    - **Produção de Trilhos/Placas**: Apontamento e controle de lotes conectados a `public.producao_apontamentos`.
    - **Cartões & Contas Corporativas**: Cadastro, edição, remoção e listagem conectados a `public.cartoes` com reatividade no `AppContext`.
    - **Orçamentos & Cotações**: Comparador de propostas, cadastro de cotações com múltiplos itens e conversão com persistência assíncrona automática em despesas reais no Supabase.
+   - **Relatórios & Fechamentos Gerenciais**: Consolidação dinâmica por centros de custo, filtros por intervalo e etapa, exportação e impressão estruturada em A4.
 4. **Compilação e Deploy Git**:
    - Build de produção verificado com sucesso pelo Vite (`npm run build`).
    - Commits enviados para o repositório GitHub (`origin/main`).
@@ -31,6 +32,6 @@
 ---
 
 ## 2. Próximo Passo:
-Avançar para o **Módulo de Relatórios & Fechamentos Gerenciais** (`src/components/relatorios/RelatoriosView.tsx`):
-- Consolidação dos centros de custo por etapa e categoria.
-- Exportação e impressão de relatórios de fechamento da obra.
+Avançar para o **Módulo de Usuários, Perfis e Controle de Permissões** (`src/components/usuarios/UsuariosView.tsx`):
+- Persistência de usuários e solicitação de acesso integrada ao Supabase Auth e tabela `public.usuarios_perfis`.
+- Controle granular de permissões por perfil (Master, Admin, Operador).
