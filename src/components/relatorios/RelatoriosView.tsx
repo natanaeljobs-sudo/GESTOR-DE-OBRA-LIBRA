@@ -39,7 +39,7 @@ export const RelatoriosView: React.FC = () => {
 
   // Date range state
   const [dataInicio, setDataInicio] = useState(activeObra?.dataInicio || '2026-09-08');
-  const [dataFim, setDataFim] = useState(activeObra?.id === 'obra-juscelino-mola' ? '2026-10-30' : getTodayISO());
+  const [dataFim, setDataFim] = useState(getTodayISO());
   const [selectedEtapa, setSelectedEtapa] = useState('todas');
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   
