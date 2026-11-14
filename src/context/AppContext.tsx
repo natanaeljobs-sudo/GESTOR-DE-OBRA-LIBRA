@@ -1183,6 +1183,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     setDespesas(prev => [novaDespesa, ...prev]);
 
+    // Persistência assíncrona da despesa gerada no Supabase
+    DespesasService.criar(novaDespesa).then(salva => {
+      if (salva) {
+        setDespesas(prev => prev.map(d => (d.id === novaDespesa.id ? { ...d, id: salva.id } : d)));
+      }
+    });
+
     // Update quote status without duplicating totals
     setOrcamentos(prev =>
       prev.map(o =>
@@ -1195,6 +1202,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           : o
       )
     );
+    showToast(`Orçamento "${orc.identificacao}" convertido em despesa com sucesso!`, 'success', 'Orçamento Convertido');
   };
 
   const addProducao = (item: Omit<ProducaoItem, 'id'>) => {

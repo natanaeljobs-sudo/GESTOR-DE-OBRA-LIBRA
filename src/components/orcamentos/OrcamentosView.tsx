@@ -336,7 +336,7 @@ const DEFAULT_ORCAMENTOS: ExtendedOrcamento[] = [
 ];
 
 export const OrcamentosView: React.FC = () => {
-  const { converterOrcamentoEmDespesa } = useApp();
+  const { orcamentos, addOrcamento, updateOrcamento, deleteOrcamento, converterOrcamentoEmDespesa } = useApp();
 
   // Load Material Symbols Font if not loaded
   useEffect(() => {
@@ -350,8 +350,45 @@ export const OrcamentosView: React.FC = () => {
     }
   }, []);
 
-  // Main state
+  // Main state inicializado com dados existentes no AppContext ou default
   const [orcamentosList, setOrcamentosList] = useState<ExtendedOrcamento[]>(DEFAULT_ORCAMENTOS);
+
+  useEffect(() => {
+    if (orcamentos && orcamentos.length > 0) {
+      setOrcamentosList(orcamentos.map((o, idx) => ({
+        id: o.id,
+        num: String(idx + 1).padStart(2, '0'),
+        empresa: o.fornecedorEmpresa,
+        ident: o.identificacao,
+        data: formatDateBR(o.data),
+        dataISO: o.data,
+        status: o.status === 'aprovado' || o.status === 'convertido_em_compra' ? 'aprovado' : o.status === 'recusado' ? 'recusado' : 'cotacao',
+        statusLabel: o.status === 'convertido_em_compra' ? 'Comprado' : o.status === 'aprovado' ? 'Aprovado' : o.status === 'recusado' ? 'Arquivado' : 'Cotação',
+        statusBadgeClass:
+          o.status === 'aprovado' || o.status === 'convertido_em_compra'
+            ? 'bg-[#4bd08b]/15 text-[#10bd9d] dark:text-[#4bd08b] border border-[#4bd08b]/30'
+            : o.status === 'recusado'
+            ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+            : 'bg-slate-100 dark:bg-slate-800 text-[#707a82] border border-slate-200 dark:border-slate-700',
+        total: o.valorTotal,
+        condicoes: o.condicoesPagamento || 'À VISTA',
+        obs: o.observacoes || '',
+        itens: (o.itens || []).map((it, iIdx) => ({
+          id: it.id || `it-${iIdx}`,
+          nome: it.materialNome,
+          materialNome: it.materialNome,
+          qtd: `${it.quantidade} ${it.unidade}`,
+          quantidade: it.quantidade,
+          un: it.unidade,
+          unidade: it.unidade,
+          preco: it.precoUnitarioCotado,
+          precoUnitarioCotado: it.precoUnitarioCotado,
+          subtotal: it.valorTotalCotado,
+          valorTotalCotado: it.valorTotalCotado,
+        })),
+      })));
+    }
+  }, [orcamentos]);
   const [activeTab, setActiveTab] = useState<'orcamentos' | 'comparador'>('orcamentos');
   const [orcamentosComparando, setOrcamentosComparando] = useState<string[]>([
     'orc-01',
@@ -574,6 +611,7 @@ export const OrcamentosView: React.FC = () => {
     if (!selectedOrc) return;
     setOrcamentosList(prev => prev.filter(o => o.id !== selectedOrc.id));
     setOrcamentosComparando(prev => prev.filter(id => id !== selectedOrc.id));
+    deleteOrcamento(selectedOrc.id);
     setIsModalExcluirOpen(false);
   };
 
