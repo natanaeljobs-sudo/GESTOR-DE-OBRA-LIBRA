@@ -104,14 +104,16 @@ export const DespesasService = {
       obraId: row.obra_id,
       descricao: row.descricao,
       categoria: (row.categoria as any) || 'outros',
-      etapaId: 'etapa-alvenaria',
-      fornecedorNome: row.descricao,
-      compradorNome: 'Administração',
+      etapaId: row.etapa_id || 'etapa-alvenaria',
+      fornecedorNome: row.fornecedor_nome || row.descricao,
+      compradorNome: row.comprador_nome || 'Administração',
       data: row.data_despesa,
       formaPagamento: (row.forma_pagamento?.toLowerCase() === 'pix' ? 'pix'
         : row.forma_pagamento?.toLowerCase() === 'cartão' ? 'cartao_credito'
+        : row.forma_pagamento?.toLowerCase() === 'cartao_debito' ? 'cartao_debito'
         : row.forma_pagamento?.toLowerCase() === 'boleto' ? 'boleto'
         : row.forma_pagamento?.toLowerCase() === 'transferência' ? 'transferencia'
+        : row.forma_pagamento?.toLowerCase() === 'dinheiro' ? 'dinheiro'
         : 'dinheiro'),
       cartaoId: row.cartao_id || undefined,
       valorTotalNota: Number(row.valor_total || 0),
@@ -119,14 +121,16 @@ export const DespesasService = {
       diferencaRateio: 0,
       statusConferencia: 'ok',
       comprovanteUrl: row.comprovante_url || undefined,
-      itens: [],
-      criadoPor: 'Sistema / Supabase',
+      observacoes: row.observacoes || undefined,
+      itens: Array.isArray(row.itens) ? row.itens : [],
+      criadoPor: row.comprador_nome || 'Sistema / Supabase',
       criadoEm: row.created_at,
     }));
   },
 
   async criar(despesa: Partial<Despesa>): Promise<Despesa | null> {
     const formaPagtoMapeada = despesa.formaPagamento === 'cartao_credito' ? 'Cartão'
+      : despesa.formaPagamento === 'cartao_debito' ? 'Cartão'
       : despesa.formaPagamento === 'pix' ? 'Pix'
       : despesa.formaPagamento === 'dinheiro' ? 'Dinheiro'
       : despesa.formaPagamento === 'transferencia' ? 'Transferência'
@@ -144,6 +148,11 @@ export const DespesasService = {
         data_despesa: despesa.data || new Date().toISOString().split('T')[0],
         comprovante_url: despesa.comprovanteUrl,
         cartao_id: despesa.cartaoId || null,
+        etapa_id: despesa.etapaId,
+        fornecedor_nome: despesa.fornecedorNome,
+        comprador_nome: despesa.compradorNome,
+        observacoes: despesa.observacoes,
+        itens: despesa.itens || [],
       })
       .select()
       .single();
@@ -158,9 +167,9 @@ export const DespesasService = {
       obraId: data.obra_id,
       descricao: data.descricao,
       categoria: data.categoria as any,
-      etapaId: despesa.etapaId || 'etapa-alvenaria',
-      fornecedorNome: despesa.fornecedorNome || data.descricao,
-      compradorNome: despesa.compradorNome || 'Administração',
+      etapaId: data.etapa_id || despesa.etapaId || 'etapa-alvenaria',
+      fornecedorNome: data.fornecedor_nome || despesa.fornecedorNome || data.descricao,
+      compradorNome: data.comprador_nome || despesa.compradorNome || 'Administração',
       data: data.data_despesa,
       formaPagamento: despesa.formaPagamento || 'dinheiro',
       cartaoId: data.cartao_id || undefined,
@@ -169,10 +178,46 @@ export const DespesasService = {
       diferencaRateio: despesa.diferencaRateio || 0,
       statusConferencia: despesa.statusConferencia || 'ok',
       comprovanteUrl: data.comprovante_url || undefined,
-      itens: despesa.itens || [],
+      observacoes: data.observacoes || despesa.observacoes,
+      itens: Array.isArray(data.itens) ? data.itens : (despesa.itens || []),
       criadoPor: despesa.criadoPor || 'Sistema',
       criadoEm: data.created_at,
     };
+  },
+
+  async atualizar(id: string, despesa: Partial<Despesa>): Promise<boolean> {
+    const payload: any = {};
+    if (despesa.descricao !== undefined) payload.descricao = despesa.descricao;
+    if (despesa.valorTotalNota !== undefined) payload.valor_total = despesa.valorTotalNota;
+    if (despesa.categoria !== undefined) payload.categoria = despesa.categoria;
+    if (despesa.data !== undefined) payload.data_despesa = despesa.data;
+    if (despesa.comprovanteUrl !== undefined) payload.comprovante_url = despesa.comprovanteUrl;
+    if (despesa.cartaoId !== undefined) payload.cartao_id = despesa.cartaoId || null;
+    if (despesa.etapaId !== undefined) payload.etapa_id = despesa.etapaId;
+    if (despesa.fornecedorNome !== undefined) payload.fornecedor_nome = despesa.fornecedorNome;
+    if (despesa.compradorNome !== undefined) payload.comprador_nome = despesa.compradorNome;
+    if (despesa.observacoes !== undefined) payload.observacoes = despesa.observacoes;
+    if (despesa.itens !== undefined) payload.itens = despesa.itens;
+    if (despesa.formaPagamento !== undefined) {
+      payload.forma_pagamento = despesa.formaPagamento === 'cartao_credito' ? 'Cartão'
+        : despesa.formaPagamento === 'cartao_debito' ? 'Cartão'
+        : despesa.formaPagamento === 'pix' ? 'Pix'
+        : despesa.formaPagamento === 'dinheiro' ? 'Dinheiro'
+        : despesa.formaPagamento === 'transferencia' ? 'Transferência'
+        : despesa.formaPagamento === 'boleto' ? 'Boleto'
+        : 'Dinheiro';
+    }
+
+    const { error } = await supabase
+      .from('despesas')
+      .update(payload)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao atualizar despesa no Supabase:', error);
+      return false;
+    }
+    return true;
   },
 
   async remover(id: string): Promise<boolean> {

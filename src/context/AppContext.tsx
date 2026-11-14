@@ -888,6 +888,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
 
     setDespesas(prev => prev.map(d => (d.id === despesa.id ? atualizada : d)));
+    DespesasService.atualizar(despesa.id, atualizada);
   };
 
   const deleteDespesa = (id: string) => {

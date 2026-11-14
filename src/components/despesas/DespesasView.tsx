@@ -4,6 +4,7 @@ import { Despesa, ItemDespesa, CategoriaDespesa, DestinoItem, FormaPagamento } f
 import { formatBRL, parseCurrencyInput } from '../../utils/currency';
 import { formatDateBR, getTodayISO } from '../../utils/date';
 import { Modal } from '../common/Modal';
+import { StorageService } from '../../services/storageService';
 import {
   Plus,
   Search,
@@ -15,6 +16,9 @@ import {
   CreditCard,
   Layers,
   ShoppingBag,
+  UploadCloud,
+  FileCheck,
+  Loader2,
 } from 'lucide-react';
 
 export const DespesasView: React.FC = () => {
@@ -54,6 +58,8 @@ export const DespesasView: React.FC = () => {
   const [valorTotalNota, setValorTotalNota] = useState<string>('');
   const [comprovanteUrl, setComprovanteUrl] = useState('');
   const [observacoes, setObservacoes] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Items for this expense
   const [itens, setItens] = useState<ItemDespesa[]>([
@@ -88,6 +94,7 @@ export const DespesasView: React.FC = () => {
     setValorTotalNota('');
     setComprovanteUrl('');
     setObservacoes('');
+    setUploadError(null);
     setItens([
       {
         id: `item-${Date.now()}`,
@@ -118,6 +125,7 @@ export const DespesasView: React.FC = () => {
     setValorTotalNota(String(desp.valorTotalNota));
     setComprovanteUrl(desp.comprovanteUrl || '');
     setObservacoes(desp.observacoes || '');
+    setUploadError(null);
     setItens(desp.itens && desp.itens.length > 0 ? desp.itens : []);
     setIsModalOpen(true);
   };
@@ -602,15 +610,72 @@ export const DespesasView: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Link do Comprovante (OneDrive / Anexo)
+                Comprovante / Nota Fiscal
               </label>
-              <input
-                type="url"
-                placeholder="https://onedrive.live.com/..."
-                value={comprovanteUrl}
-                onChange={e => setComprovanteUrl(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
-              />
+              
+              <div className="space-y-2">
+                {/* Upload direto para o Supabase Storage */}
+                <div className="flex items-center gap-2">
+                  <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium rounded-xl border border-dashed border-[#0085db] bg-[#0085db]/5 hover:bg-[#0085db]/10 text-[#0085db] cursor-pointer transition-colors">
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Enviando para nuvem...</span>
+                      </>
+                    ) : (
+                      <>
+                        <UploadCloud className="w-4 h-4" />
+                        <span>Fazer Upload (Foto, Recibo, PDF)</span>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*,application/pdf"
+                      disabled={isUploading}
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setIsUploading(true);
+                        setUploadError(null);
+                        const res = await StorageService.uploadComprovante(file, activeObra.id);
+                        setIsUploading(false);
+                        if (res.url) {
+                          setComprovanteUrl(res.url);
+                        } else {
+                          setUploadError(res.error || 'Falha ao enviar arquivo');
+                        }
+                      }}
+                    />
+                  </label>
+
+                  {comprovanteUrl && (
+                    <a
+                      href={comprovanteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 text-xs rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center gap-1 hover:bg-emerald-100"
+                      title="Ver comprovante anexado"
+                    >
+                      <FileCheck className="w-4 h-4" />
+                      <span className="hidden sm:inline font-bold">Ver</span>
+                    </a>
+                  )}
+                </div>
+
+                {uploadError && (
+                  <p className="text-[11px] text-[#fb977d] font-medium">{uploadError}</p>
+                )}
+
+                {/* Campo URL manual como fallback */}
+                <input
+                  type="url"
+                  placeholder="Ou cole a URL direta (ex: https://...)"
+                  value={comprovanteUrl}
+                  onChange={e => setComprovanteUrl(e.target.value)}
+                  className="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                />
+              </div>
             </div>
           </div>
 
