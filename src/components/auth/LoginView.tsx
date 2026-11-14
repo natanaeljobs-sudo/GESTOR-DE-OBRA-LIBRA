@@ -262,70 +262,8 @@ export const LoginView: React.FC = () => {
 
             </form>
 
-            {/* Quick Master Access Section */}
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-center justify-between text-[11px] font-semibold text-[#707a82] dark:text-slate-400 mb-2">
-                <span>Acesso Rápido para Teste</span>
-                <span className="text-[10px] text-[#0085db] font-bold">1 clique</span>
-              </div>
-
-              {/* One-click button for Master */}
-              <button
-                type="button"
-                onClick={() => {
-                  const masterUser = usuarios.find(u => u.perfil === 'master') || usuarios[0];
-                  if (masterUser) login(masterUser.id);
-                }}
-                className="w-full py-2.5 px-3 mb-2 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-[#0085db]/15 dark:hover:bg-[#0085db]/25 border border-blue-200 dark:border-blue-500/30 text-[#0085db] dark:text-blue-300 text-xs font-bold flex items-center justify-between transition-all cursor-pointer group"
-                title="Entrar diretamente com o perfil Master"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-[#0085db] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
-                    M
-                  </div>
-                  <div className="text-left">
-                    <span className="block text-xs font-bold text-[#111c2d] dark:text-white leading-none">
-                      Natanael Dias <span className="text-amber-600 dark:text-amber-400 font-bold">(Master)</span>
-                    </span>
-                    <span className="text-[10px] text-[#707a82] dark:text-slate-400">
-                      natanaeljobs@gmail.com
-                    </span>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#0085db] text-white group-hover:bg-[#0071ba] transition-colors">
-                  Acessar
-                </span>
-              </button>
-
-              {/* Other demo roles */}
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const adminUser = usuarios.find(u => u.perfil === 'admin') || usuarios[1];
-                    if (adminUser) login(adminUser.id);
-                  }}
-                  className="py-1.5 px-2 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-                  <span>Ives (Admin)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const opUser = usuarios.find(u => u.perfil === 'operador') || usuarios[2];
-                    if (opUser) login(opUser.id);
-                  }}
-                  className="py-1.5 px-2 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  <span>Alberto (Operador)</span>
-                </button>
-              </div>
-            </div>
-
             {/* Divider "ou" */}
-            <div className="relative my-4 text-center">
+            <div className="relative my-5 text-center">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-[#e6ecf1] dark:border-[#333f55]" />
               </div>

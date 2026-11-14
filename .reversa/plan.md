@@ -68,9 +68,32 @@
 
 ---
 
+## Fase 6: Migração & Reconstrução Moderna (Supabase + React 19) 🚀
+
+- [x] ✅ **Orquestrador `/reversa-migrate`** — Coleta de brief e execução dos 6 agentes de migração
+- [x] ✅ **Paradigm Advisor** — Mudança para SPA Web com persistência assíncrona desacoplada
+- [x] ✅ **Curator & Strategist** — Inventário de regras, matriz de riscos e cutover plan
+- [x] ✅ **Designer & Data Model** — DDL PostgreSQL com 9 tabelas, Storage para comprovantes e políticas RLS
+- [x] ✅ **Screen Translator** — Especificação modernizada de 12 telas com 4 estados (Idle, Loading, Error, Success)
+- [x] ✅ **Inspector** — Especificações de paridade (`parity_specs.md`) e testes BDD Gherkin
+
+## Fase 7: Implementação dos Módulos no Sistema Alvo 💻
+
+- [x] ✅ **Autenticação** — Sessão e login real Supabase Auth
+- [x] ✅ **Obras** — CRUD com seleção de obra ativa
+- [x] ✅ **Despesas** — Discriminador de itens, cálculo de rateio e upload no Supabase Storage
+- [x] ✅ **Mão de Obra e Recibos** — Diárias fracionadas, rastreabilidade e impressão em folha A4
+- [x] ✅ **Materiais & Estoque** — Sincronização em tempo real com `public.materiais`
+- [x] ✅ **Produção de Trilhos/Placas** — Apontamento de lotes conectado a `public.producao_apontamentos`
+- [x] ✅ **Cartões & Contas** — Gestão de cartões corporativos sincronizada com `public.cartoes`
+- [x] ✅ **Orçamentos & Cotações** — Comparador de fornecedores e conversão automática em despesas
+- [x] ✅ **Relatórios Gerenciais** — Centros de custo e fechamentos dinâmicos
+- [x] ✅ **Usuários & Perfis** — Gestão granular de perfis (Master, Admin, Operador) em `public.usuarios_perfis`
+- [x] ✅ **Homologação de Paridade** — Validação formal dos cenários PAR-01, PAR-02 e PAR-03 com 100% de aprovação
+
+---
+
 ## Próximo passo
 
-Após o Time de Descoberta concluir e o `_reversa_sdd/` estar populado, você pode disparar um dos fluxos seguintes:
-
-- `/reversa-migrate`: orquestrador do **Time de Migração** (Paradigm Advisor → Curator → Strategist → Designer → Screen Translator → Inspector). Gera as specs do sistema novo. Saída em `_reversa_sdd/migration/` e `_reversa_sdd/screens/`.
-- `/reversa-reconstructor`: gera plano bottom-up para reimplementar o software a partir das specs do legado (uma tarefa por sessão).
+- **Atualização de Telas & Design**: Integração visual com Google Stitch (via Stitch MCP ou componentes).
+- **Ativação em Produção**: Go-Live / Cutover final com deploy em nuvem (Vercel / Cloudflare Pages / Netlify).
