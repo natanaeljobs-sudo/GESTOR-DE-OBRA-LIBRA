@@ -1,8 +1,8 @@
 # Checkpoint de Sessão — SISTEMA LIBRA - OBRAS
 
-> **Última Atualização**: 2026-11-14 17:41 (Horário de Brasília)
+> **Última Atualização**: 2026-11-14 18:22 (Horário de Brasília)
 > **Branch**: `main`
-> **Último Commit**: `06cc563` — `FEAT(USUARIOS): PERSISTENCIA E SINCRONIZACAO DE PERFIS DE USUARIOS NO SUPABASE`
+> **Último Commit**: `1be84d8` — `TEST(PARIDADE): HOMOLOGACAO DE PARIDADE FUNCIONAL E REGRAS DE NEGOCIO CONCLUIDA COM SUCESSO`
 > **Status Remoto**: Sincronizado com `origin/main` (GitHub)
 
 ---
@@ -26,11 +26,16 @@
    - **Orçamentos & Cotações**: Comparador de propostas, cadastro de cotações com múltiplos itens e conversão com persistência assíncrona automática em despesas reais no Supabase.
    - **Relatórios & Fechamentos Gerenciais**: Consolidação dinâmica por centros de custo, filtros por intervalo e etapa, exportação e impressão estruturada em A4.
    - **Usuários, Perfis e Permissões**: Integração do `UsuariosService` com `public.usuarios_perfis`, controle granular por nível de acesso (Master, Admin, Operador) e sincronização contínua.
-4. **Compilação e Deploy Git**:
+4. **Homologação de Paridade Concluída**:
+   - Todos os 3 cenários de paridade crítica (`PAR-01`, `PAR-02` e `PAR-03`) validados com 100% de sucesso.
+   - Relatório formal registrado em `_reversa_sdd/migration/relatorio_homologacao.md`.
+5. **Compilação e Deploy Git**:
    - Build de produção verificado com sucesso pelo Vite (`npm run build`).
    - Commits enviados para o repositório GitHub (`origin/main`).
 
 ---
 
-## 2. Status Geral da Migração:
-**100% dos módulos principais do SISTEMA LIBRA - OBRAS foram migrados para a stack moderna (React 19 + TypeScript + Tailwind CSS + Supabase/PostgreSQL) e sincronizados no repositório remoto.**
+## 2. Próximo Passo:
+Avançar para a **Ativação e Publicação em Produção (Go-Live / Cutover)**:
+- Conectar o repositório GitHub à plataforma de hospedagem (Vercel, Netlify ou Cloudflare Pages).
+- Configurar as variáveis de ambiente de produção (`VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`).
