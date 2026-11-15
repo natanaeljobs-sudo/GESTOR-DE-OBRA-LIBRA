@@ -3,23 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { Despesa, ItemDespesa, CategoriaDespesa, DestinoItem, FormaPagamento } from '../../types';
 import { formatBRL, parseCurrencyInput } from '../../utils/currency';
 import { formatDateBR, getTodayISO } from '../../utils/date';
-import { Modal } from '../common/Modal';
 import { StorageService } from '../../services/storageService';
-import {
-  Plus,
-  Search,
-  ExternalLink,
-  AlertCircle,
-  CheckCircle2,
-  Trash2,
-  Edit2,
-  CreditCard,
-  Layers,
-  ShoppingBag,
-  UploadCloud,
-  FileCheck,
-  Loader2,
-} from 'lucide-react';
 
 export const DespesasView: React.FC = () => {
   const {
@@ -32,65 +16,134 @@ export const DespesasView: React.FC = () => {
     unidadesMedida,
     etapas,
     cartoes,
+    orcamentos,
     activeUser,
     activeObra,
+    showToast,
     tabFilter,
     setTabFilter,
   } = useApp();
 
+  // Filtros
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategoria, setSelectedCategoria] = useState<string>(tabFilter || 'todos');
-  const [selectedEtapa, setSelectedEtapa] = useState<string>('todas');
+  const [currentTipoFilter, setCurrentTipoFilter] = useState<'todos' | 'materiais' | 'servicos'>('todos');
+  const [selectedStatus, setSelectedStatus] = useState<string>('todos');
+
+  // Paginação
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Modais de Controle
   const [isModalOpen, setIsModalOpen] = useState(tabFilter === 'nova');
   const [editingDespesa, setEditingDespesa] = useState<Despesa | null>(null);
+  const [viewingDespesa, setViewingDespesa] = useState<Despesa | null>(null);
   const [despesaToDelete, setDespesaToDelete] = useState<Despesa | null>(null);
 
-  // Form state
+  // Estado do Formulário
+  const [modalTipo, setModalTipo] = useState<'material' | 'servico'>('material');
+  const [selectedOrcamentoId, setSelectedOrcamentoId] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [data, setData] = useState(getTodayISO());
-  const [categoria, setCategoria] = useState<CategoriaDespesa>('materiais');
   const [fornecedorNome, setFornecedorNome] = useState('');
-  const [etapaId, setEtapaId] = useState(activeObra.etapaAtualId || 'etapa-2');
-  const [compradorNome, setCompradorNome] = useState(activeUser.nome);
+  const [data, setData] = useState(getTodayISO());
+  const [etapaVinculada, setEtapaVinculada] = useState(false);
+  const [etapaId, setEtapaId] = useState('');
+  const [statusPagamento, setStatusPagamento] = useState<'pago' | 'pendente'>('pago');
   const [formaPagamento, setFormaPagamento] = useState<FormaPagamento>('pix');
-  const [cartaoId, setCartaoId] = useState<string>('');
+  const [cartaoId, setCartaoId] = useState('');
   const [parcelasTotal, setParcelasTotal] = useState<number>(1);
-  const [valorTotalNota, setValorTotalNota] = useState<string>('');
   const [comprovanteUrl, setComprovanteUrl] = useState('');
+  const [valorBruto, setValorBruto] = useState<string>('');
+  const [desconto, setDesconto] = useState<string>('');
+  const [valorTotalNota, setValorTotalNota] = useState<string>('');
   const [observacoes, setObservacoes] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  // Items for this expense
+  // Itens da Despesa
   const [itens, setItens] = useState<ItemDespesa[]>([
     {
       id: `item-${Date.now()}`,
-      materialId: 'mat-cimento',
+      materialId: materiais[0]?.id || 'mat-cimento',
       materialNome: 'Cimento CP II 50kg',
       quantidade: 1,
       unidade: 'saco',
       valorUnitario: 35.0,
       valorTotal: 35.0,
-      etapaId: activeObra.etapaAtualId || 'etapa-2',
+      etapaId: activeObra.etapaAtualId || 'etapa-1',
       destino: 'obra',
     },
   ]);
 
-  const [showNovoMaterial, setShowNovoMaterial] = useState(false);
-  const [novoMaterialNome, setNovoMaterialNome] = useState('');
-  const [novoMaterialUnidade, setNovoMaterialUnidade] = useState('un');
+  // Expandir / Recolher itens no feed
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
 
+  const toggleItemsExpand = (id: string) => {
+    setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  // Recálculo de valores do formulário (Bruto - Desconto)
+  const recalcValoresModal = (brutoStr: string, descStr: string) => {
+    const bruto = parseFloat(brutoStr) || 0;
+    const desc = parseFloat(descStr) || 0;
+    const finalVal = Math.max(0, bruto - desc);
+    if (finalVal > 0) {
+      setValorTotalNota(finalVal.toFixed(2));
+    }
+  };
+
+  // Adicionar Linha de Item
+  const handleAddItem = (nome = '', qtd = 1, unid = 'un', vUnit = 0) => {
+    const defaultMat = materiais.find(m => m.nome.toLowerCase() === nome.toLowerCase()) || materiais[0];
+    const novo: ItemDespesa = {
+      id: `item-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      materialId: defaultMat?.id || `mat-${Date.now()}`,
+      materialNome: nome || defaultMat?.nome || 'Material',
+      quantidade: qtd,
+      unidade: unid || defaultMat?.unidadePadrao || 'un',
+      valorUnitario: vUnit,
+      valorTotal: Number((qtd * vUnit).toFixed(2)),
+      etapaId: etapaId || activeObra.etapaAtualId || 'etapa-1',
+      destino: 'obra',
+    };
+    setItens(prev => [...prev, novo]);
+  };
+
+  const handleUpdateItem = (index: number, updates: Partial<ItemDespesa>) => {
+    setItens(prev => {
+      const copy = [...prev];
+      const cur = { ...copy[index], ...updates };
+      if (updates.quantidade !== undefined || updates.valorUnitario !== undefined) {
+        const q = updates.quantidade !== undefined ? updates.quantidade : cur.quantidade;
+        const u = updates.valorUnitario !== undefined ? updates.valorUnitario : cur.valorUnitario;
+        cur.valorTotal = Number((q * u).toFixed(2));
+      }
+      copy[index] = cur;
+      return copy;
+    });
+  };
+
+  const handleRemoveItem = (index: number) => {
+    setItens(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const somaItens = itens.reduce((sum, it) => sum + (it.valorTotal || 0), 0);
+
+  // Abertura de Modal Novo
   const openNewModal = () => {
     setEditingDespesa(null);
+    setModalTipo('material');
+    setSelectedOrcamentoId('');
     setDescricao('');
-    setData(getTodayISO());
-    setCategoria('materiais');
     setFornecedorNome('');
-    setEtapaId(activeObra.etapaAtualId || 'etapa-2');
-    setCompradorNome(activeUser.nome);
+    setData(getTodayISO());
+    setEtapaVinculada(false);
+    setEtapaId('');
+    setStatusPagamento('pago');
     setFormaPagamento('pix');
     setCartaoId('');
     setParcelasTotal(1);
+    setValorBruto('');
+    setDesconto('');
     setValorTotalNota('');
     setComprovanteUrl('');
     setObservacoes('');
@@ -98,30 +151,36 @@ export const DespesasView: React.FC = () => {
     setItens([
       {
         id: `item-${Date.now()}`,
-        materialId: materiais[0]?.id || 'mat-generico',
-        materialNome: materiais[0]?.nome || 'Material Geral',
+        materialId: materiais[0]?.id || 'mat-cimento',
+        materialNome: materiais[0]?.nome || 'Cimento CP II 50kg',
         quantidade: 1,
-        unidade: materiais[0]?.unidadePadrao || 'un',
-        valorUnitario: 0,
-        valorTotal: 0,
-        etapaId: activeObra.etapaAtualId || 'etapa-2',
+        unidade: materiais[0]?.unidadePadrao || 'saco',
+        valorUnitario: 35.0,
+        valorTotal: 35.0,
+        etapaId: activeObra.etapaAtualId || 'etapa-1',
         destino: 'obra',
       },
     ]);
     setIsModalOpen(true);
   };
 
+  // Abertura de Modal Edição
   const openEditModal = (desp: Despesa) => {
     setEditingDespesa(desp);
+    const isServ = desp.categoria === 'servicos' || desp.descricao.toLowerCase().includes('serviço') || desp.descricao.toLowerCase().includes('locação');
+    setModalTipo(isServ ? 'servico' : 'material');
+    setSelectedOrcamentoId('');
     setDescricao(desp.descricao);
-    setData(desp.data);
-    setCategoria(desp.categoria);
     setFornecedorNome(desp.fornecedorNome);
-    setEtapaId(desp.etapaId);
-    setCompradorNome(desp.compradorNome);
+    setData(desp.data);
+    setEtapaVinculada(Boolean(desp.etapaId));
+    setEtapaId(desp.etapaId || '');
+    setStatusPagamento(desp.formaPagamento === 'nao_informado' ? 'pendente' : 'pago');
     setFormaPagamento(desp.formaPagamento);
     setCartaoId(desp.cartaoId || '');
     setParcelasTotal(desp.parcelasTotal || 1);
+    setValorBruto(String(desp.valorTotalNota));
+    setDesconto('0.00');
     setValorTotalNota(String(desp.valorTotalNota));
     setComprovanteUrl(desp.comprovanteUrl || '');
     setObservacoes(desp.observacoes || '');
@@ -130,315 +189,488 @@ export const DespesasView: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const addItem = () => {
-    const defaultMat = materiais[0];
-    const newItem: ItemDespesa = {
-      id: `item-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-      materialId: defaultMat?.id || 'mat-generico',
-      materialNome: defaultMat?.nome || 'Material',
-      quantidade: 1,
-      unidade: defaultMat?.unidadePadrao || 'un',
-      valorUnitario: 0,
-      valorTotal: 0,
-      etapaId,
-      destino: 'obra',
-    };
-    setItens(prev => [...prev, newItem]);
-  };
+  // Importar Orçamento no Modal
+  const handleImportarOrcamento = (orcId: string) => {
+    setSelectedOrcamentoId(orcId);
+    if (!orcId) return;
 
-  const updateItem = (index: number, updates: Partial<ItemDespesa>) => {
-    setItens(prev => {
-      const copy = [...prev];
-      const current = { ...copy[index], ...updates };
-      if (updates.quantidade !== undefined || updates.valorUnitario !== undefined) {
-        current.valorTotal = Number((current.quantidade * current.valorUnitario).toFixed(2));
-      }
-      copy[index] = current;
-      return copy;
-    });
-  };
+    const orc = orcamentos.find(o => o.id === orcId);
+    if (!orc) return;
 
-  const removeItem = (index: number) => {
-    setItens(prev => prev.filter((_, i) => i !== index));
-  };
+    const isServ = orc.identificacao.toLowerCase().includes('serviço') || orc.identificacao.toLowerCase().includes('srv');
+    setModalTipo(isServ ? 'servico' : 'material');
+    setDescricao(orc.identificacao);
+    setFornecedorNome(orc.fornecedorEmpresa);
+    setValorBruto(String(orc.valorTotal));
+    setDesconto('0.00');
+    setValorTotalNota(String(orc.valorTotal));
 
-  const somaItens = itens.reduce((acc, it) => acc + (it.valorTotal || 0), 0);
-  const valorTotalNotaNum = parseCurrencyInput(valorTotalNota);
-  const diferencaRateio = Number((valorTotalNotaNum - somaItens).toFixed(2));
-
-  const handleSaveNovoMaterial = () => {
-    if (!novoMaterialNome.trim()) return;
-    const criado = addMaterial({
-      nome: novoMaterialNome.trim(),
-      unidadePadrao: novoMaterialUnidade.trim() || 'un',
-    });
-    setNovoMaterialNome('');
-    setShowNovoMaterial(false);
-    if (itens.length > 0) {
-      updateItem(itens.length - 1, {
-        materialId: criado.id,
-        materialNome: criado.nome,
-        unidade: criado.unidadePadrao,
-      });
+    if (orc.itens && orc.itens.length > 0) {
+      setItens(
+        orc.itens.map((it, idx) => ({
+          id: `item-${Date.now()}-${idx}`,
+          materialId: it.materialId || `mat-${idx}`,
+          materialNome: it.materialNome,
+          quantidade: it.quantidade,
+          unidade: it.unidade,
+          valorUnitario: it.precoUnitarioCotado,
+          valorTotal: it.valorTotalCotado,
+          etapaId: etapaId || activeObra.etapaAtualId || 'etapa-1',
+          destino: 'obra',
+        }))
+      );
     }
   };
 
+  // Salvar Despesa (Criar / Editar)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!descricao.trim()) return;
 
-    const totalCalculado = valorTotalNotaNum > 0 ? valorTotalNotaNum : somaItens;
+    const valorNotaNum = parseCurrencyInput(valorTotalNota) || somaItens;
+    const diferencaRateio = Number((valorNotaNum - somaItens).toFixed(2));
+    const catFinal: CategoriaDespesa = modalTipo === 'servico' ? 'servicos' : 'materiais';
 
     if (editingDespesa) {
       updateDespesa({
         ...editingDespesa,
-        descricao,
+        descricao: descricao.trim().toUpperCase(),
         data,
-        categoria,
+        categoria: catFinal,
         fornecedorNome: fornecedorNome.trim() || 'Fornecedor Avulso',
-        etapaId,
-        compradorNome,
-        formaPagamento,
-        cartaoId: cartaoId || undefined,
+        etapaId: etapaVinculada ? etapaId : '',
+        compradorNome: activeUser.nome,
+        formaPagamento: statusPagamento === 'pendente' && formaPagamento === 'pix' ? 'nao_informado' : formaPagamento,
+        cartaoId: formaPagamento === 'cartao_credito' ? cartaoId : undefined,
         parcelasTotal: formaPagamento === 'cartao_credito' ? parcelasTotal : undefined,
-        valorTotalNota: totalCalculado,
+        valorTotalNota: valorNotaNum,
         valorSomaItens: somaItens,
-        diferencaRateio: Number((totalCalculado - somaItens).toFixed(2)),
+        diferencaRateio,
         itens,
         comprovanteUrl: comprovanteUrl.trim() || undefined,
         observacoes: observacoes.trim() || undefined,
       });
+      showToast('Despesa atualizada com sucesso!', 'success', 'Despesas');
     } else {
       addDespesa({
         obraId: activeObra.id,
-        descricao,
+        descricao: descricao.trim().toUpperCase(),
         data,
-        categoria,
+        categoria: catFinal,
         fornecedorNome: fornecedorNome.trim() || 'Fornecedor Avulso',
-        etapaId,
-        compradorNome,
-        formaPagamento,
-        cartaoId: cartaoId || undefined,
+        etapaId: etapaVinculada ? etapaId : '',
+        compradorNome: activeUser.nome,
+        formaPagamento: statusPagamento === 'pendente' && formaPagamento === 'pix' ? 'nao_informado' : formaPagamento,
+        cartaoId: formaPagamento === 'cartao_credito' ? cartaoId : undefined,
         parcelasTotal: formaPagamento === 'cartao_credito' ? parcelasTotal : undefined,
-        valorTotalNota: totalCalculado,
+        valorTotalNota: valorNotaNum,
         valorSomaItens: somaItens,
-        diferencaRateio: Number((totalCalculado - somaItens).toFixed(2)),
+        diferencaRateio,
         itens,
         comprovanteUrl: comprovanteUrl.trim() || undefined,
         observacoes: observacoes.trim() || undefined,
         statusConferencia: Math.abs(diferencaRateio) > 0.05 ? 'diferenca_rateio' : 'ok',
         criadoPor: activeUser.nome,
       });
+      showToast('Despesa registrada com sucesso!', 'success', 'Despesas');
     }
 
     setIsModalOpen(false);
   };
 
+  // Filtragem
   const filteredDespesas = despesas.filter(d => {
-    const matchesSearch =
-      d.descricao.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      d.fornecedorNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      d.itens.some(it => it.materialNome.toLowerCase().includes(searchTerm.toLowerCase()));
+    const q = searchTerm.toLowerCase().trim();
+    const matchSearch =
+      !q ||
+      d.descricao.toLowerCase().includes(q) ||
+      d.fornecedorNome.toLowerCase().includes(q) ||
+      (d.itens && d.itens.some(it => it.materialNome.toLowerCase().includes(q)));
 
-    const matchesCategoria =
-      selectedCategoria === 'todos' || d.categoria === selectedCategoria;
+    const isServ = d.categoria === 'servicos' || d.descricao.toLowerCase().includes('serviço') || d.descricao.toLowerCase().includes('locação');
+    const matchTipo =
+      currentTipoFilter === 'todos' ||
+      (currentTipoFilter === 'servicos' && isServ) ||
+      (currentTipoFilter === 'materiais' && !isServ);
 
-    const matchesEtapa =
-      selectedEtapa === 'todas' || d.etapaId === selectedEtapa;
+    const isPago = d.formaPagamento !== 'nao_informado';
+    const matchStatus =
+      selectedStatus === 'todos' ||
+      (selectedStatus === 'pago' && isPago) ||
+      (selectedStatus === 'pendente' && !isPago);
 
-    return matchesSearch && matchesCategoria && matchesEtapa;
+    return matchSearch && matchTipo && matchStatus;
   });
 
-  const totalFiltrado = filteredDespesas.reduce((sum, d) => sum + d.valorTotalNota, 0);
+  const totalFiltrado = filteredDespesas.reduce((acc, d) => acc + (d.valorTotalNota || 0), 0);
+
+  // Paginação
+  const totalPages = Math.max(1, Math.ceil(filteredDespesas.length / itemsPerPage));
+  const currentPageSafe = Math.min(Math.max(1, currentPage), totalPages);
+  const startIndex = (currentPageSafe - 1) * itemsPerPage;
+  const paginatedDespesas = filteredDespesas.slice(startIndex, startIndex + itemsPerPage);
+
+  const getEtapaNome = (eId?: string) => {
+    if (!eId) return 'Não vinculada';
+    const e = etapas.find(item => item.id === eId);
+    return e ? (e.numero === 0 ? e.nome : `${e.numero} - ${e.nome}`) : 'Etapa Geral';
+  };
+
+  const getFormaPagamentoLabel = (forma: FormaPagamento) => {
+    const map: Record<string, string> = {
+      pix: 'Pix (À vista)',
+      cartao_credito: 'Cartão de Crédito',
+      cartao_debito: 'Cartão de Débito',
+      boleto: 'Boleto Faturado',
+      dinheiro: 'Dinheiro',
+      nao_informado: 'A Pagar / Não informado',
+    };
+    return map[forma] || forma;
+  };
 
   return (
-    <div className="space-y-6 pb-20 lg:pb-8 animate-in fade-in duration-150">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-24 lg:pb-12 space-y-6 animate-in fade-in duration-150">
       
       {/* Header with Title and New Expense Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white">
-            Despesas & Itens de Notas
+          <h1 className="text-xl sm:text-2xl font-bold text-[#111c2d] dark:text-white font-headline">
+            Despesas
           </h1>
           <p className="text-xs sm:text-sm text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-            Lançamento de compras detalhadas por item, conferência de notas e links do OneDrive.
+            Controle de compras, notas fiscais e comprovantes da obra.
           </p>
         </div>
 
         <button
+          type="button"
           onClick={openNewModal}
           className="flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all shrink-0 cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
-          <span>Lançar Nova Despesa</span>
+          <span className="material-symbols-outlined text-[18px]">add</span>
+          <span>Nova Despesa</span>
         </button>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-3">
-        <div className="flex flex-col sm:flex-row gap-3">
+      {/* Filter and Search Bar Simplificada Stitch */}
+      <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-3 sm:p-4 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-3">
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          
           {/* Search box */}
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#707a82]" />
+          <div className="relative flex-1 w-full">
+            <span className="material-symbols-outlined text-[18px] absolute left-3.5 top-1/2 -translate-y-1/2 text-[#707a82]">
+              search
+            </span>
             <input
               type="text"
-              placeholder="Buscar por descrição, fornecedor ou material..."
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={e => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="Buscar despesa ou fornecedor..."
               className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
             />
           </div>
 
-          {/* Categoria filter */}
-          <select
-            value={selectedCategoria}
-            onChange={e => {
-              setSelectedCategoria(e.target.value);
-              setTabFilter(null);
-            }}
-            className="px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-          >
-            <option value="todos">Todas as Categorias</option>
-            <option value="materiais">Materiais da Obra</option>
-            <option value="trilhos_producao">Material para Trilhos</option>
-            <option value="abastecimentos">Abastecimentos / Frete</option>
-            <option value="equipamentos">Equipamentos</option>
-            <option value="outros">Outros Custos</option>
-          </select>
+          <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-between sm:justify-end">
+            {/* Tipo de Lançamento: Todos, Materiais, Serviços */}
+            <div className="inline-flex p-1 bg-[#f6f9fc] dark:bg-[#1a2535] rounded-xl border border-[#e6ecf1] dark:border-[#333f55] shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setCurrentTipoFilter('todos');
+                  setCurrentPage(1);
+                }}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  currentTipoFilter === 'todos'
+                    ? 'bg-[#0085db] text-white shadow-xs'
+                    : 'text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white'
+                }`}
+              >
+                Todos
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCurrentTipoFilter('materiais');
+                  setCurrentPage(1);
+                }}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  currentTipoFilter === 'materiais'
+                    ? 'bg-[#0085db] text-white shadow-xs'
+                    : 'text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white'
+                }`}
+              >
+                Materiais
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCurrentTipoFilter('servicos');
+                  setCurrentPage(1);
+                }}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  currentTipoFilter === 'servicos'
+                    ? 'bg-[#0085db] text-white shadow-xs'
+                    : 'text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white'
+                }`}
+              >
+                Serviços
+              </button>
+            </div>
 
-          {/* Etapa filter */}
-          <select
-            value={selectedEtapa}
-            onChange={e => setSelectedEtapa(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-          >
-            <option value="todas">Todas as Etapas</option>
-            {etapas.map(e => (
-              <option key={e.id} value={e.id}>
-                {e.numero === 0 ? e.nome : `${e.numero} - ${e.nome}`}
-              </option>
-            ))}
-          </select>
+            {/* Status filter essencial */}
+            <select
+              value={selectedStatus}
+              onChange={e => {
+                setSelectedStatus(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-3 py-2 text-xs font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db] cursor-pointer"
+            >
+              <option value="todos">Todos Status</option>
+              <option value="pago">Pago</option>
+              <option value="pendente">A Pagar</option>
+            </select>
+          </div>
         </div>
 
-        {/* Total indicator for filtered selection */}
+        {/* Total indicator */}
         <div className="flex items-center justify-between text-xs text-[#707a82] dark:text-[#7c8fac] pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
-          <span>{filteredDespesas.length} despesa(s) localizada(s)</span>
+          <span>
+            <strong className="text-[#111c2d] dark:text-white">{filteredDespesas.length}</strong> despesas
+          </span>
           <span className="font-bold text-[#111c2d] dark:text-white">
-            Total filtrado: <span className="tabular-nums text-[#0085db] font-black">{formatBRL(totalFiltrado)}</span>
+            Total:{' '}
+            <span className="tabular-nums text-[#0085db] font-black">
+              {formatBRL(totalFiltrado)}
+            </span>
           </span>
         </div>
       </div>
 
-      {/* Expense Cards */}
+      {/* Barra de Paginação Stitch */}
+      {filteredDespesas.length > itemsPerPage && (
+        <div className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+          <div className="text-xs text-[#707a82] dark:text-[#7c8fac]">
+            Página <strong className="text-[#111c2d] dark:text-white">{currentPageSafe}</strong> de{' '}
+            <strong className="text-[#111c2d] dark:text-white">{totalPages}</strong>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPageSafe === 1}
+              title="Página Anterior"
+              className="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+
+            <div className="flex items-center gap-1 px-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setCurrentPage(p)}
+                  className={`w-8 h-8 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                    p === currentPageSafe
+                      ? 'bg-[#0085db] text-white shadow-xs scale-105'
+                      : 'text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] hover:text-[#111c2d] dark:hover:text-white'
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPageSafe === totalPages}
+              title="Próxima Página"
+              className="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Expense Cards Feed Dinâmico */}
       <div className="space-y-4">
         {filteredDespesas.length === 0 ? (
           <div className="text-center py-12 bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6">
-            <ShoppingBag className="w-10 h-10 text-[#707a82] mx-auto mb-2 opacity-50" />
+            <span className="material-symbols-outlined text-[36px] text-[#707a82] opacity-50 block mb-2">
+              shopping_bag
+            </span>
             <p className="text-sm font-semibold text-[#111c2d] dark:text-white">
               Nenhuma despesa encontrada para os filtros selecionados
             </p>
             <p className="text-xs text-[#707a82] mt-1">
-              Ajuste a busca ou registre uma nova nota fiscal.
+              Ajuste os filtros de busca ou cadastre uma nova despesa.
             </p>
           </div>
         ) : (
-          filteredDespesas.map(desp => {
-            const etapaObj = etapas.find(e => e.id === desp.etapaId);
+          paginatedDespesas.map(desp => {
+            const isServico = desp.categoria === 'servicos' || desp.descricao.toLowerCase().includes('serviço') || desp.descricao.toLowerCase().includes('locação');
+            const isPago = desp.formaPagamento !== 'nao_informado';
+            const totalItens = desp.itens ? desp.itens.length : 0;
+            const isExpanded = expandedItems[desp.id];
+            const faltaComprovante = !desp.comprovanteUrl;
+
             return (
               <div
                 key={desp.id}
-                className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none transition-all hover:border-[#0085db]/40"
+                className="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-4 sm:p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none transition-all hover:border-[#0085db]/40 space-y-3"
               >
-                {/* Header row */}
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap text-xs text-[#707a82]">
-                      <span className="font-bold text-[#0085db] uppercase tracking-wider text-[10px]">
-                        {desp.categoria.replace('_', ' ')}
-                      </span>
-                      <span>·</span>
-                      <span>{formatDateBR(desp.data)}</span>
-                      <span>·</span>
-                      <span>{etapaObj?.nome || 'Etapa Geral'}</span>
-                      {desp.diferencaRateio !== 0 && (
-                        <>
-                          <span>·</span>
-                          <span className="text-[#fb977d] font-bold flex items-center gap-1">
-                            <AlertCircle className="w-3.5 h-3.5 inline" />
-                            Diferença de rateio: {formatBRL(Math.abs(desp.diferencaRateio))}
+                {/* Linha Principal com Informações Essenciais */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {/* Badge Tipo */}
+                      {isServico ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f1f5f9] dark:bg-[#1a2535] text-[#5a6a85] dark:text-[#94a3b8] border border-[#e2e8f0] dark:border-[#334155]">
+                          <span className="material-symbols-outlined text-[13px] text-[#707a82] dark:text-[#7c8fac]">
+                            handyman
                           </span>
-                        </>
+                          Serviço
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f1f5f9] dark:bg-[#1a2535] text-[#5a6a85] dark:text-[#94a3b8] border border-[#e2e8f0] dark:border-[#334155]">
+                          <span className="material-symbols-outlined text-[13px] text-[#707a82] dark:text-[#7c8fac]">
+                            inventory_2
+                          </span>
+                          Material
+                        </span>
+                      )}
+
+                      {/* Badge Status Pagamento */}
+                      {isPago ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
+                          <span className="material-symbols-outlined text-[13px] text-[#707a82] dark:text-[#7c8fac]">
+                            check_circle
+                          </span>
+                          Pago
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40">
+                          <span className="material-symbols-outlined text-[13px] text-[#707a82] dark:text-[#7c8fac]">
+                            schedule
+                          </span>
+                          A Pagar
+                        </span>
+                      )}
+
+                      <span className="text-xs text-[#707a82] font-medium">
+                        {formatDateBR(desp.data)}
+                      </span>
+
+                      {faltaComprovante && (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/50 px-2 py-0.5 rounded-md">
+                          <span className="material-symbols-outlined text-[13px] text-amber-600 dark:text-amber-400">
+                            warning
+                          </span>
+                          Falta anexar comprovante
+                        </span>
                       )}
                     </div>
-                    <h2 className="text-base font-bold text-[#111c2d] dark:text-white mt-1">
+
+                    <h2 className="text-sm sm:text-base font-bold text-[#111c2d] dark:text-white uppercase truncate">
                       {desp.descricao}
                     </h2>
-                    <p className="text-xs text-[#707a82] dark:text-[#7c8fac] mt-0.5">
-                      Fornecedor: <strong className="text-[#111c2d] dark:text-white">{desp.fornecedorNome}</strong> · Comprador: {desp.compradorNome} · Pagamento: {desp.formaPagamento.replace('_', ' ')}
-                    </p>
+                    <div className="text-xs text-[#707a82] dark:text-[#7c8fac] truncate">
+                      Fornecedor:{' '}
+                      <strong className="text-[#111c2d] dark:text-white font-semibold">
+                        {desp.fornecedorNome}
+                      </strong>
+                    </div>
                   </div>
 
-                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1">
-                    <div className="text-lg sm:text-xl font-extrabold text-[#111c2d] dark:text-white tabular-nums">
+                  {/* Valor Total e Ações */}
+                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#e6ecf1] dark:border-[#333f55]">
+                    <div className="text-base sm:text-lg font-black text-[#111c2d] dark:text-white tabular-nums">
                       {formatBRL(desp.valorTotalNota)}
                     </div>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      {desp.comprovanteUrl && (
+                    <div className="flex items-center gap-1">
+                      {totalItens > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setViewingDespesa(desp)}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer"
+                          title={`Visualizar detalhes e itens da despesa (${totalItens} itens)`}
+                        >
+                          <span className="material-symbols-outlined text-[17px]">visibility</span>
+                        </button>
+                      )}
+
+                      {desp.comprovanteUrl ? (
                         <a
                           href={desp.comprovanteUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 rounded-lg text-[#0085db] hover:bg-[#0085db]/10"
-                          title="Abrir comprovante / OneDrive"
+                          className="w-7 h-7 rounded-lg text-[#0085db] hover:bg-[#0085db]/10 transition-colors inline-flex items-center justify-center"
+                          title="Abrir nota/comprovante"
                         >
-                          <ExternalLink className="w-4 h-4" />
+                          <span className="material-symbols-outlined text-[16px]">description</span>
                         </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => openEditModal(desp)}
+                          className="w-7 h-7 rounded-lg text-[#ffae1f] hover:text-[#e09819] hover:bg-[#ffae1f]/10 transition-colors inline-flex items-center justify-center cursor-pointer"
+                          title="Falta anexar comprovante (clique para anexar)"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">description</span>
+                        </button>
                       )}
+
                       <button
+                        type="button"
                         onClick={() => openEditModal(desp)}
-                        className="p-1.5 rounded-lg text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] cursor-pointer"
-                        title="Editar despesa"
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer"
+                        title="Editar"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <span className="material-symbols-outlined text-[15px]">edit</span>
                       </button>
+
                       <button
+                        type="button"
                         onClick={() => setDespesaToDelete(desp)}
-                        className="p-1.5 rounded-lg text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/10 cursor-pointer"
-                        title="Excluir despesa"
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#fb977d] hover:bg-[#fb977d]/10 transition-colors cursor-pointer"
+                        title="Excluir"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <span className="material-symbols-outlined text-[15px]">delete</span>
                       </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Sub-items table / list */}
-                {desp.itens && desp.itens.length > 0 && (
-                  <div className="mt-3 pt-2">
-                    <div className="text-[11px] font-bold text-[#707a82] uppercase tracking-wider mb-2">
-                      Itens discriminados na nota ({desp.itens.length})
-                    </div>
+                {/* Subitens quando expandidos na tela */}
+                {totalItens > 0 && isExpanded && (
+                  <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] animate-in fade-in duration-150">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                      {desp.itens.map(item => (
+                      {desp.itens.map(it => (
                         <div
-                          key={item.id}
-                          className="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs"
+                          key={it.id}
+                          className="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs"
                         >
-                          <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-start justify-between gap-1.5">
                             <span className="font-semibold text-[#111c2d] dark:text-white truncate">
-                              {item.materialNome}
+                              {it.materialNome}
                             </span>
-                            <span className="font-extrabold text-[#111c2d] dark:text-white tabular-nums shrink-0">
-                              {formatBRL(item.valorTotal)}
+                            <span className="font-bold text-[#111c2d] dark:text-white tabular-nums shrink-0">
+                              {formatBRL(it.valorTotal)}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-1.5">
+                          <div className="flex items-center justify-between text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-1">
                             <span>
-                              {item.quantidade} {item.unidade} × {formatBRL(item.valorUnitario)}
+                              {it.quantidade} {it.unidade} × {formatBRL(it.valorUnitario)}
                             </span>
-                            <span className="capitalize text-[#707a82]">
-                              {item.destino.replace('_', ' ')}
+                            <span className="capitalize">
+                              {(it.destino || 'obra').replace('_', ' ')}
                             </span>
                           </div>
                         </div>
@@ -446,504 +678,874 @@ export const DespesasView: React.FC = () => {
                     </div>
                   </div>
                 )}
-
-                {desp.observacoes && (
-                  <p className="mt-2.5 text-xs text-[#707a82] italic">
-                    Obs: {desp.observacoes}
-                  </p>
-                )}
               </div>
             );
           })
         )}
       </div>
 
-      {/* Modal for Creating / Editing Expense */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingDespesa ? 'Editar Despesa' : 'Lançar Nova Despesa'}
-        subtitle="Preencha o cabeçalho e os itens. Campos desconhecidos podem ser deixados vazios."
-        maxWidth="2xl"
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Descrição da Compra / Nota *
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Ex: Compra de cimento e areia para baldrame"
-                value={descricao}
-                onChange={e => setDescricao(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Fornecedor / Loja
-              </label>
-              <input
-                type="text"
-                placeholder="Ex: Comercial Silva Materiais"
-                value={fornecedorNome}
-                onChange={e => setFornecedorNome(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Data da Compra
-              </label>
-              <input
-                type="date"
-                value={data}
-                onChange={e => setData(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Categoria
-              </label>
-              <select
-                value={categoria}
-                onChange={e => setCategoria(e.target.value as CategoriaDespesa)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-              >
-                <option value="materiais">Materiais da Obra</option>
-                <option value="trilhos_producao">Material para Trilhos</option>
-                <option value="abastecimentos">Abastecimentos / Frete</option>
-                <option value="equipamentos">Equipamentos</option>
-                <option value="outros">Outros Custos</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Etapa da Obra
-              </label>
-              <select
-                value={etapaId}
-                onChange={e => setEtapaId(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-              >
-                {etapas.map(e => (
-                  <option key={e.id} value={e.id}>
-                    {e.numero === 0 ? e.nome : `${e.numero} - ${e.nome}`}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Forma de Pagamento
-              </label>
-              <select
-                value={formaPagamento}
-                onChange={e => setFormaPagamento(e.target.value as FormaPagamento)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
-              >
-                <option value="pix">Pix</option>
-                <option value="cartao_credito">Cartão de Crédito</option>
-                <option value="cartao_debito">Cartão de Débito</option>
-                <option value="boleto">Boleto Bancário</option>
-                <option value="dinheiro">Dinheiro</option>
-                <option value="nao_informado">Não informado (preencher depois)</option>
-              </select>
-            </div>
-
-            {formaPagamento === 'cartao_credito' && (
-              <>
+      {/* ======================================================== */}
+      {/* MODAL LANÇAR / EDITAR DESPESA STITCH                    */}
+      {/* ======================================================== */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+          <div
+            onClick={() => setIsModalOpen(false)}
+            className="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer animate-in fade-in duration-150"
+          />
+          <div className="relative w-full max-w-2xl bg-white dark:bg-[#111c2d] rounded-[24px] shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 sm:p-6 space-y-4 max-h-[94vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+            
+            {/* Header do Modal */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[22px]">receipt_long</span>
+                </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                    Cartão Utilizado
-                  </label>
-                  <select
-                    value={cartaoId}
-                    onChange={e => setCartaoId(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                  <h2 className="text-base font-bold text-[#111c2d] dark:text-white font-headline">
+                    {editingDespesa ? 'Editar Despesa' : 'Lançar despesa'}
+                  </h2>
+                  <p className="text-xs text-[#707a82]">
+                    Lançamento rápido e descomplicado de compras e serviços.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            {/* 1. Escolha Direta: Material ou Serviço */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+                O que você está lançando?
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setModalTipo('material')}
+                  className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                    modalTipo === 'material'
+                      ? 'border-[#0085db] bg-[#0085db]/5'
+                      : 'border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] hover:border-[#0085db]/40'
+                  }`}
+                >
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
+                      modalTipo === 'material'
+                        ? 'bg-[#0085db] text-white'
+                        : 'bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] border border-[#e6ecf1] dark:border-[#333f55]'
+                    }`}
                   >
-                    <option value="">Selecione o cartão (opcional)...</option>
-                    {cartoes.map(c => (
-                      <option key={c.id} value={c.id}>
-                        {c.apelido} {c.ultimosDigitos ? `(Final ${c.ultimosDigitos})` : ''}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                    Número de Parcelas
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="24"
-                    value={parcelasTotal}
-                    onChange={e => setParcelasTotal(parseInt(e.target.value) || 1)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
-                  />
-                </div>
-              </>
-            )}
+                    <span className="material-symbols-outlined text-[20px]">inventory_2</span>
+                  </div>
+                  <div>
+                    <strong className="block text-xs font-bold text-[#111c2d] dark:text-white">
+                      Compra de material
+                    </strong>
+                    <span className="text-[10px] text-[#707a82]">Insumos e ferramentas</span>
+                  </div>
+                </button>
 
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Valor Total da Nota Fiscal (R$)
-              </label>
-              <input
-                type="text"
-                placeholder={somaItens > 0 ? formatBRL(somaItens) : 'Ex: 450,00'}
-                value={valorTotalNota}
-                onChange={e => setValorTotalNota(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-bold"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-                Comprovante / Nota Fiscal
-              </label>
-              
-              <div className="space-y-2">
-                {/* Upload direto para o Supabase Storage */}
-                <div className="flex items-center gap-2">
-                  <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium rounded-xl border border-dashed border-[#0085db] bg-[#0085db]/5 hover:bg-[#0085db]/10 text-[#0085db] cursor-pointer transition-colors">
-                    {isUploading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Enviando para nuvem...</span>
-                      </>
-                    ) : (
-                      <>
-                        <UploadCloud className="w-4 h-4" />
-                        <span>Fazer Upload (Foto, Recibo, PDF)</span>
-                      </>
-                    )}
-                    <input
-                      type="file"
-                      accept="image/*,application/pdf"
-                      disabled={isUploading}
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        setIsUploading(true);
-                        setUploadError(null);
-                        const res = await StorageService.uploadComprovante(file, activeObra.id);
-                        setIsUploading(false);
-                        if (res.url) {
-                          setComprovanteUrl(res.url);
-                        } else {
-                          setUploadError(res.error || 'Falha ao enviar arquivo');
-                        }
-                      }}
-                    />
-                  </label>
-
-                  {comprovanteUrl && (
-                    <a
-                      href={comprovanteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-xs rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center gap-1 hover:bg-emerald-100"
-                      title="Ver comprovante anexado"
-                    >
-                      <FileCheck className="w-4 h-4" />
-                      <span className="hidden sm:inline font-bold">Ver</span>
-                    </a>
-                  )}
-                </div>
-
-                {uploadError && (
-                  <p className="text-[11px] text-[#fb977d] font-medium">{uploadError}</p>
-                )}
-
-                {/* Campo URL manual como fallback */}
-                <input
-                  type="url"
-                  placeholder="Ou cole a URL direta (ex: https://...)"
-                  value={comprovanteUrl}
-                  onChange={e => setComprovanteUrl(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
-                />
+                <button
+                  type="button"
+                  onClick={() => setModalTipo('servico')}
+                  className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                    modalTipo === 'servico'
+                      ? 'border-[#0085db] bg-[#0085db]/5'
+                      : 'border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] hover:border-[#0085db]/40'
+                  }`}
+                >
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
+                      modalTipo === 'servico'
+                        ? 'bg-[#0085db] text-white'
+                        : 'bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] border border-[#e6ecf1] dark:border-[#333f55]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[20px]">handyman</span>
+                  </div>
+                  <div>
+                    <strong className="block text-xs font-bold text-[#111c2d] dark:text-white">
+                      Serviços
+                    </strong>
+                    <span className="text-[10px] text-[#707a82]">Empreitada, locação, frete</span>
+                  </div>
+                </button>
               </div>
             </div>
-          </div>
 
-          {/* Items Section */}
-          <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55]">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-[#0085db]" />
-                Itens da Compra ({itens.length})
-              </h4>
+            {/* 2. Puxar Dados de um Orçamento Aprovado */}
+            <div className="p-3 rounded-2xl bg-[#0085db]/5 dark:bg-[#0085db]/10 border border-[#0085db]/20 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#0085db] flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[16px]">request_quote</span>
+                  <span>Puxar dados de um orçamento aprovado</span>
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#0085db]/10 text-[#0085db] border border-[#0085db]/20">
+                  Opcional
+                </span>
+              </div>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowNovoMaterial(!showNovoMaterial)}
-                  className="text-[11px] font-semibold text-[#0085db] hover:underline cursor-pointer"
+                <select
+                  value={selectedOrcamentoId}
+                  onChange={e => handleImportarOrcamento(e.target.value)}
+                  className="flex-1 px-3 py-1.5 text-xs rounded-xl border border-[#0085db]/30 bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
                 >
-                  + Cadastrar Material Novo
-                </button>
-                <button
-                  type="button"
-                  onClick={addItem}
-                  className="px-3 py-1 text-xs font-bold bg-[#0085db]/10 hover:bg-[#0085db]/20 text-[#0085db] rounded-lg transition-colors cursor-pointer"
-                >
-                  + Adicionar Item
-                </button>
+                  <option value="">Selecione um orçamento para preencher automático...</option>
+                  {orcamentos.map(o => (
+                    <option key={o.id} value={o.id}>
+                      {o.identificacao} · {o.fornecedorEmpresa} ({formatBRL(o.valorTotal)})
+                    </option>
+                  ))}
+                </select>
+                {selectedOrcamentoId && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedOrcamentoId('')}
+                    className="h-8 px-2.5 text-xs font-semibold text-[#707a82] hover:text-rose-600 dark:hover:text-rose-400 bg-white dark:bg-[#111c2d] hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-[#e6ecf1] dark:border-[#333f55] hover:border-rose-200 dark:hover:border-rose-900/40 rounded-xl transition-all flex items-center gap-1 cursor-pointer shrink-0"
+                    title="Limpar seleção do orçamento"
+                  >
+                    <span className="material-symbols-outlined text-[14px]">backspace</span>
+                    <span>Limpar</span>
+                  </button>
+                )}
               </div>
             </div>
 
-            {/* Quick material creation inline box */}
-            {showNovoMaterial && (
-              <div className="p-3 mb-3 bg-[#0085db]/5 border border-[#0085db]/20 rounded-xl space-y-2">
-                <p className="text-xs font-bold text-[#0085db]">
-                  Novo Material no Catálogo (sem preço fixo)
-                </p>
-                <div className="grid grid-cols-3 gap-2">
+            {/* Datalist com materiais cadastrados */}
+            <datalist id="datalist-materiais-sistema">
+              {materiais.map(m => (
+                <option key={m.id} value={m.nome} />
+              ))}
+            </datalist>
+
+            {/* Discriminação dos Itens */}
+            <div className="p-3 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[16px] text-[#0085db]">
+                      inventory
+                    </span>
+                    <span>Discriminação dos itens</span>
+                  </h4>
+                  <p className="text-[10px] text-[#707a82]">
+                    Edite os itens do orçamento ou escolha materiais cadastrados / novos.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleAddItem('', 1, 'un', 0)}
+                  className="px-2.5 py-1 text-xs font-bold bg-[#0085db] hover:bg-[#0071ba] text-white rounded-lg transition-colors cursor-pointer inline-flex items-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[14px]">add</span>
+                  <span>Adicionar item</span>
+                </button>
+              </div>
+
+              {/* Cabeçalho das Colunas */}
+              <div className="hidden sm:grid grid-cols-12 gap-2 px-2 text-[10px] font-bold text-[#707a82] uppercase tracking-wider">
+                <span className="col-span-5">Descrição / Material</span>
+                <span className="col-span-2 text-center">Quantidade</span>
+                <span className="col-span-1 text-center">Unid.</span>
+                <span className="col-span-2 text-right">Valor Unit.</span>
+                <span className="col-span-2 text-right pr-5">Subtotal</span>
+              </div>
+
+              {/* Linhas de Itens Dinâmicas */}
+              <div className="space-y-2">
+                {itens.map((it, idx) => (
+                  <div
+                    key={it.id}
+                    className="grid grid-cols-12 gap-2 p-2 rounded-xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] items-center"
+                  >
+                    <div className="col-span-12 sm:col-span-5">
+                      <input
+                        type="text"
+                        list="datalist-materiais-sistema"
+                        placeholder="Digite ou escolha material..."
+                        value={it.materialNome}
+                        onChange={e => handleUpdateItem(idx, { materialNome: e.target.value })}
+                        required
+                        className="w-full h-8 px-2.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-transparent text-[#111c2d] dark:text-white font-medium focus:ring-1 focus:ring-[#0085db]"
+                      />
+                    </div>
+                    <div className="col-span-4 sm:col-span-2">
+                      <input
+                        type="number"
+                        step="any"
+                        placeholder="Qtd"
+                        value={it.quantidade || ''}
+                        onChange={e => handleUpdateItem(idx, { quantidade: parseFloat(e.target.value) || 0 })}
+                        required
+                        className="w-full h-8 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-transparent text-[#111c2d] dark:text-white font-semibold text-center focus:ring-1 focus:ring-[#0085db]"
+                      />
+                    </div>
+                    <div className="col-span-3 sm:col-span-1">
+                      <input
+                        type="text"
+                        placeholder="un"
+                        value={it.unidade}
+                        onChange={e => handleUpdateItem(idx, { unidade: e.target.value })}
+                        className="w-full h-8 px-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-transparent text-[#707a82] dark:text-white text-center"
+                      />
+                    </div>
+                    <div className="col-span-5 sm:col-span-2">
+                      <input
+                        type="number"
+                        step="0.01"
+                        placeholder="R$ Unit"
+                        value={it.valorUnitario || ''}
+                        onChange={e => handleUpdateItem(idx, { valorUnitario: parseFloat(e.target.value) || 0 })}
+                        required
+                        className="w-full h-8 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-transparent text-[#111c2d] dark:text-white font-bold text-right focus:ring-1 focus:ring-[#0085db]"
+                      />
+                    </div>
+                    <div className="col-span-12 sm:col-span-2 flex items-center justify-between sm:justify-end gap-2 pt-1 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-800">
+                      <span className="text-xs font-bold text-[#111c2d] dark:text-white tabular-nums">
+                        {formatBRL(it.valorTotal)}
+                      </span>
+                      {itens.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem(idx)}
+                          className="p-1 text-[#707a82] hover:text-rose-500 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                          title="Remover item"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">delete</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Total dos Itens Discriminados */}
+              <div className="flex items-center justify-between pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] text-xs">
+                <span className="text-[#707a82]">Soma dos itens discriminados:</span>
+                <span className="font-bold text-[#111c2d] dark:text-white tabular-nums">
+                  {formatBRL(somaItens)}
+                </span>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                    Descrição *
+                  </label>
                   <input
                     type="text"
-                    placeholder="Nome do material..."
-                    value={novoMaterialNome}
-                    onChange={e => setNovoMaterialNome(e.target.value)}
-                    className="col-span-2 px-2.5 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
+                    required
+                    placeholder="Ex: COMPRA DE CIMENTO E AREIA PARA SAPATA"
+                    value={descricao}
+                    onChange={e => setDescricao(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#0085db] uppercase"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                    {modalTipo === 'servico' ? 'Prestador / Empresa *' : 'Fornecedor *'}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Nome da loja ou prestador"
+                    value={fornecedorNome}
+                    onChange={e => setFornecedorNome(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                    Data *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={data}
+                    onChange={e => setData(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
+                  />
+                </div>
+
+                {/* Etapa da obra com checkbox */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={etapaVinculada}
+                        onChange={e => {
+                          setEtapaVinculada(e.target.checked);
+                          if (e.target.checked && !etapaId) {
+                            setEtapaId(activeObra.etapaAtualId || etapas[0]?.id || 'etapa-1');
+                          }
+                        }}
+                        className="w-3.5 h-3.5 rounded text-[#0085db] focus:ring-[#0085db] border-[#e6ecf1] dark:border-[#333f55] cursor-pointer"
+                      />
+                      <span className="text-xs font-bold text-[#111c2d] dark:text-white">
+                        Etapa da obra
+                      </span>
+                    </label>
+                    <span
+                      className={`text-[10px] ${
+                        etapaVinculada ? 'text-emerald-600 font-semibold' : 'text-[#707a82]'
+                      }`}
+                    >
+                      {etapaVinculada ? 'Vinculada' : 'Não vinculada'}
+                    </span>
+                  </div>
                   <select
-                    value={novoMaterialUnidade}
-                    onChange={e => setNovoMaterialUnidade(e.target.value)}
-                    className="px-2.5 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
+                    disabled={!etapaVinculada}
+                    value={etapaId}
+                    onChange={e => setEtapaId(e.target.value)}
+                    className={`w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] transition-all focus:outline-hidden focus:ring-2 focus:ring-[#0085db] ${
+                      etapaVinculada
+                        ? 'bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer opacity-100'
+                        : 'bg-gray-100 dark:bg-[#151d2a] text-[#707a82] dark:text-[#525f75] cursor-not-allowed opacity-60'
+                    }`}
                   >
-                    <option value="">Unidade...</option>
-                    {unidadesMedida.map(u => (
-                      <option key={u} value={u}>
-                        {u}
+                    <option value="">Selecione uma etapa...</option>
+                    {etapas.map(e => (
+                      <option key={e.id} value={e.id}>
+                        {e.numero === 0 ? e.nome : `${e.numero} - ${e.nome}`}
                       </option>
                     ))}
                   </select>
                 </div>
-                <div className="flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowNovoMaterial(false)}
-                    className="px-2.5 py-1 text-xs text-[#707a82] cursor-pointer"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSaveNovoMaterial}
-                    className="px-3.5 py-1 text-xs font-bold bg-[#0085db] hover:bg-[#0071ba] text-white rounded-lg cursor-pointer"
-                  >
-                    Salvar Material
-                  </button>
-                </div>
-              </div>
-            )}
 
-            {/* Items list */}
-            <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-              {itens.map((item, idx) => (
-                <div
-                  key={item.id}
-                  className="p-3 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] space-y-2"
-                >
-                  <div className="grid grid-cols-12 gap-2 items-center">
-                    <div className="col-span-6 sm:col-span-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                    Situação do Pagamento *
+                  </label>
+                  <select
+                    value={statusPagamento}
+                    onChange={e => setStatusPagamento(e.target.value as 'pago' | 'pendente')}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#0085db] cursor-pointer"
+                  >
+                    <option value="pago">Pago</option>
+                    <option value="pendente">A Pagar</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                    Forma de Pagamento
+                  </label>
+                  <select
+                    value={formaPagamento}
+                    onChange={e => setFormaPagamento(e.target.value as FormaPagamento)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db] cursor-pointer"
+                  >
+                    <option value="pix">Pix (À vista)</option>
+                    <option value="cartao_credito">Cartão de Crédito</option>
+                    <option value="boleto">Boleto Faturado</option>
+                    <option value="dinheiro">Dinheiro</option>
+                    <option value="nao_informado">Não informado</option>
+                  </select>
+                </div>
+
+                {/* Campos se for Cartão de Crédito */}
+                {formaPagamento === 'cartao_credito' && (
+                  <div className="sm:col-span-2 p-3 rounded-xl bg-amber-500/5 border border-amber-500/20 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[15px] text-[#0085db]">
+                          credit_card
+                        </span>
+                        <span>Cartão Utilizado</span>
+                      </label>
                       <select
-                        value={item.materialId}
-                        onChange={e => {
-                          const mat = materiais.find(m => m.id === e.target.value);
-                          updateItem(idx, {
-                            materialId: e.target.value,
-                            materialNome: mat?.nome || item.materialNome,
-                            unidade: mat?.unidadePadrao || item.unidade,
-                          });
-                        }}
-                        className="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
+                        value={cartaoId}
+                        onChange={e => setCartaoId(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-medium focus:ring-2 focus:ring-[#0085db] cursor-pointer"
                       >
-                        {materiais.map(m => (
-                          <option key={m.id} value={m.id}>
-                            {m.nome}
+                        <option value="">Selecione o cartão...</option>
+                        {cartoes.map(c => (
+                          <option key={c.id} value={c.id}>
+                            {c.apelido} {c.ultimosDigitos ? `(Final ${c.ultimosDigitos})` : ''}
                           </option>
                         ))}
                       </select>
                     </div>
 
-                    <div className="col-span-3 sm:col-span-2">
-                      <input
-                        type="number"
-                        min="0.01"
-                        step="any"
-                        placeholder="Qtd"
-                        value={item.quantidade || ''}
-                        onChange={e => updateItem(idx, { quantidade: parseFloat(e.target.value) || 0 })}
-                        className="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
-                      />
+                    <div>
+                      <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[15px] text-[#707a82]">
+                          calendar_month
+                        </span>
+                        <span>Nº de Parcelas</span>
+                      </label>
+                      <select
+                        value={parcelasTotal}
+                        onChange={e => setParcelasTotal(parseInt(e.target.value, 10) || 1)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold focus:ring-2 focus:ring-[#0085db] cursor-pointer"
+                      >
+                        {[1, 2, 3, 4, 5, 6, 10, 12].map(n => (
+                          <option key={n} value={n}>
+                            {n === 1 ? '1x (À vista na fatura)' : `${n}x`}
+                          </option>
+                        ))}
+                      </select>
                     </div>
+                  </div>
+                )}
 
-                    <div className="col-span-3 sm:col-span-2">
-                      <input
-                        type="text"
-                        placeholder="Un"
-                        value={item.unidade}
-                        onChange={e => updateItem(idx, { unidade: e.target.value })}
-                        className="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white text-center"
-                      />
-                    </div>
-
-                    <div className="col-span-5 sm:col-span-2">
-                      <input
-                        type="number"
-                        min="0"
-                        step="any"
-                        placeholder="R$ Unit"
-                        value={item.valorUnitario || ''}
-                        onChange={e => updateItem(idx, { valorUnitario: parseFloat(e.target.value) || 0 })}
-                        className="w-full px-2 py-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
-                      />
-                    </div>
-
-                    <div className="col-span-5 sm:col-span-2 text-right">
-                      <span className="text-xs font-bold text-[#111c2d] dark:text-white tabular-nums">
-                        {formatBRL(item.valorTotal)}
+                {/* Comprovante / Upload */}
+                <div>
+                  <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 flex items-center justify-between">
+                    <span>Link do Comprovante *</span>
+                    <span className="text-[10px] text-amber-600 font-semibold">Essencial</span>
+                  </label>
+                  <div className="space-y-1.5">
+                    <div className="relative flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px] absolute left-3 top-1/2 -translate-y-1/2 text-[#707a82]">
+                        description
                       </span>
+                      <input
+                        type="url"
+                        placeholder="https://onedrive.live.com/..."
+                        value={comprovanteUrl}
+                        onChange={e => setComprovanteUrl(e.target.value)}
+                        className="w-full pl-8 pr-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0085db]"
+                      />
+                      <label
+                        className="px-2.5 py-2 rounded-xl border border-[#0085db]/30 bg-[#0085db]/10 hover:bg-[#0085db]/20 text-[#0085db] cursor-pointer shrink-0 transition-colors"
+                        title="Upload direto de foto ou nota"
+                      >
+                        <span className="material-symbols-outlined text-[16px] block">cloud_upload</span>
+                        <input
+                          type="file"
+                          accept="image/*,application/pdf"
+                          disabled={isUploading}
+                          className="hidden"
+                          onChange={async e => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setIsUploading(true);
+                            setUploadError(null);
+                            const res = await StorageService.uploadComprovante(file, activeObra.id);
+                            setIsUploading(false);
+                            if (res.url) {
+                              setComprovanteUrl(res.url);
+                              showToast('Comprovante enviado com sucesso!', 'success', 'Upload');
+                            } else {
+                              setUploadError(res.error || 'Falha ao enviar comprovante');
+                            }
+                          }}
+                        />
+                      </label>
                     </div>
-
-                    {itens.length > 1 && (
-                      <div className="col-span-2 sm:col-span-12 flex justify-end">
-                        <button
-                          type="button"
-                          onClick={() => removeItem(idx)}
-                          className="text-[#707a82] hover:text-[#fb977d] text-xs cursor-pointer"
-                          title="Remover item"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                    {uploadError && (
+                      <p className="text-[10px] text-rose-500 font-semibold">{uploadError}</p>
                     )}
                   </div>
+                </div>
+              </div>
 
-                  <div className="flex items-center gap-2 pt-1 border-t border-[#e6ecf1] dark:border-[#333f55] text-[11px]">
-                    <span className="text-[#707a82]">Destino:</span>
-                    <select
-                      value={item.destino}
-                      onChange={e => updateItem(idx, { destino: e.target.value as DestinoItem })}
-                      className="px-2 py-0.5 rounded border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
-                    >
-                      <option value="obra">Obra Juscelino Mola</option>
-                      <option value="producao_trilhos">Produção de Trilhos</option>
-                      <option value="outra_obra">Outra Obra / Local</option>
-                      <option value="estoque_geral">Uso Geral</option>
-                    </select>
+              {/* 3. Bloco de Valores com Desconto Obtido */}
+              <div className="p-3.5 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2.5">
+                <h4 className="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[16px] text-emerald-600">payments</span>
+                  <span>Valores & Desconto Recebido</span>
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#707a82] mb-1">
+                      Valor Bruto (R$)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="0,00"
+                      value={valorBruto}
+                      onChange={e => {
+                        setValorBruto(e.target.value);
+                        recalcValoresModal(e.target.value, desconto);
+                      }}
+                      className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-1 flex items-center gap-1">
+                      <span>Desconto Obtido (R$)</span>
+                      <span className="text-[9px] bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-1 rounded font-bold">
+                        - R$
+                      </span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="0,00"
+                      value={desconto}
+                      onChange={e => {
+                        setDesconto(e.target.value);
+                        recalcValoresModal(valorBruto, e.target.value);
+                      }}
+                      className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#111c2d] dark:text-white mb-1">
+                      Total Efetivo da Nota
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      value={valorTotalNota}
+                      onChange={e => setValorTotalNota(e.target.value)}
+                      className="w-full px-3 py-2 text-xs font-black rounded-xl border border-[#0085db]/40 bg-[#0085db]/5 text-[#0085db] tabular-nums"
+                    />
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#707a82] mb-1">
+                  Observações (opcional)
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Informações adicionais sobre frete, garantias, etc."
+                  value={observacoes}
+                  onChange={e => setObservacoes(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer active:scale-95 inline-flex items-center gap-1.5"
+                >
+                  <span className="material-symbols-outlined text-[16px]">check</span>
+                  <span>Salvar</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* MODAL VISUALIZAR DETALHES DA DESPESA STITCH              */}
+      {/* ======================================================== */}
+      {viewingDespesa && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+          <div
+            onClick={() => setViewingDespesa(null)}
+            className="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer animate-in fade-in duration-150"
+          />
+          <div className="relative z-50 w-full max-w-2xl bg-white dark:bg-[#111c2d] rounded-[24px] shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 sm:p-6 space-y-4 max-h-[94vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+            
+            {/* Cabeçalho */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[22px]">visibility</span>
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-[#111c2d] dark:text-white font-headline">
+                    Visualizar despesa
+                  </h2>
+                  <p className="text-xs text-[#707a82]">
+                    Conferência completa de dados, discriminação dos itens e valores.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setViewingDespesa(null)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
             </div>
 
-            {/* Note conference & difference indicator */}
-            <div className="mt-3 p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] text-xs space-y-1">
-              <div className="flex justify-between font-medium text-[#707a82] dark:text-[#7c8fac]">
-                <span>Soma dos itens:</span>
-                <span className="font-bold tabular-nums text-[#111c2d] dark:text-white">{formatBRL(somaItens)}</span>
+            {/* Badges e Identificação */}
+            <div className="flex items-center justify-between flex-wrap gap-2 p-3 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#0085db]/10 text-[#0085db] border border-[#0085db]/20">
+                  <span className="material-symbols-outlined text-[15px]">
+                    {viewingDespesa.categoria === 'servicos' ? 'handyman' : 'inventory_2'}
+                  </span>
+                  <span>{viewingDespesa.categoria === 'servicos' ? 'Serviços' : 'Material'}</span>
+                </span>
+
+                <span
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                    viewingDespesa.formaPagamento !== 'nao_informado'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40'
+                      : 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[14px]">
+                    {viewingDespesa.formaPagamento !== 'nao_informado' ? 'check_circle' : 'schedule'}
+                  </span>
+                  <span>{viewingDespesa.formaPagamento !== 'nao_informado' ? 'Pago' : 'A Pagar'}</span>
+                </span>
+
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-[#707a82] bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55]">
+                  <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+                  <span>{formatDateBR(viewingDespesa.data)}</span>
+                </span>
               </div>
-              {valorTotalNotaNum > 0 && Math.abs(diferencaRateio) > 0.01 && (
-                <div className="flex justify-between font-bold text-[#fb977d]">
-                  <span>Diferença em relação à nota (rateio/pendência):</span>
-                  <span className="tabular-nums">{formatBRL(diferencaRateio)}</span>
+            </div>
+
+            {/* Discriminação dos Itens */}
+            <div className="p-3.5 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[16px] text-[#0085db]">
+                      inventory
+                    </span>
+                    <span>Discriminação dos itens</span>
+                  </h4>
+                  <p className="text-[11px] text-[#707a82]">
+                    Detalhamento de cada item ou serviço prestado na nota.
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-[#0085db] bg-white dark:bg-[#111c2d] px-2.5 py-0.5 rounded-full border border-[#0085db]/30">
+                  {viewingDespesa.itens?.length || 0} itens discriminados
+                </span>
+              </div>
+
+              {/* Cabeçalho */}
+              <div className="hidden sm:grid grid-cols-12 gap-2 px-2 text-[10px] font-bold text-[#707a82] uppercase tracking-wider">
+                <span className="col-span-5">Descrição / Material ou Serviço</span>
+                <span className="col-span-2 text-center">Quantidade</span>
+                <span className="col-span-1 text-center">Unid.</span>
+                <span className="col-span-2 text-right">Valor Unit. (R$)</span>
+                <span className="col-span-2 text-right pr-2">Subtotal</span>
+              </div>
+
+              <div className="space-y-2">
+                {(viewingDespesa.itens || []).map(it => (
+                  <div
+                    key={it.id}
+                    className="grid grid-cols-12 gap-2 p-2.5 rounded-xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] items-center text-xs"
+                  >
+                    <div className="col-span-12 sm:col-span-5">
+                      <span className="font-bold text-[#111c2d] dark:text-white block">
+                        {it.materialNome}
+                      </span>
+                      <span className="text-[10px] text-[#707a82] sm:hidden">
+                        Quantidade: {it.quantidade} {it.unidade} × {formatBRL(it.valorUnitario)}
+                      </span>
+                    </div>
+                    <div className="hidden sm:block col-span-2 text-center font-bold text-[#111c2d] dark:text-white">
+                      {it.quantidade}
+                    </div>
+                    <div className="hidden sm:block col-span-1 text-center text-[#707a82]">
+                      {it.unidade}
+                    </div>
+                    <div className="hidden sm:block col-span-2 text-right font-bold text-[#111c2d] dark:text-white tabular-nums">
+                      {it.valorUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                    <div className="col-span-12 sm:col-span-2 text-right font-black text-[#111c2d] dark:text-white tabular-nums pr-2 pt-1 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-800 flex items-center justify-between sm:justify-end">
+                      <span className="text-[10px] text-[#707a82] sm:hidden">Subtotal:</span>
+                      <span>{formatBRL(it.valorTotal)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Total dos Itens */}
+              <div className="flex items-center justify-between pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] text-xs">
+                <span className="text-[#707a82]">Total dos itens discriminados:</span>
+                <span className="font-bold text-[#111c2d] dark:text-white tabular-nums">
+                  {formatBRL(viewingDespesa.valorSomaItens || 0)}
+                </span>
+              </div>
+            </div>
+
+            {/* Informações Essenciais */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="sm:col-span-2 p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+                <span className="block text-[10px] font-bold text-[#707a82] uppercase tracking-wider mb-0.5">
+                  Descrição
+                </span>
+                <span className="font-bold text-[#111c2d] dark:text-white uppercase">
+                  {viewingDespesa.descricao}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+                <span className="block text-[10px] font-bold text-[#707a82] uppercase tracking-wider mb-0.5">
+                  Fornecedor
+                </span>
+                <span className="font-bold text-[#111c2d] dark:text-white">
+                  {viewingDespesa.fornecedorNome}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+                <span className="block text-[10px] font-bold text-[#707a82] uppercase tracking-wider mb-0.5">
+                  Data
+                </span>
+                <span className="font-bold text-[#111c2d] dark:text-white">
+                  {formatDateBR(viewingDespesa.data)}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+                <span className="block text-[10px] font-bold text-[#707a82] uppercase tracking-wider mb-0.5">
+                  Etapa da obra
+                </span>
+                <div className="flex items-center gap-1.5 font-bold text-[#0085db]">
+                  <span className="material-symbols-outlined text-[15px]">construction</span>
+                  <span>{getEtapaNome(viewingDespesa.etapaId)}</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+                <span className="block text-[10px] font-bold text-[#707a82] uppercase tracking-wider mb-0.5">
+                  Forma de Pagamento
+                </span>
+                <div className="flex items-center gap-1.5 font-bold text-[#111c2d] dark:text-white">
+                  <span className="material-symbols-outlined text-[15px] text-emerald-600">
+                    payments
+                  </span>
+                  <span>{getFormaPagamentoLabel(viewingDespesa.formaPagamento)}</span>
+                </div>
+              </div>
+
+              {viewingDespesa.comprovanteUrl && (
+                <div className="sm:col-span-2 p-3 rounded-xl bg-[#0085db]/5 border border-[#0085db]/20 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[20px] text-[#0085db]">
+                      description
+                    </span>
+                    <div>
+                      <span className="block text-xs font-bold text-[#111c2d] dark:text-white">
+                        Comprovante / Nota Fiscal
+                      </span>
+                      <span className="text-[11px] text-[#707a82]">Anexo disponível no repositório da obra</span>
+                    </div>
+                  </div>
+                  <a
+                    href={viewingDespesa.comprovanteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-8 px-3 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl inline-flex items-center gap-1 transition-all shadow-xs"
+                  >
+                    <span>Abrir nota</span>
+                    <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                  </a>
                 </div>
               )}
             </div>
-          </div>
 
-          <div>
-            <label className="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
-              Observações
-            </label>
-            <textarea
-              rows={2}
-              placeholder="Anotações sobre a compra..."
-              value={observacoes}
-              onChange={e => setObservacoes(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"
-            />
-          </div>
-
-          <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-sm shadow-[#0085db]/25 cursor-pointer"
-            >
-              {editingDespesa ? 'Salvar Alterações' : 'Registrar Despesa'}
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* MODAL: Confirmar exclusão de despesa no padrão do sistema */}
-      <Modal
-        isOpen={!!despesaToDelete}
-        onClose={() => setDespesaToDelete(null)}
-        title="Confirmar exclusão"
-        subtitle="Esta ação removerá a despesa do sistema"
-        maxWidth="sm"
-      >
-        {despesaToDelete && (
-          <div className="space-y-4">
-            <p className="text-xs text-zinc-600 dark:text-zinc-300">
-              Tem certeza que deseja remover a despesa <strong>&ldquo;{despesaToDelete.descricao}&rdquo;</strong>?
-            </p>
-
-            <div className="p-3 rounded-xl bg-zinc-50 dark:bg-[#162232] border border-[#e6ecf1] dark:border-[#333f55] space-y-1.5 text-xs">
-              <div className="flex justify-between items-center">
-                <span className="text-[#707a82] dark:text-[#7c8fac]">Valor total:</span>
-                <span className="font-bold text-[#111c2d] dark:text-white tabular-nums">
-                  {formatBRL(despesaToDelete.valorTotalNota)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#707a82] dark:text-[#7c8fac]">Fornecedor:</span>
-                <span className="font-medium text-[#111c2d] dark:text-white truncate max-w-[180px]">
-                  {despesaToDelete.fornecedorNome}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#707a82] dark:text-[#7c8fac]">Data:</span>
-                <span className="text-[#111c2d] dark:text-white">
-                  {formatDateBR(despesaToDelete.data)}
-                </span>
-              </div>
-              {despesaToDelete.itens && despesaToDelete.itens.length > 0 && (
-                <div className="flex justify-between items-center text-[11px] text-[#707a82] dark:text-[#7c8fac] pt-1.5 border-t border-[#e6ecf1] dark:border-[#333f55]">
-                  <span>Itens discriminados:</span>
-                  <span className="font-semibold text-[#111c2d] dark:text-white">
-                    {despesaToDelete.itens.length} {despesaToDelete.itens.length === 1 ? 'item' : 'itens'}
+            {/* Valores e Total */}
+            <div className="p-4 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-3">
+              <h4 className="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[16px] text-emerald-600">payments</span>
+                <span>Valores & Desconto Recebido</span>
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-2.5 rounded-xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55]">
+                  <span className="block text-[11px] font-semibold text-[#707a82] mb-0.5">Valor Bruto</span>
+                  <span className="text-sm font-bold text-[#111c2d] dark:text-white tabular-nums">
+                    {formatBRL(viewingDespesa.valorTotalNota)}
                   </span>
                 </div>
-              )}
+                <div className="p-2.5 rounded-xl bg-emerald-50/40 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40">
+                  <span className="block text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-0.5">
+                    Desconto Obtido
+                  </span>
+                  <span className="text-sm font-bold text-emerald-700 dark:text-emerald-300 tabular-nums">
+                    R$ 0,00
+                  </span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-[#0085db]/5 border border-[#0085db]/30">
+                  <span className="block text-[11px] font-bold text-[#0085db] mb-0.5">Total Efetivo</span>
+                  <span className="text-base font-black text-[#0085db] tabular-nums">
+                    {formatBRL(viewingDespesa.valorTotalNota)}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex justify-end gap-2">
+            {/* Ações do Rodapé */}
+            <div className="pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => {
+                  const target = viewingDespesa;
+                  setViewingDespesa(null);
+                  openEditModal(target);
+                }}
+                className="px-4 py-2 text-xs font-semibold text-[#0085db] hover:bg-[#0085db]/10 rounded-xl cursor-pointer inline-flex items-center gap-1.5 transition-all"
+              >
+                <span className="material-symbols-outlined text-[16px]">edit</span>
+                <span>Editar despesa</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewingDespesa(null)}
+                className="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer active:scale-95 inline-flex items-center gap-1.5 transition-all"
+              >
+                <span className="material-symbols-outlined text-[16px]">check</span>
+                <span>Concluir</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* MODAL DE CONFIRMAÇÃO DE EXCLUSÃO COMPACTO                */}
+      {/* ======================================================== */}
+      {despesaToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            onClick={() => setDespesaToDelete(null)}
+            className="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer animate-in fade-in duration-150"
+          />
+          <div className="relative w-full max-w-sm bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-rose-200 dark:border-rose-900/50 p-5 space-y-3 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-2 text-rose-500">
+              <span className="material-symbols-outlined text-[20px]">delete_forever</span>
+              <h2 className="text-xs font-bold uppercase tracking-wider font-headline">
+                Excluir Despesa
+              </h2>
+            </div>
+            <p className="text-xs text-[#707a82]">
+              Deseja excluir a despesa{' '}
+              <strong className="text-[#111c2d] dark:text-white">
+                {despesaToDelete.descricao}
+              </strong>{' '}
+              no valor de{' '}
+              <strong className="text-[#111c2d] dark:text-white">
+                {formatBRL(despesaToDelete.valorTotalNota)}
+              </strong>
+              ?
+            </p>
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
               <button
                 type="button"
                 onClick={() => setDespesaToDelete(null)}
-                className="px-3.5 py-2 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white cursor-pointer"
+                className="h-8 px-3 text-xs font-bold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer"
               >
                 Cancelar
               </button>
@@ -952,15 +1554,16 @@ export const DespesasView: React.FC = () => {
                 onClick={() => {
                   deleteDespesa(despesaToDelete.id);
                   setDespesaToDelete(null);
+                  showToast('Despesa excluída com sucesso!', 'success', 'Despesas');
                 }}
-                className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+                className="h-8 px-4 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl cursor-pointer"
               >
-                <span>Excluir</span>
+                Excluir
               </button>
             </div>
           </div>
-        )}
-      </Modal>
+        </div>
+      )}
 
     </div>
   );

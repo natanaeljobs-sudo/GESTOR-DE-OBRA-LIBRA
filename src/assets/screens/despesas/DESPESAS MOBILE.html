@@ -1,0 +1,1747 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Despesas — Mobile — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-headline { font-family: 'Outfit', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[884px] font-body antialiased flex flex-col pb-24" data-stitch-vh="min-h-[884px]===min-h-screen">
+
+  <!-- Header Superior Mobile Oficial Idêntico a Cartoes-Mobile & Orcamentos-Mobile -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-14 px-4 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+        N
+      </div>
+      <div>
+        <span class="block text-xs font-bold leading-tight uppercase">NATANAEL</span>
+        <span class="block text-[10px] text-[#707a82] leading-none">Master</span>
+      </div>
+    </div>
+
+    <!-- Canteiro Badge -->
+    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+      <span class="material-symbols-outlined text-[14px] text-[#0085db]">apartment</span>
+      <span class="text-[10px] font-bold uppercase truncate max-w-[130px]">Juscelino Mola</span>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal Mobile -->
+  <main class="p-4 space-y-4 flex-1">
+    
+    <!-- Título & Subtítulo -->
+    <div class="space-y-0.5">
+      <h1 class="text-xl font-bold text-[#111c2d] dark:text-white">
+        Despesas
+      </h1>
+      <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+        Controle de compras, notas fiscais e comprovantes da obra.
+      </p>
+    </div>
+
+    <!-- Botão de Ação Rápida Mobile -->
+    <div class="grid grid-cols-1 gap-2.5">
+      <button type="button" onclick="openNewModalMobile()" class="h-10 px-4 inline-flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074bf] active:scale-95 rounded-xl shadow-sm shadow-[#0085db]/25 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[18px]">add</span>
+        <span>Nova Despesa</span>
+      </button>
+    </div>
+
+    <!-- Segmented Control de Tipo de Lançamento Mobile: Todos, Materiais, Serviços -->
+    <div class="flex items-center h-10 p-1 bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl text-xs shadow-xs">
+      <button type="button" id="m-tipo-btn-todos" onclick="setMobileTipoFilter(&#39;todos&#39;)" class="flex-1 h-8 inline-flex items-center justify-center gap-1 rounded-lg bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all cursor-pointer">
+        <span>Todos</span>
+      </button>
+      <button type="button" id="m-tipo-btn-materiais" onclick="setMobileTipoFilter(&#39;materiais&#39;)" class="flex-1 h-8 inline-flex items-center justify-center gap-1 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[15px]">inventory_2</span>
+        <span>Materiais</span>
+      </button>
+      <button type="button" id="m-tipo-btn-servicos" onclick="setMobileTipoFilter(&#39;servicos&#39;)" class="flex-1 h-8 inline-flex items-center justify-center gap-1 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[15px]">handyman</span>
+        <span>Serviços</span>
+      </button>
+    </div>
+
+    <!-- Busca e Filtros Rápidos Mobile -->
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-3 shadow-[0px_2px_6px_rgba(37,83,185,0.04)] space-y-2.5">
+      <div class="relative">
+        <span class="material-symbols-outlined text-[18px] absolute left-3 top-1/2 -translate-y-1/2 text-[#707a82]">search</span>
+        <input type="text" id="m-despesas-search" oninput="applyMobileDespesasFilters()" placeholder="Buscar despesa ou fornecedor..." class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white placeholder-[#707a82] focus:ring-2 focus:ring-[#0085db]">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <select id="m-filter-status" onchange="applyMobileDespesasFilters()" class="w-full h-8 px-2 text-[11px] font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer">
+          <option value="todos">Todos Status</option>
+          <option value="pago">Pago</option>
+          <option value="pendente">A Pagar</option>
+        </select>
+
+        <select id="m-filter-sort" onchange="applyMobileDespesasFilters()" class="w-full h-8 px-2 text-[11px] font-semibold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer">
+          <option value="recente">Mais recente</option>
+          <option value="maior">Maior valor</option>
+          <option value="menor">Menor valor</option>
+        </select>
+      </div>
+
+      <!-- Resumo de Contagem e Totalizador -->
+      <div class="flex items-center justify-between text-xs text-[#707a82] dark:text-[#7c8fac] pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <span><strong id="m-count-text" class="text-[#111c2d] dark:text-white">9</strong> despesas</span>
+        <span class="font-bold text-[#111c2d] dark:text-white">
+          Total: <span id="m-total-text" class="tabular-nums text-[#0085db] font-black">R$ 0,00</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Barra de Paginação Mobile Estilo Solta no Topo (Idêntica a Orcamentos-Mobile) -->
+    <div id="m-paginacao-bar" class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] px-3.5 py-2 flex items-center justify-between shadow-[0px_2px_6px_rgba(37,83,185,0.04)]">
+      <div class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+        Página <strong id="m-pag-num" class="text-[#111c2d] dark:text-white">1</strong> de <strong id="m-pag-total" class="text-[#111c2d] dark:text-white">2</strong>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button type="button" id="m-btn-prev" onclick="changeMobilePage(-1)" disabled class="w-7 h-7 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] disabled:opacity-40 cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+        </button>
+        <div id="m-pag-dots" class="flex items-center gap-1">
+          <!-- Gerado dinamicamente -->
+        </div>
+        <button type="button" id="m-btn-next" onclick="changeMobilePage(1)" class="w-7 h-7 inline-flex items-center justify-center rounded-xl border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de Despesas Mobile em Cards Verticais Touch -->
+    <div id="m-despesas-list" class="space-y-3">
+      <!-- Renderizado dinamicamente via JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- Modal Mobile Lançar / Editar Despesa Completo com Scroll Otimizado -->
+  <div id="modal-despesa" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div onclick="closeModal()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+    <div class="relative w-full max-w-lg bg-white dark:bg-[#111c2d] rounded-t-[28px] sm:rounded-[24px] shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 space-y-4 max-h-[813px] overflow-y-auto animate-in slide-in-from-bottom duration-200" data-stitch-vh="max-h-[813px]===max-h-[92vh]">
+      
+      <!-- Cabeçalho do Modal -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+          </div>
+          <div>
+            <h2 id="modal-title" class="text-sm font-bold text-[#111c2d] dark:text-white">Lançar despesa</h2>
+            <p class="text-[11px] text-[#707a82]">Lançamento rápido de compras e serviços.</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- 1. ESCOLHA DIRETA: MATERIAL OU SERVIÇO -->
+      <div class="space-y-1.5">
+        <label class="block text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">
+          O que você está lançando?
+        </label>
+        <div class="grid grid-cols-2 gap-2.5">
+          <button type="button" id="modal-btn-tipo-material" onclick="setModalTipo(&#39;material&#39;)" class="p-2.5 rounded-xl border-2 border-[#0085db] bg-[#0085db]/5 text-left transition-all cursor-pointer flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-[#0085db] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+            </div>
+            <div>
+              <strong class="block text-xs font-bold text-[#111c2d] dark:text-white">Material</strong>
+              <span class="text-[10px] text-[#707a82]">Insumos/obra</span>
+            </div>
+          </button>
+
+          <button type="button" id="modal-btn-tipo-servico" onclick="setModalTipo(&#39;servico&#39;)" class="p-2.5 rounded-xl border-2 border-[#e6ecf1] dark:border-[#333f55] hover:border-[#0085db]/40 bg-white dark:bg-[#111c2d] text-left transition-all cursor-pointer flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] flex items-center justify-center shrink-0 border border-[#e6ecf1] dark:border-[#333f55]">
+              <span class="material-symbols-outlined text-[18px]">handyman</span>
+            </div>
+            <div>
+              <strong class="block text-xs font-bold text-[#111c2d] dark:text-white">Serviços</strong>
+              <span class="text-[10px] text-[#707a82]">Empreitada</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. PUXAR DADOS DE UM ORÇAMENTO APROVADO -->
+      <div class="p-3 rounded-2xl bg-[#0085db]/5 dark:bg-[#0085db]/10 border border-[#0085db]/20 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-[#0085db] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">request_quote</span>
+            <span>Importar de Orçamento</span>
+          </span>
+          <span class="text-[10px] font-semibold bg-[#0085db]/10 text-[#0085db] px-2 py-0.5 rounded-full">Opcional</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <select id="modal-select-orcamento" onchange="importarOrcamentoModal()" class="flex-1 px-2.5 py-1.5 text-xs rounded-xl border border-[#0085db]/30 bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold cursor-pointer focus:ring-2 focus:ring-[#0085db]">
+            <option value>Selecione um orçamento...</option>
+            <option value="orc-01">COT-2026-109 · Comercial Silva (R$ 5.850,00)</option>
+            <option value="orc-02">COT-2026-110 · Depósito Goiás (R$ 5.590,00)</option>
+            <option value="orc-03">SRV-2026-042 · Supermix Concreto (R$ 3.850,00)</option>
+            <option value="orc-04">SRV-2026-015 · Terra Forte Locações (R$ 2.400,00)</option>
+          </select>
+          <button type="button" onclick="document.getElementById(&#39;modal-select-orcamento&#39;).value=&#39;&#39;; recalcRateio();" class="h-8 px-2 text-xs font-semibold text-[#707a82] hover:text-rose-600 bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-xl transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Limpar seleção">
+            <span class="material-symbols-outlined text-[14px]">backspace</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Datalist com materiais cadastrados -->
+      <datalist id="gh-materiais-cadastrados">
+        <option value="Cimento CP II 50kg (Votoran / Mauá)"></option>
+        <option value="Areia Média Lavada"></option>
+        <option value="BRITA 1 Graduada"></option>
+        <option value="Ferro CA-50 3/8 pol (10mm)"></option>
+        <option value="Ferro CA-60 5/16 pol (8mm)"></option>
+        <option value="Tijolo Cerâmico 8 Furos 9x19x19"></option>
+        <option value="Diária de Retroescavadeira com operador"></option>
+        <option value="Concreto Usinado FCK 25 MPa"></option>
+        <option value="Locação de Caçamba de Entulho"></option>
+      </datalist>
+
+      <!-- ITENS DISCRIMINADOS -->
+      <div class="p-3 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="text-xs font-bold text-[#111c2d] dark:text-white flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-[#0085db]">inventory</span>
+              <span>Discriminação dos itens</span>
+            </h4>
+            <p class="text-[10px] text-[#707a82]">Edite ou adicione materiais cadastrados/novos.</p>
+          </div>
+          <button type="button" onclick="addItemRow()" class="px-2.5 py-1 text-xs font-bold bg-[#0085db] hover:bg-[#0071ba] text-white rounded-lg transition-colors cursor-pointer inline-flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px]">add</span>
+            <span>Adicionar</span>
+          </button>
+        </div>
+
+        <!-- Linhas de Itens Dinâmicas -->
+        <div id="form-itens-container" class="space-y-2"></div>
+
+        <!-- Total dos Itens Discriminados -->
+        <div class="flex items-center justify-between pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] text-xs">
+          <span class="text-[#707a82]">Soma dos itens:</span>
+          <span id="form-soma-itens-label" class="font-bold text-[#111c2d] dark:text-white">R$ 0,00</span>
+        </div>
+      </div>
+
+      <!-- FORMULÁRIO PRINCIPAL -->
+      <form id="form-despesa" onsubmit="handleSubmit(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="form-id">
+        <input type="hidden" id="form-tipo-lancamento" value="materiais">
+
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+              Descrição *
+            </label>
+            <input type="text" id="form-descricao" required placeholder="Ex: COMPRA DE CIMENTO E AREIA PARA SAPATA" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold focus:ring-2 focus:ring-[#0085db] uppercase">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label id="modal-label-fornecedor" class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                Fornecedor *
+              </label>
+              <input type="text" id="form-fornecedor" placeholder="Nome da loja ou prestador" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:ring-2 focus:ring-[#0085db]">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                Data *
+              </label>
+              <input type="date" id="form-data" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:ring-2 focus:ring-[#0085db]">
+            </div>
+          </div>
+
+          <!-- Etapa da obra com checkbox -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="flex items-center gap-1.5 cursor-pointer select-none">
+                <input type="checkbox" id="form-check-etapa" onchange="toggleModalEtapa()" class="w-3.5 h-3.5 rounded text-[#0085db] focus:ring-[#0085db] border-[#e6ecf1] dark:border-[#333f55] cursor-pointer">
+                <span class="text-xs font-bold text-[#111c2d] dark:text-white">Etapa da obra</span>
+              </label>
+              <span id="form-badge-etapa" class="text-[10px] text-[#707a82]">Não vinculada</span>
+            </div>
+            <select id="form-etapa" disabled class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-gray-100 dark:bg-[#151d2a] text-[#707a82] dark:text-[#525f75] cursor-not-allowed opacity-60 transition-all focus:ring-2 focus:ring-[#0085db]">
+              <option value>Selecione uma etapa...</option>
+              <option value="etapa-1">1 - Fundação &amp; Sapata</option>
+              <option value="etapa-2">2 - Alvenaria &amp; Estrutura</option>
+              <option value="etapa-3">3 - Laje &amp; Trilhos</option>
+              <option value="etapa-4">4 - Hidráulica &amp; Elétrica</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                Situação *
+              </label>
+              <select id="form-status-pagamento" class="w-full px-2.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white font-semibold focus:ring-2 focus:ring-[#0085db] cursor-pointer">
+                <option value="pago">Pago</option>
+                <option value="pendente">A Pagar</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1">
+                Forma Pagto
+              </label>
+              <select id="form-pagamento" onchange="handleFormaPagamentoChange()" class="w-full px-2.5 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:ring-2 focus:ring-[#0085db] cursor-pointer">
+                <option value="pix">Pix</option>
+                <option value="cartao_credito">Cartão de Crédito</option>
+                <option value="boleto">Boleto Faturado</option>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="nao_informado">Não informado</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Campos de Cartão de Crédito -->
+          <div id="box-cartao-credito" class="hidden p-3 rounded-xl bg-amber-500/5 border border-amber-500/20 space-y-2.5">
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[15px] text-[#0085db]">credit_card</span>
+                <span>Cartão Utilizado</span>
+              </label>
+              <select id="form-cartao-id" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-medium focus:ring-2 focus:ring-[#0085db] cursor-pointer">
+                <option value="cartao-nubank">Nubank PJ (Final 4092)</option>
+                <option value="cartao-itau">Itaú Visa Infinite (Final 8814)</option>
+                <option value="cartao-bb">BB Ourocard Elo (Final 1032)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[15px] text-[#707a82]">calendar_month</span>
+                <span>Nº de Parcelas</span>
+              </label>
+              <select id="form-parcelas" class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white font-semibold focus:ring-2 focus:ring-[#0085db] cursor-pointer">
+                <option value="1">1x (À vista na fatura)</option>
+                <option value="2">2x</option>
+                <option value="3">3x</option>
+                <option value="4">4x</option>
+                <option value="5">5x</option>
+                <option value="6">6x</option>
+                <option value="10">10x</option>
+                <option value="12">12x</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#111c2d] dark:text-white mb-1 flex items-center justify-between">
+              <span>Link do Comprovante *</span>
+              <span class="text-[10px] text-amber-600 font-semibold">Essencial</span>
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined text-[16px] absolute left-3 top-1/2 -translate-y-1/2 text-[#707a82]">description</span>
+              <input type="url" id="form-comprovante-url" placeholder="https://onedrive.live.com/..." class="w-full pl-8 pr-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white focus:ring-2 focus:ring-[#0085db]">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. BLOCO DE VALORES COM DESCONTO OBTIDO -->
+        <div class="p-3 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-2.5">
+          <h4 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-emerald-600">payments</span>
+            <span>Valores &amp; Desconto Recebido</span>
+          </h4>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] font-semibold text-[#707a82] mb-1">
+                Bruto (R$)
+              </label>
+              <input type="number" step="0.01" id="form-valor-bruto" oninput="recalcModalValores()" placeholder="0,00" class="w-full px-2 py-1.5 text-xs font-bold rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white">
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mb-1">
+                Desc. -R$
+              </label>
+              <input type="number" step="0.01" id="form-desconto" oninput="recalcModalValores()" placeholder="0,00" class="w-full px-2 py-1.5 text-xs font-bold rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300">
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-[#111c2d] dark:text-white mb-1">
+                Total Nota
+              </label>
+              <input type="number" step="0.01" id="form-valor-nota" required class="w-full px-2 py-1.5 text-xs font-black rounded-xl border border-[#0085db]/40 bg-[#0085db]/5 text-[#0085db] tabular-nums">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-[#707a82] mb-1">Observações (opcional)</label>
+          <textarea id="form-obs" rows="2" placeholder="Informações adicionais..." class="w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white"></textarea>
+        </div>
+
+        <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal()" class="px-3.5 py-2 text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] rounded-xl cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer active:scale-95 inline-flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">check</span>
+            <span>Salvar</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Mobile Visualizar Detalhes & Itens da Despesa -->
+  <div id="modal-view-details" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div onclick="closeViewModal()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+    <div class="relative w-full max-w-lg bg-white dark:bg-[#111c2d] rounded-t-[28px] sm:rounded-[24px] shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 space-y-4 max-h-[813px] overflow-y-auto animate-in slide-in-from-bottom duration-200" data-stitch-vh="max-h-[813px]===max-h-[92vh]">
+      
+      <!-- Cabeçalho do Modal de Visualização -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">visibility</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-[#111c2d] dark:text-white">Detalhes da Despesa</h2>
+            <p class="text-[11px] text-[#707a82]">Conferência completa de itens e comprovantes.</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeViewModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- Resumo Principal da Despesa -->
+      <div class="bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-3.5 space-y-2">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-1.5">
+            <span id="view-badge-tipo" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white dark:bg-[#111c2d] text-[#111c2d] dark:text-white border border-[#e6ecf1] dark:border-[#333f55]">
+              <span id="view-icon-tipo" class="material-symbols-outlined text-[13px] text-[#0085db]">inventory_2</span>
+              <span id="view-text-tipo">Material</span>
+            </span>
+            <span id="view-badge-status" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
+              <span class="material-symbols-outlined text-[13px]">check_circle</span>
+              <span id="view-text-status">Pago</span>
+            </span>
+          </div>
+          <span id="view-data" class="text-xs text-[#707a82] font-semibold">04/09/2026</span>
+        </div>
+
+        <h3 id="view-descricao" class="text-sm font-bold text-[#111c2d] dark:text-white uppercase">
+          COMPRA INICIAL DE CIMENTO E AREIA
+        </h3>
+
+        <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#e6ecf1] dark:border-[#333f55]">
+          <div>
+            <span class="text-[10px] text-[#707a82] block">Fornecedor:</span>
+            <strong id="view-fornecedor" class="text-[#111c2d] dark:text-white truncate block">Comercial Silva</strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-[#707a82] block">Forma de Pagamento:</span>
+            <strong id="view-forma-pagamento" class="text-[#111c2d] dark:text-white truncate block">Cartão de Crédito</strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-[#707a82] block">Etapa Vinculada:</span>
+            <strong id="view-etapa" class="text-[#111c2d] dark:text-white truncate block">1 - Fundação &amp; Sapata</strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-[#707a82] block">Comprovante:</span>
+            <a id="view-btn-comprovante" href="#" target="_blank" class="text-[#0085db] font-bold hover:underline inline-flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+              <span>Abrir anexo</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITENS DISCRIMINADOS -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase flex items-center gap-1.5">
+            <span id="view-icon-discriminacao" class="material-symbols-outlined text-[16px] text-[#0085db]">inventory</span>
+            <span id="view-titulo-discriminacao">Discriminação dos itens</span>
+          </span>
+          <span id="view-itens-count" class="text-[10px] font-bold text-[#0085db] px-2 py-0.5 rounded-full bg-[#0085db]/10">3 itens</span>
+        </div>
+
+        <div id="view-itens-list" class="space-y-2">
+          <!-- Gerado via JavaScript -->
+        </div>
+
+        <div class="flex items-center justify-between p-3 rounded-xl bg-[#0085db]/5 border border-[#0085db]/20">
+          <span class="text-xs text-[#707a82]">Total Efetivo:</span>
+          <span id="view-valor-final" class="text-base font-black text-[#0085db] tabular-nums">R$ 0,00</span>
+        </div>
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-2">
+        <button type="button" id="view-btn-editar" class="px-3.5 py-2 text-xs font-semibold text-[#0085db] hover:bg-[#0085db]/10 rounded-xl cursor-pointer inline-flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[15px]">edit</span>
+          <span>Editar despesa</span>
+        </button>
+        <button type="button" onclick="closeViewModal()" class="px-5 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] rounded-xl shadow-xs cursor-pointer active:scale-95">
+          Concluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Mobile Confirmar Exclusão Compacto -->
+  <div id="modal-delete" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="closeDeleteModal()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+    <div class="relative w-full max-w-sm bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-rose-200 dark:border-rose-900/50 p-5 space-y-3 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center gap-2 text-rose-500">
+        <span class="material-symbols-outlined text-[20px]">delete_forever</span>
+        <h2 class="text-xs font-bold uppercase tracking-wider font-headline">Excluir Despesa</h2>
+      </div>
+      <p class="text-xs text-[#707a82]">
+        Deseja excluir a despesa <strong id="delete-name" class="text-[#111c2d] dark:text-white"></strong> no valor de <strong id="delete-val" class="text-[#111c2d] dark:text-white"></strong>?
+      </p>
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="closeDeleteModal()" class="px-3.5 py-1.5 text-xs font-semibold text-[#707a82] hover:bg-gray-100 rounded-xl">Cancelar</button>
+        <button type="button" onclick="confirmDelete()" class="px-4 py-1.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Navegação Inferior Fixa Mobile Idêntica a Diarias-Mobile.html e Cartoes-Mobile.html -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-t border-[#e6ecf1] dark:border-[#333f55] h-16 flex items-center justify-around px-2 z-40">
+    <a href="../dashboard/Dashboard.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">grid_view</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Dashboard</span>
+    </a>
+
+    <!-- Despesas Ativo -->
+    <a href="#" class="flex flex-col items-center justify-center flex-1 py-1 text-[#0085db] transition-colors">
+      <span class="material-symbols-outlined text-[24px] font-semibold">receipt</span>
+      <span class="text-[11px] font-bold tracking-tight mt-0.5 text-[#0085db]">Despesas</span>
+    </a>
+
+    <a href="../maodeobra/Diarias-Mobile.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">group</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Diárias</span>
+    </a>
+
+    <a href="../orcamentos/Orcamentos-Mobile.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">balance</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Orçamentos</span>
+    </a>
+
+    <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.remove(&#39;hidden&#39;)" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors relative cursor-pointer">
+      <div class="relative flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+        <span class="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#fb977d] border-2 border-white dark:border-[#111c2d]"></span>
+      </div>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Mais</span>
+    </button>
+  </nav>
+
+  <!-- Bottom Sheet Menu Mais (Módulos do Sistema) Idêntico a Diarias-Mobile.html e Cartoes-Mobile.html -->
+  <div id="bottom-sheet-menu" class="hidden fixed inset-0 z-50 flex flex-col justify-end">
+    <!-- Backdrop com desfoque -->
+    <div onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+
+    <!-- Gaveta / Bottom Sheet Card -->
+    <aside class="relative z-10 bg-white dark:bg-[#111c2d] rounded-t-[28px] border-t border-[#e6ecf1] dark:border-[#333f55] shadow-2xl p-5 pt-3 animate-in slide-in-from-bottom duration-200">
+      
+      <!-- Puxador (Handle bar) -->
+      <div class="w-12 h-1.5 rounded-full bg-[#dbe4ec] dark:bg-[#333f55] mx-auto mb-4"></div>
+
+      <!-- Cabeçalho do Bottom Sheet -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#f0f4f8] dark:border-[#223147] mb-4">
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#526b84] dark:text-[#8fa3ba]">
+          Módulos do Sistema
+        </h2>
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Grade com os 7 Módulos (2 colunas) -->
+      <div class="grid grid-cols-2 gap-2.5 mb-5">
+        
+        <!-- 1. Recibos -->
+        <a href="../recibos/Recibos.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">fact_check</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Recibos
+          </span>
+        </a>
+
+        <!-- 2. Materiais -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Materiais
+          </span>
+        </a>
+
+        <!-- 3. Produção -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">build</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Produção
+          </span>
+        </a>
+
+        <!-- 4. Cartões -->
+        <a href="../cartoes/Cartoes-Mobile.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">credit_card</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Cartões
+          </span>
+        </a>
+
+        <!-- 5. Pendências (com Badge 3) -->
+        <a href="../despesas/Despesas.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">warning</span>
+          </div>
+          <div class="min-w-0 flex items-center gap-1.5">
+            <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+              Pendências
+            </span>
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#f87171] text-white text-[10px] font-bold leading-none">
+              3
+            </span>
+          </div>
+        </a>
+
+        <!-- 6. Relatórios -->
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">description</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Relatórios
+          </span>
+        </a>
+
+        <!-- 7. Permissões -->
+        <a href="../usuarios/Central-Permissoes.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">shield</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">
+            Permissões
+          </span>
+        </a>
+
+      </div>
+
+      <!-- Linha Inferior: Sair & Fechar idêntica à referência -->
+      <div class="pt-3 border-t border-[#f0f4f8] dark:border-[#223147] flex items-center justify-between">
+        <button type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#fb977d] hover:text-[#fa7a58] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span>Sair</span>
+        </button>
+
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu&#39;).classList.add(&#39;hidden&#39;)" class="h-10 px-7 inline-flex items-center justify-center rounded-full bg-[#0085db] hover:bg-[#0074bf] text-white text-sm font-bold shadow-sm transition-colors active:scale-95 cursor-pointer">
+          Fechar
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- SCRIPT COMPLETO MOBILE -->
+  <script>
+    const etapasMap = {
+      'etapa-1': '1 - Fundação & Sapata',
+      'etapa-2': '2 - Alvenaria & Estrutura',
+      'etapa-3': '3 - Laje & Trilhos',
+      'etapa-4': '4 - Hidráulica & Elétrica'
+    };
+
+    const despesasData = [
+      {
+        id: 'desp-mat-01',
+        tipoLancamento: 'materiais',
+        statusPagamento: 'pago',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Compra inicial de cimento e areia para sapata e pilares',
+        data: '2026-09-04',
+        dataBR: '04/09/2026',
+        categoria: 'materiais',
+        fornecedorNome: 'Comercial Silva Materiais de Construção',
+        etapaId: 'etapa-1',
+        compradorNome: 'Natanael',
+        formaPagamento: 'cartao_credito',
+        cartaoId: 'cartao-nubank',
+        parcelasTotal: 3,
+        valorTotalNota: 4850.50,
+        valorSomaItens: 4850.50,
+        diferencaRateio: 0,
+        itens: [
+          { id: 'item-01-1', materialNome: 'Cimento CP II 50kg', quantidade: 80, unidade: 'saco', valorUnitario: 34.50, valorTotal: 2760.00, destino: 'obra' },
+          { id: 'item-01-2', materialNome: 'Areia Média Lavada', quantidade: 15, unidade: 'm³', valorUnitario: 95.00, valorTotal: 1425.00, destino: 'obra' },
+          { id: 'item-01-3', materialNome: 'BRITA 1', quantidade: 7, unidade: 'm³', valorUnitario: 95.07, valorTotal: 665.50, destino: 'obra' }
+        ],
+        comprovanteUrl: 'https://onedrive.live.com/view.aspx?cid=obra-mola-nf-001',
+        statusConferencia: 'ok'
+      },
+      {
+        id: 'desp-srv-01',
+        tipoLancamento: 'servicos',
+        statusPagamento: 'pago',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Locação de retroescavadeira e escavação de baldrames',
+        data: '2026-09-08',
+        dataBR: '08/09/2026',
+        categoria: 'servicos',
+        fornecedorNome: 'Terra Forte Locações & Terraplanagem',
+        etapaId: 'etapa-1',
+        compradorNome: 'Natanael',
+        formaPagamento: 'pix',
+        valorTotalNota: 2400.00,
+        valorSomaItens: 2400.00,
+        diferencaRateio: 0,
+        itens: [
+          { id: 'item-srv-01', materialNome: 'Diária de Retroescavadeira com operador', quantidade: 2, unidade: 'diária', valorUnitario: 1200.00, valorTotal: 2400.00, destino: 'obra' }
+        ],
+        comprovanteUrl: 'https://onedrive.live.com/view.aspx?cid=obra-mola-rec-001',
+        statusConferencia: 'ok'
+      },
+      {
+        id: 'desp-mat-02',
+        tipoLancamento: 'materiais',
+        statusPagamento: 'pendente',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Aço para armação de sapatas e baldrames',
+        data: '2026-09-12',
+        dataBR: '12/09/2026',
+        categoria: 'materiais',
+        fornecedorNome: 'Ferragens Central Goiânia',
+        etapaId: 'etapa-1',
+        compradorNome: 'Alberto',
+        formaPagamento: 'boleto',
+        valorTotalNota: 5320.00,
+        valorSomaItens: 5320.00,
+        diferencaRateio: 0,
+        itens: [
+          { id: 'item-02-1', materialNome: 'Ferro CA-50 3/8" (10mm)', quantidade: 55, unidade: 'barra 12m', valorUnitario: 62.00, valorTotal: 3410.00, destino: 'obra' },
+          { id: 'item-02-2', materialNome: 'Ferro CA-60 5/16" (8mm)', quantidade: 45, unidade: 'barra 12m', valorUnitario: 42.44, valorTotal: 1910.00, destino: 'obra' }
+        ],
+        comprovanteUrl: 'https://onedrive.live.com/view.aspx?cid=obra-mola-nf-002',
+        statusConferencia: 'ok'
+      },
+      {
+        id: 'desp-srv-02',
+        tipoLancamento: 'servicos',
+        statusPagamento: 'pendente',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Serviço de concretagem usinada e bombeamento para laje',
+        data: '2026-09-19',
+        dataBR: '19/09/2026',
+        categoria: 'servicos',
+        fornecedorNome: 'Supermix Concreto Usinado',
+        etapaId: 'etapa-3',
+        compradorNome: 'Natanael',
+        formaPagamento: 'boleto',
+        valorTotalNota: 3850.00,
+        valorSomaItens: 3850.00,
+        diferencaRateio: 0,
+        itens: [
+          { id: 'item-srv-02-1', materialNome: 'Concreto FCK 25 Usinado', quantidade: 8, unidade: 'm³', valorUnitario: 420.00, valorTotal: 3360.00, destino: 'obra' },
+          { id: 'item-srv-02-2', materialNome: 'Taxa de Bombeamento com mastro', quantidade: 1, unidade: 'serviço', valorUnitario: 490.00, valorTotal: 490.00, destino: 'obra' }
+        ],
+        comprovanteUrl: 'https://onedrive.live.com/view.aspx?cid=obra-mola-rec-002',
+        statusConferencia: 'ok'
+      },
+      {
+        id: 'desp-mat-03',
+        tipoLancamento: 'materiais',
+        statusPagamento: 'pago',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Milheiro de tijolos e tábuas para caixaria',
+        data: '2026-09-22',
+        dataBR: '22/09/2026',
+        categoria: 'materiais',
+        fornecedorNome: 'Cerâmica São Marcos & Madeireira',
+        etapaId: 'etapa-2',
+        compradorNome: 'Natanael',
+        formaPagamento: 'pix',
+        valorTotalNota: 6150.00,
+        valorSomaItens: 6150.00,
+        diferencaRateio: 0,
+        itens: [
+          { id: 'item-03-1', materialNome: 'Tijolo Baiano 8 Furos', quantidade: 6, unidade: 'milheiro', valorUnitario: 810.00, valorTotal: 4860.00, destino: 'obra' },
+          { id: 'item-03-2', materialNome: 'Tábua de Pinho 30cm', quantidade: 4, unidade: 'dúzia', valorUnitario: 322.50, valorTotal: 1290.00, destino: 'obra' }
+        ],
+        comprovanteUrl: 'https://onedrive.live.com/view.aspx?cid=obra-mola-nf-003',
+        statusConferencia: 'ok'
+      },
+      {
+        id: 'desp-mat-04',
+        tipoLancamento: 'materiais',
+        statusPagamento: 'pendente',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Argamassas e tubulações de esgoto inicial (rateio pendente)',
+        data: '2026-10-15',
+        dataBR: '15/10/2026',
+        categoria: 'materiais',
+        fornecedorNome: 'Depósito Aliança Hidro-Elétrica',
+        etapaId: 'etapa-4',
+        compradorNome: 'Alberto',
+        formaPagamento: 'nao_informado',
+        valorTotalNota: 2870.52,
+        valorSomaItens: 2750.00,
+        diferencaRateio: 120.52,
+        itens: [
+          { id: 'item-04-1', materialNome: 'Tubo PVC Soldável 25mm 6m', quantidade: 22, unidade: 'barra', valorUnitario: 35.00, valorTotal: 770.00, destino: 'obra' },
+          { id: 'item-04-2', materialNome: 'Argamassa AC-II 20kg', quantidade: 66, unidade: 'saco', valorUnitario: 30.00, valorTotal: 1980.00, destino: 'obra' }
+        ],
+        comprovanteUrl: undefined,
+        statusConferencia: 'diferenca_rateio',
+        observacoes: 'Diferença de R$ 120,52 referente a frete.'
+      },
+      {
+        id: 'desp-trilhos-01',
+        tipoLancamento: 'materiais',
+        statusPagamento: 'pago',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Treliças metálicas H8 e formas para laje',
+        data: '2026-09-18',
+        dataBR: '18/09/2026',
+        categoria: 'trilhos_producao',
+        fornecedorNome: 'Indústria Metalúrgica Trilho Forte',
+        etapaId: 'etapa-3',
+        compradorNome: 'Natanael',
+        formaPagamento: 'pix',
+        valorTotalNota: 1676.26,
+        valorSomaItens: 1676.26,
+        diferencaRateio: 0,
+        itens: [
+          { id: 'item-trilho-1', materialNome: 'Treliça H8 6m Gerdau', quantidade: 28, unidade: 'peça', valorUnitario: 42.00, valorTotal: 1176.00, destino: 'producao_trilhos' },
+          { id: 'item-trilho-2', materialNome: 'Aditivo Plastificante Betão', quantidade: 5, unidade: 'galão 3.6L', valorUnitario: 100.05, valorTotal: 500.26, destino: 'producao_trilhos' }
+        ],
+        comprovanteUrl: 'https://onedrive.live.com/view.aspx?cid=obra-mola-trilhos-01',
+        statusConferencia: 'ok'
+      },
+      {
+        id: 'desp-srv-03',
+        tipoLancamento: 'servicos',
+        statusPagamento: 'pago',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Instalação de tubulação de esgoto e ramais primários',
+        data: '2026-10-22',
+        dataBR: '22/10/2026',
+        categoria: 'servicos',
+        fornecedorNome: 'Hidráulica Express Serviços',
+        etapaId: 'etapa-4',
+        compradorNome: 'Alberto',
+        formaPagamento: 'pix',
+        valorTotalNota: 1850.00,
+        valorSomaItens: 1850.00,
+        diferencaRateio: 0,
+        itens: [
+          { id: 'item-srv-03-1', materialNome: 'Mão de obra instalação hidráulica', quantidade: 1, unidade: 'serviço', valorUnitario: 1850.00, valorTotal: 1850.00, destino: 'obra' }
+        ],
+        comprovanteUrl: 'https://onedrive.live.com/view.aspx?cid=obra-mola-rec-003',
+        statusConferencia: 'ok'
+      },
+      {
+        id: 'desp-mat-05',
+        tipoLancamento: 'materiais',
+        statusPagamento: 'pendente',
+        obraId: 'obra-juscelino-mola',
+        descricao: 'Tubos, caixas de inspeção e conexões prediais',
+        data: '2026-10-26',
+        dataBR: '26/10/2026',
+        categoria: 'materiais',
+        fornecedorNome: 'Depósito Aliança Hidro-Elétrica',
+        etapaId: 'etapa-4',
+        compradorNome: 'Natanael',
+        formaPagamento: 'boleto',
+        valorTotalNota: 2190.00,
+        valorSomaItens: 2190.00,
+        diferencaRateio: 0,
+        itens: [
+          { id: 'item-05-1', materialNome: 'Caixa de Inspeção 30x30 PVC', quantidade: 4, unidade: 'peça', valorUnitario: 85.00, valorTotal: 340.00, destino: 'obra' },
+          { id: 'item-05-2', materialNome: 'Tubo 100mm Esgoto Tigre', quantidade: 15, unidade: 'barra 6m', valorUnitario: 95.00, valorTotal: 1425.00, destino: 'obra' },
+          { id: 'item-05-3', materialNome: 'Curva 90 100mm e luvas', quantidade: 17, unidade: 'peça', valorUnitario: 25.00, valorTotal: 425.00, destino: 'obra' }
+        ],
+        comprovanteUrl: undefined,
+        statusConferencia: 'ok'
+      }
+    ];
+
+    let currentTipoFilter = 'todos';
+    let currentMobilePage = 1;
+    const itemsPerPage = 5;
+    let currentFilteredList = [...despesasData];
+    let itemToDelete = null;
+
+    function formatBRL(val) {
+      return (val || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function setMobileTipoFilter(tipo) {
+      currentTipoFilter = tipo;
+      const btnTodos = document.getElementById('m-tipo-btn-todos');
+      const btnMat = document.getElementById('m-tipo-btn-materiais');
+      const btnSrv = document.getElementById('m-tipo-btn-servicos');
+
+      const activeClass = "flex-1 h-8 inline-flex items-center justify-center gap-1 rounded-lg bg-[#0085db] text-white font-bold text-xs shadow-xs transition-all cursor-pointer";
+      const inactiveClass = "flex-1 h-8 inline-flex items-center justify-center gap-1 rounded-lg text-[#707a82] dark:text-[#7c8fac] font-semibold text-xs transition-all cursor-pointer";
+
+      btnTodos.className = tipo === 'todos' ? activeClass : inactiveClass;
+      btnMat.className = tipo === 'materiais' ? activeClass : inactiveClass;
+      btnSrv.className = tipo === 'servicos' ? activeClass : inactiveClass;
+
+      applyMobileDespesasFilters();
+    }
+
+    function applyMobileDespesasFilters() {
+      currentMobilePage = 1;
+      const q = (document.getElementById('m-despesas-search')?.value || '').toLowerCase().trim();
+      const status = document.getElementById('m-filter-status')?.value || 'todos';
+      const sort = document.getElementById('m-filter-sort')?.value || 'recente';
+
+      let filtered = despesasData.filter(d => {
+        const matchSearch = !q || (
+          d.descricao.toLowerCase().includes(q) ||
+          d.fornecedorNome.toLowerCase().includes(q) ||
+          (d.itens || []).some(it => it.materialNome.toLowerCase().includes(q))
+        );
+        const st = (d.statusPagamento || (d.formaPagamento === 'nao_informado' ? 'pendente' : 'pago'));
+        const matchStatus = (status === 'todos') || (st === status);
+        const matchTipo = (currentTipoFilter === 'todos') || (d.tipoLancamento === currentTipoFilter);
+        return matchSearch && matchStatus && matchTipo;
+      });
+
+      if (sort === 'maior') {
+        filtered.sort((a, b) => b.valorTotalNota - a.valorTotalNota);
+      } else if (sort === 'menor') {
+        filtered.sort((a, b) => a.valorTotalNota - b.valorTotalNota);
+      } else {
+        filtered.sort((a, b) => new Date(b.data) - new Date(a.data));
+      }
+
+      currentFilteredList = filtered;
+      renderMobileCards(currentFilteredList);
+    }
+
+    function changeMobilePage(delta) {
+      currentMobilePage += delta;
+      renderMobileCards(currentFilteredList);
+    }
+
+    function goToMobilePage(p) {
+      currentMobilePage = p;
+      renderMobileCards(currentFilteredList);
+    }
+
+    function renderMobileCards(list) {
+      const container = document.getElementById('m-despesas-list');
+      if (!container) return;
+
+      const totalCount = list.length;
+      const totalSoma = list.reduce((acc, curr) => acc + (curr.valorTotalNota || 0), 0);
+
+      document.getElementById('m-count-text').innerText = totalCount;
+      document.getElementById('m-total-text').innerText = formatBRL(totalSoma);
+
+      const totalPages = Math.ceil(totalCount / itemsPerPage) || 1;
+      if (currentMobilePage > totalPages) currentMobilePage = totalPages;
+      if (currentMobilePage < 1) currentMobilePage = 1;
+
+      document.getElementById('m-pag-num').innerText = currentMobilePage;
+      document.getElementById('m-pag-total').innerText = totalPages;
+
+      const btnPrev = document.getElementById('m-btn-prev');
+      const btnNext = document.getElementById('m-btn-next');
+      if (btnPrev) btnPrev.disabled = currentMobilePage === 1;
+      if (btnNext) btnNext.disabled = currentMobilePage === totalPages;
+
+      const pagDots = document.getElementById('m-pag-dots');
+      if (pagDots) {
+        pagDots.innerHTML = '';
+        for (let p = 1; p <= totalPages; p++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.innerText = p;
+          btn.onclick = () => goToMobilePage(p);
+          if (p === currentMobilePage) {
+            btn.className = "w-6 h-6 rounded-lg text-xs font-bold bg-[#0085db] text-white flex items-center justify-center shadow-xs cursor-pointer";
+          } else {
+            btn.className = "w-6 h-6 rounded-lg text-xs font-semibold text-[#707a82] hover:bg-[#f6f9fc] flex items-center justify-center cursor-pointer";
+          }
+          pagDots.appendChild(btn);
+        }
+      }
+
+      const startIndex = (currentMobilePage - 1) * itemsPerPage;
+      const pageList = list.slice(startIndex, startIndex + itemsPerPage);
+
+      if (pageList.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl">
+            <span class="material-symbols-outlined text-[36px] text-[#707a82] mb-2">search_off</span>
+            <p class="text-xs font-bold text-[#111c2d] dark:text-white">Nenhuma despesa encontrada</p>
+            <p class="text-[11px] text-[#707a82] mt-1">Tente ajustar seus filtros ou termo de busca.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = pageList.map(desp => {
+        const isServico = desp.tipoLancamento === 'servicos' || desp.categoria === 'servicos';
+        const tipoBadge = isServico
+          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#f1f5f9] dark:bg-[#1a2535] text-[#5a6a85] dark:text-[#94a3b8] border border-[#e2e8f0] dark:border-[#334155]"><span class="material-symbols-outlined text-[12px]">handyman</span> Serviço</span>`
+          : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#f1f5f9] dark:bg-[#1a2535] text-[#5a6a85] dark:text-[#94a3b8] border border-[#e2e8f0] dark:border-[#334155]"><span class="material-symbols-outlined text-[12px]">inventory_2</span> Material</span>`;
+
+        const isPago = (desp.statusPagamento || (desp.formaPagamento === 'nao_informado' ? 'pendente' : 'pago')) === 'pago';
+        const badgeStatus = isPago
+          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40"><span class="material-symbols-outlined text-[12px]">check_circle</span> Pago</span>`
+          : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40"><span class="material-symbols-outlined text-[12px]">schedule</span> A Pagar</span>`;
+
+        const faltaComprovante = !desp.comprovanteUrl;
+        const alertaComp = faltaComprovante
+          ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/50 px-1.5 py-0.5 rounded-md"><span class="material-symbols-outlined text-[12px] text-amber-600">warning</span> Sem comprovante</span>`
+          : '';
+
+        const totalItens = (desp.itens || []).length;
+
+        return `
+          <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-3.5 shadow-xs space-y-2.5 transition-all active:scale-[0.99]">
+            
+            <!-- Linha 1: Badges de Tipo, Status e Data -->
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${tipoBadge}
+                ${badgeStatus}
+                ${alertaComp}
+              </div>
+              <span class="text-[11px] text-[#707a82] font-semibold">${desp.dataBR || desp.data}</span>
+            </div>
+
+            <!-- Linha 2: Descrição e Fornecedor -->
+            <div>
+              <h3 class="text-xs font-bold text-[#111c2d] dark:text-white uppercase leading-snug line-clamp-2">
+                ${desp.descricao}
+              </h3>
+              <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] truncate mt-0.5">
+                Fornecedor: <strong class="text-[#111c2d] dark:text-white font-semibold">${desp.fornecedorNome}</strong>
+              </p>
+            </div>
+
+            <!-- Linha 3: Valor e Ações -->
+            <div class="pt-2 border-t border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between">
+              <div>
+                <span class="text-[10px] text-[#707a82] block leading-none">Valor Total</span>
+                <span class="text-sm font-black text-[#111c2d] dark:text-white tabular-nums">${formatBRL(desp.valorTotalNota)}</span>
+              </div>
+
+              <div class="flex items-center gap-1">
+                ${totalItens > 0 ? `
+                  <button
+                    type="button"
+                    onclick="openViewDetailsModalMobile('${desp.id}')"
+                    class="w-8 h-8 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer"
+                    title="Ver detalhes"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                  </button>
+                ` : ''}
+
+                ${desp.comprovanteUrl ? `
+                  <a
+                    href="${desp.comprovanteUrl}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-8 h-8 rounded-lg flex items-center justify-center text-[#0085db] hover:bg-[#0085db]/10 transition-colors"
+                    title="Ver comprovante"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">description</span>
+                  </a>
+                ` : `
+                  <button
+                    type="button"
+                    onclick="openEditModalMobile('${desp.id}')"
+                    class="w-8 h-8 rounded-lg flex items-center justify-center text-[#ffae1f] hover:bg-[#ffae1f]/10 transition-colors cursor-pointer"
+                    title="Anexar comprovante"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">description</span>
+                  </button>
+                `}
+
+                <button
+                  type="button"
+                  onclick="openEditModalMobile('${desp.id}')"
+                  class="w-8 h-8 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer"
+                  title="Editar despesa"
+                >
+                  <span class="material-symbols-outlined text-[17px]">edit</span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick="openDeleteModalMobile('${desp.id}')"
+                  class="w-8 h-8 rounded-lg flex items-center justify-center text-[#707a82] hover:text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer"
+                  title="Excluir"
+                >
+                  <span class="material-symbols-outlined text-[17px]">delete</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Modal e formulário logic
+    let modalTipoAtual = 'material';
+
+    function setModalTipo(tipo) {
+      modalTipoAtual = tipo;
+      const btnMat = document.getElementById('modal-btn-tipo-material');
+      const btnSrv = document.getElementById('modal-btn-tipo-servico');
+      const labelForn = document.getElementById('modal-label-fornecedor');
+      const inputTipo = document.getElementById('form-tipo-lancamento');
+
+      if (tipo === 'material') {
+        if (inputTipo) inputTipo.value = 'materiais';
+        if (btnMat) btnMat.className = "p-2.5 rounded-xl border-2 border-[#0085db] bg-[#0085db]/5 text-left transition-all cursor-pointer flex items-center gap-2";
+        if (btnMat) btnMat.querySelector('div').className = "w-8 h-8 rounded-lg bg-[#0085db] text-white flex items-center justify-center shrink-0 shadow-xs";
+        
+        if (btnSrv) btnSrv.className = "p-2.5 rounded-xl border-2 border-[#e6ecf1] dark:border-[#333f55] hover:border-[#0085db]/40 bg-white dark:bg-[#111c2d] text-left transition-all cursor-pointer flex items-center gap-2";
+        if (btnSrv) btnSrv.querySelector('div').className = "w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] flex items-center justify-center shrink-0 border border-[#e6ecf1] dark:border-[#333f55]";
+        
+        if (labelForn) labelForn.innerText = "Fornecedor *";
+      } else {
+        if (inputTipo) inputTipo.value = 'servicos';
+        if (btnSrv) btnSrv.className = "p-2.5 rounded-xl border-2 border-[#0085db] bg-[#0085db]/5 text-left transition-all cursor-pointer flex items-center gap-2";
+        if (btnSrv) btnSrv.querySelector('div').className = "w-8 h-8 rounded-lg bg-[#0085db] text-white flex items-center justify-center shrink-0 shadow-xs";
+        
+        if (btnMat) btnMat.className = "p-2.5 rounded-xl border-2 border-[#e6ecf1] dark:border-[#333f55] hover:border-[#0085db]/40 bg-white dark:bg-[#111c2d] text-left transition-all cursor-pointer flex items-center gap-2";
+        if (btnMat) btnMat.querySelector('div').className = "w-8 h-8 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] text-[#707a82] flex items-center justify-center shrink-0 border border-[#e6ecf1] dark:border-[#333f55]";
+        
+        if (labelForn) labelForn.innerText = "Fornecedor *";
+      }
+    }
+
+    function recalcModalValores() {
+      const bruto = parseFloat(document.getElementById('form-valor-bruto')?.value) || 0;
+      const desc = parseFloat(document.getElementById('form-desconto')?.value) || 0;
+      const finalVal = Math.max(0, bruto - desc);
+      const inputNota = document.getElementById('form-valor-nota');
+      if (inputNota) {
+        inputNota.value = finalVal > 0 ? finalVal.toFixed(2) : '';
+      }
+    }
+
+    function toggleModalEtapa() {
+      const chk = document.getElementById('form-check-etapa');
+      const sel = document.getElementById('form-etapa');
+      const badge = document.getElementById('form-badge-etapa');
+      if (!chk || !sel) return;
+      if (chk.checked) {
+        sel.disabled = false;
+        sel.className = "w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-[#111c2d] dark:text-white cursor-pointer opacity-100 transition-all focus:ring-2 focus:ring-[#0085db]";
+        if (!sel.value) sel.value = "etapa-1";
+        if (badge) {
+          badge.innerText = "Vinculada";
+          badge.className = "text-[10px] text-emerald-600 font-semibold";
+        }
+      } else {
+        sel.disabled = true;
+        sel.className = "w-full px-3 py-2 text-xs rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-gray-100 dark:bg-[#151d2a] text-[#707a82] dark:text-[#525f75] cursor-not-allowed opacity-60 transition-all focus:ring-2 focus:ring-[#0085db]";
+        sel.value = "";
+        if (badge) {
+          badge.innerText = "Não vinculada";
+          badge.className = "text-[10px] text-[#707a82]";
+        }
+      }
+    }
+
+    function handleFormaPagamentoChange() {
+      const val = document.getElementById('form-pagamento')?.value;
+      const box = document.getElementById('box-cartao-credito');
+      if (box) {
+        if (val === 'cartao_credito') {
+          box.classList.remove('hidden');
+        } else {
+          box.classList.add('hidden');
+        }
+      }
+    }
+
+    function addItemRow(nome = '', qtd = 1, unid = 'un', vUnit = 0) {
+      const container = document.getElementById('form-itens-container');
+      const row = document.createElement('div');
+      const subtotal = (qtd * vUnit);
+      row.className = "item-linha grid grid-cols-12 gap-1.5 p-2 rounded-xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] items-center";
+      row.innerHTML = `
+        <div class="col-span-12">
+          <input
+            type="text"
+            list="gh-materiais-cadastrados"
+            placeholder="Nome do item ou serviço..."
+            value="${nome}"
+            required
+            class="item-nome w-full h-7 px-2 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-transparent text-[#111c2d] dark:text-white font-medium focus:ring-1 focus:ring-[#0085db]"
+          />
+        </div>
+        <div class="col-span-3">
+          <input
+            type="number"
+            step="any"
+            placeholder="Qtd"
+            value="${qtd}"
+            oninput="recalcItemLinhaGH(this)"
+            required
+            class="item-qtd w-full h-7 px-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-transparent text-[#111c2d] dark:text-white font-semibold text-center focus:ring-1 focus:ring-[#0085db]"
+          />
+        </div>
+        <div class="col-span-2">
+          <input
+            type="text"
+            placeholder="un"
+            value="${unid}"
+            class="item-un w-full h-7 px-1 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-transparent text-[#707a82] dark:text-white text-center"
+          />
+        </div>
+        <div class="col-span-4">
+          <input
+            type="number"
+            step="0.01"
+            placeholder="R$ Unit"
+            value="${vUnit}"
+            oninput="recalcItemLinhaGH(this)"
+            required
+            class="item-unit w-full h-7 px-1.5 text-xs rounded-lg border border-[#e6ecf1] dark:border-[#333f55] bg-transparent text-[#111c2d] dark:text-white font-bold text-right focus:ring-1 focus:ring-[#0085db]"
+          />
+        </div>
+        <div class="col-span-3 flex items-center justify-end gap-1">
+          <span class="item-subtotal-gh text-[11px] font-bold text-[#111c2d] dark:text-white tabular-nums">${formatBRL(subtotal)}</span>
+          <button
+            type="button"
+            onclick="this.closest('.item-linha').remove(); recalcRateio();"
+            class="p-1 text-[#707a82] hover:text-rose-500 rounded-md hover:bg-rose-50 transition-colors cursor-pointer"
+            title="Remover"
+          >
+            <span class="material-symbols-outlined text-[15px]">delete</span>
+          </button>
+        </div>
+      `;
+      container.appendChild(row);
+      recalcRateio();
+    }
+
+    function recalcItemLinhaGH(el) {
+      const row = el.closest('.item-linha');
+      if (!row) return;
+      const qtd = parseFloat(row.querySelector('.item-qtd')?.value) || 0;
+      const unit = parseFloat(row.querySelector('.item-unit')?.value) || 0;
+      const sub = qtd * unit;
+      const subEl = row.querySelector('.item-subtotal-gh');
+      if (subEl) subEl.innerText = formatBRL(sub);
+      recalcRateio();
+    }
+
+    function recalcRateio() {
+      let soma = 0;
+      document.querySelectorAll('.item-linha').forEach(r => {
+        const inputs = r.querySelectorAll('input');
+        const qtd = parseFloat(inputs[1].value) || 0;
+        const unit = parseFloat(inputs[3].value) || 0;
+        soma += (qtd * unit);
+      });
+
+      const somaFormatada = formatBRL(soma);
+      const somaItensLbl = document.getElementById('form-soma-itens-label');
+      if (somaItensLbl) somaItensLbl.innerText = somaFormatada;
+    }
+
+    function importarOrcamentoModal() {
+      const val = document.getElementById('modal-select-orcamento')?.value;
+      if (!val) return;
+      const container = document.getElementById('form-itens-container');
+      if (container) container.innerHTML = '';
+
+      if (val === 'orc-01') {
+        setModalTipo('material');
+        document.getElementById('form-descricao').value = "COMPRA DE CIMENTO, AREIA E BRITA (COTAÇÃO 109)";
+        document.getElementById('form-fornecedor').value = "Comercial Silva Materiais de Construção";
+        document.getElementById('form-valor-bruto').value = "5850.00";
+        document.getElementById('form-desconto').value = "292.50";
+        addItemRow('Cimento CP II 50kg (Votoran / Mauá)', 80, 'saco', 34.50);
+        addItemRow('Areia Média Lavada', 15, 'm³', 95.00);
+        addItemRow('BRITA 1 Graduada', 7, 'm³', 95.07);
+        recalcModalValores();
+      } else if (val === 'orc-02') {
+        setModalTipo('material');
+        document.getElementById('form-descricao').value = "COMPRA DE INSUMOS BÁSICOS - DEPÓSITO GOIÁS";
+        document.getElementById('form-fornecedor').value = "Depósito Goiás da Construção";
+        document.getElementById('form-valor-bruto').value = "5590.00";
+        document.getElementById('form-desconto').value = "0.00";
+        addItemRow('Cimento CP II 50kg (Votoran / Mauá)', 85, 'saco', 34.00);
+        addItemRow('Areia Média Lavada', 16, 'm³', 92.00);
+        addItemRow('BRITA 1 Graduada', 8, 'm³', 91.25);
+        recalcModalValores();
+      } else if (val === 'orc-03') {
+        setModalTipo('servico');
+        document.getElementById('form-descricao').value = "SERVIÇO DE CONCRETAGEM USINADA E BOMBEAMENTO";
+        document.getElementById('form-fornecedor').value = "Supermix Concreto Usinado";
+        document.getElementById('form-valor-bruto').value = "3850.00";
+        document.getElementById('form-desconto').value = "100.00";
+        addItemRow('Concreto Usinado FCK 25 MPa', 10, 'm³', 385.00);
+        recalcModalValores();
+      } else if (val === 'orc-04') {
+        setModalTipo('servico');
+        document.getElementById('form-descricao').value = "LOCAÇÃO DE RETROESCAVADEIRA 2 DIÁRIAS";
+        document.getElementById('form-fornecedor').value = "Terra Forte Locações & Terraplanagem";
+        document.getElementById('form-valor-bruto').value = "2400.00";
+        document.getElementById('form-desconto').value = "0.00";
+        addItemRow('Diária de Retroescavadeira com operador', 2, 'diária', 1200.00);
+        recalcModalValores();
+      }
+    }
+
+    function openNewModalMobile() {
+      try {
+        const title = document.getElementById('modal-title');
+        if (title) title.innerText = 'Lançar despesa';
+
+        const setVal = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val;
+        };
+
+        setVal('form-id', '');
+        setVal('form-descricao', '');
+        setVal('form-fornecedor', '');
+        setVal('form-data', new Date().toISOString().split('T')[0]);
+        setVal('form-status-pagamento', 'pago');
+        setVal('form-pagamento', 'pix');
+        setVal('form-valor-bruto', '');
+        setVal('form-desconto', '');
+        setVal('form-valor-nota', '');
+        setVal('form-comprovante-url', '');
+        setVal('form-obs', '');
+        setVal('modal-select-orcamento', '');
+
+        const chkEtapa = document.getElementById('form-check-etapa');
+        if (chkEtapa) {
+          chkEtapa.checked = false;
+          toggleModalEtapa();
+        }
+
+        setModalTipo('material');
+        handleFormaPagamentoChange();
+
+        const container = document.getElementById('form-itens-container');
+        if (container) {
+          container.innerHTML = '';
+          addItemRow('Cimento CP II 50kg', 1, 'saco', 35.00);
+        }
+
+        document.getElementById('modal-despesa')?.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function openEditModalMobile(id) {
+      try {
+        const desp = despesasData.find(d => d.id === id);
+        if (!desp) return;
+
+        const title = document.getElementById('modal-title');
+        if (title) title.innerText = 'Editar Despesa';
+
+        const setVal = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val;
+        };
+
+        setVal('form-id', desp.id);
+        setVal('form-tipo-lancamento', desp.tipoLancamento || (desp.categoria === 'servicos' ? 'servicos' : 'materiais'));
+        setVal('form-descricao', desp.descricao);
+        setVal('form-fornecedor', desp.fornecedorNome);
+        setVal('form-data', desp.data);
+        setVal('form-status-pagamento', desp.statusPagamento || (desp.formaPagamento === 'nao_informado' ? 'pendente' : 'pago'));
+        setVal('form-pagamento', desp.formaPagamento);
+        setVal('form-valor-bruto', desp.valorTotalNota);
+        setVal('form-desconto', '0.00');
+        setVal('form-valor-nota', desp.valorTotalNota);
+        setVal('form-comprovante-url', desp.comprovanteUrl || '');
+        setVal('form-obs', desp.observacoes || '');
+
+        setModalTipo(desp.tipoLancamento === 'servicos' ? 'servico' : 'material');
+
+        const chkEtapa = document.getElementById('form-check-etapa');
+        const selEtapa = document.getElementById('form-etapa');
+        if (chkEtapa && selEtapa) {
+          if (desp.etapaId) {
+            chkEtapa.checked = true;
+            toggleModalEtapa();
+            selEtapa.value = desp.etapaId;
+          } else {
+            chkEtapa.checked = false;
+            toggleModalEtapa();
+          }
+        }
+
+        if (desp.formaPagamento === 'cartao_credito') {
+          setVal('form-cartao-id', desp.cartaoId || '');
+          setVal('form-parcelas', desp.parcelasTotal || 1);
+        }
+        handleFormaPagamentoChange();
+
+        const container = document.getElementById('form-itens-container');
+        if (container) {
+          container.innerHTML = '';
+          (desp.itens || []).forEach(it => {
+            addItemRow(it.materialNome, it.quantidade, it.unidade, it.valorUnitario);
+          });
+        }
+
+        document.getElementById('modal-despesa')?.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-despesa')?.classList.add('hidden');
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('form-id')?.value;
+      const descricao = document.getElementById('form-descricao')?.value || '';
+      const fornecedorNome = document.getElementById('form-fornecedor')?.value.trim() || 'Fornecedor Avulso';
+      const data = document.getElementById('form-data')?.value || new Date().toISOString().split('T')[0];
+      const etapaId = document.getElementById('form-etapa')?.value || '';
+      const statusPagamento = document.getElementById('form-status-pagamento')?.value || 'pago';
+      const formaPagamento = document.getElementById('form-pagamento')?.value || 'pix';
+      const comprovanteUrl = document.getElementById('form-comprovante-url')?.value.trim() || '';
+      const observacoes = document.getElementById('form-obs')?.value.trim() || '';
+
+      const itens = [];
+      let somaItens = 0;
+      document.querySelectorAll('.item-linha').forEach((r, idx) => {
+        const inputs = r.querySelectorAll('input');
+        if (inputs.length >= 4) {
+          const materialNome = inputs[0].value;
+          const quantidade = parseFloat(inputs[1].value) || 0;
+          const unidade = inputs[2].value;
+          const valorUnitario = parseFloat(inputs[3].value) || 0;
+          const valorTotal = quantidade * valorUnitario;
+          somaItens += valorTotal;
+          itens.push({
+            id: `item-${Date.now()}-${idx}`,
+            materialNome,
+            quantidade,
+            unidade,
+            valorUnitario,
+            valorTotal,
+            destino: 'obra'
+          });
+        }
+      });
+
+      const valorTotalNota = parseFloat(document.getElementById('form-valor-nota')?.value) || somaItens;
+      const diferencaRateio = Number((valorTotalNota - somaItens).toFixed(2));
+      const dParts = data.split('-');
+      const dataBR = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : data;
+      const tipoLancamento = document.getElementById('form-tipo-lancamento')?.value || 'materiais';
+      const categoria = tipoLancamento === 'servicos' ? 'servicos' : 'materiais';
+
+      if (id) {
+        const desp = despesasData.find(d => d.id === id);
+        if (desp) {
+          desp.tipoLancamento = tipoLancamento;
+          desp.statusPagamento = statusPagamento;
+          desp.descricao = descricao;
+          desp.fornecedorNome = fornecedorNome;
+          desp.data = data;
+          desp.dataBR = dataBR;
+          desp.categoria = categoria;
+          desp.etapaId = etapaId;
+          desp.formaPagamento = formaPagamento;
+          if (formaPagamento === 'cartao_credito') {
+            desp.cartaoId = document.getElementById('form-cartao-id')?.value || 'cartao-nubank';
+            desp.parcelasTotal = parseInt(document.getElementById('form-parcelas')?.value, 10) || 1;
+          } else {
+            delete desp.cartaoId;
+            delete desp.parcelasTotal;
+          }
+          desp.valorTotalNota = valorTotalNota;
+          desp.valorSomaItens = somaItens;
+          desp.diferencaRateio = diferencaRateio;
+          desp.itens = itens;
+          desp.comprovanteUrl = comprovanteUrl || undefined;
+          desp.observacoes = observacoes || undefined;
+        }
+      } else {
+        const nova = {
+          id: `desp-${Date.now()}`,
+          tipoLancamento,
+          statusPagamento,
+          obraId: 'obra-juscelino-mola',
+          descricao,
+          data,
+          dataBR,
+          categoria,
+          fornecedorNome,
+          etapaId,
+          compradorNome: 'Natanael',
+          formaPagamento,
+          valorTotalNota,
+          valorSomaItens: somaItens,
+          diferencaRateio,
+          itens,
+          comprovanteUrl: comprovanteUrl || undefined,
+          observacoes: observacoes || undefined,
+          statusConferencia: Math.abs(diferencaRateio) > 0.05 ? 'diferenca_rateio' : 'ok'
+        };
+        despesasData.unshift(nova);
+      }
+
+      applyMobileDespesasFilters();
+      closeModal();
+    }
+
+    function openViewDetailsModalMobile(id) {
+      const desp = despesasData.find(d => d.id === id);
+      if (!desp) return;
+
+      const isServico = desp.tipoLancamento === 'servicos';
+      const iconTipo = document.getElementById('view-icon-tipo');
+      const textTipo = document.getElementById('view-text-tipo');
+      const iconDisc = document.getElementById('view-icon-discriminacao');
+      const titDisc = document.getElementById('view-titulo-discriminacao');
+
+      if (isServico) {
+        iconTipo.innerText = 'handyman';
+        textTipo.innerText = 'Serviços';
+        iconDisc.innerText = 'handyman';
+        titDisc.innerText = 'Discriminação dos serviços';
+      } else {
+        iconTipo.innerText = 'inventory_2';
+        textTipo.innerText = 'Material';
+        iconDisc.innerText = 'inventory';
+        titDisc.innerText = 'Discriminação dos itens';
+      }
+
+      const isPago = (desp.statusPagamento || (desp.formaPagamento === 'nao_informado' ? 'pendente' : 'pago')) === 'pago';
+      const badgeStatus = document.getElementById('view-badge-status');
+      const textStatus = document.getElementById('view-text-status');
+      if (isPago) {
+        badgeStatus.className = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40";
+        badgeStatus.querySelector('span').innerText = 'check_circle';
+        textStatus.innerText = 'Pago';
+      } else {
+        badgeStatus.className = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40";
+        badgeStatus.querySelector('span').innerText = 'schedule';
+        textStatus.innerText = 'A Pagar';
+      }
+
+      document.getElementById('view-data').innerText = desp.dataBR || desp.data;
+      document.getElementById('view-descricao').innerText = desp.descricao;
+      document.getElementById('view-fornecedor').innerText = desp.fornecedorNome;
+      document.getElementById('view-etapa').innerText = etapasMap[desp.etapaId] || '1 - Fundação & Sapata';
+
+      const formaMap = {
+        'pix': 'Pix',
+        'cartao_credito': 'Cartão de Crédito',
+        'boleto': 'Boleto Faturado',
+        'dinheiro': 'Dinheiro',
+        'nao_informado': 'A combinar / Não informado'
+      };
+      document.getElementById('view-forma-pagamento').innerText = formaMap[desp.formaPagamento] || desp.formaPagamento;
+
+      const listContainer = document.getElementById('view-itens-list');
+      listContainer.innerHTML = '';
+      const itens = desp.itens || [];
+      document.getElementById('view-itens-count').innerText = `${itens.length} ${isServico ? 'serviços' : 'itens'}`;
+
+      itens.forEach(it => {
+        const div = document.createElement('div');
+        div.className = "p-2.5 rounded-xl bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] space-y-1 text-xs";
+        div.innerHTML = `
+          <div class="flex items-start justify-between gap-1">
+            <span class="font-bold text-[#111c2d] dark:text-white">${it.materialNome}</span>
+            <span class="font-black text-[#111c2d] dark:text-white tabular-nums shrink-0">${formatBRL(it.valorTotal)}</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[#707a82]">
+            <span>${it.quantidade} ${it.unidade} × ${formatBRL(it.valorUnitario)}</span>
+            <span class="capitalize">${(it.destino || 'obra').replace('_', ' ')}</span>
+          </div>
+        `;
+        listContainer.appendChild(div);
+      });
+
+      document.getElementById('view-valor-final').innerText = formatBRL(desp.valorTotalNota);
+
+      const btnComp = document.getElementById('view-btn-comprovante');
+      if (desp.comprovanteUrl) {
+        btnComp.href = desp.comprovanteUrl;
+        btnComp.classList.remove('hidden');
+      } else {
+        btnComp.classList.add('hidden');
+      }
+
+      const btnEdit = document.getElementById('view-btn-editar');
+      btnEdit.onclick = () => {
+        closeViewModal();
+        openEditModalMobile(desp.id);
+      };
+
+      document.getElementById('modal-view-details')?.classList.remove('hidden');
+    }
+
+    function closeViewModal() {
+      document.getElementById('modal-view-details')?.classList.add('hidden');
+    }
+
+    function openDeleteModalMobile(id) {
+      const desp = despesasData.find(d => d.id === id);
+      if (!desp) return;
+      itemToDelete = id;
+      document.getElementById('delete-name').innerText = desp.descricao;
+      document.getElementById('delete-val').innerText = formatBRL(desp.valorTotalNota);
+      document.getElementById('modal-delete')?.classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('modal-delete')?.classList.add('hidden');
+      itemToDelete = null;
+    }
+
+    function confirmDelete() {
+      if (!itemToDelete) return;
+      const idx = despesasData.findIndex(d => d.id === itemToDelete);
+      if (idx !== -1) {
+        despesasData.splice(idx, 1);
+        applyMobileDespesasFilters();
+      }
+      closeDeleteModal();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyMobileDespesasFilters();
+    });
+  </script>
+
+
+</body></html>

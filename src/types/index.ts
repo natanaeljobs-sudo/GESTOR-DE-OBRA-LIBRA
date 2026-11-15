@@ -22,6 +22,7 @@ export interface Etapa {
 
 export type CategoriaDespesa = 
   | 'materiais' 
+  | 'servicos'
   | 'mao_de_obra' 
   | 'trilhos_producao' 
   | 'abastecimentos' 

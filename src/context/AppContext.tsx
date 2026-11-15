@@ -622,6 +622,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const totaisPorCategoria = useMemo(() => {
     const totals: Record<CategoriaDespesa, number> = {
       materiais: 0,
+      servicos: 0,
       mao_de_obra: 0,
       trilhos_producao: 0,
       abastecimentos: 0,
