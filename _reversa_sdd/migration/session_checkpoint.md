@@ -1,47 +1,53 @@
 # Checkpoint de Sessão — SISTEMA LIBRA - OBRAS
 
-> **Última Atualização**: 2026-11-14 23:58 (Horário de Brasília)
+> **Última Atualização**: 2026-11-15 08:00 (Horário de Brasília)
 > **Branch**: `main`
-> **Último Commit**: `13994d6` — `FEAT(NOTIFICACOES): ATUALIZA PENDENCIAS PARA NOTIFICACOES COM DESIGN OFICIAL DO STITCH`
-> **Status Remoto**: Pronto para commit e sincronização
+> **Último Commit**: `64a5bf6` — `CHORE: ADICIONA TELAS DE REFERENCIA DASHBOARD STITCH`
+> **Status Remoto**: Sincronizado com `origin/main`
 
 ---
 
 ## 1. O que foi concluído nesta sessão:
-1. **Importação e Arquivamento das Telas de Despesas do Google Stitch**:
-   - Telas oficiais copiadas para `src/assets/screens/despesas/`:
-     - `DESPESAS COMPLETAS.html`
-     - `DESPESAS TABLET.html`
-     - `DESPESAS MOBILE.html`
-2. **Substituição Visual Oficial de `DespesasView.tsx`**:
-   - Layout fiel ao Stitch com `Material Symbols Outlined` integrados.
-   - **Filtros e Busca Simplificada**:
-     - Busca por descrição, fornecedor ou material.
-     - Botões de seleção direta: `Todos`, `Materiais` e `Serviços`.
-     - Filtro por situação de pagamento (`Todos Status`, `Pago`, `A Pagar`).
-   - **Barra de Paginação Dinâmica**: Paginação numerada com setas anterior/próxima (5 despesas por página).
-   - **Card Individual Redesenhado**:
-     - Tags estilizadas de tipo (`Material` / `Serviço`), status de pagamento (`Pago` / `A Pagar`), data e alerta quando falta anexar comprovante.
-     - Ações rápidas: Visualizar detalhes, abrir comprovante, editar e excluir.
-   - **Modal Oficial "Lançar / Editar Despesa"**:
-     - Seleção visual entre *Compra de Material* e *Serviços*.
-     - Opção de puxar dados automaticamente de um orçamento aprovado.
-     - Tabela de itens discriminados com datalist de materiais, quantidade, unidade, valor unitário e subtotal em tempo real.
-     - Vínculo opcional com etapa da obra via checkbox.
-     - Bloco financeiro com cálculo de *Valor Bruto*, *Desconto Obtido* e *Total Efetivo da Nota*.
-     - Suporte a upload de comprovantes diretamente para o Supabase Storage.
-   - **Modal Oficial "Visualizar Despesa"**:
-     - Exibição completa de cabeçalho, tabela de itens discriminados, fornecedor, etapa, forma de pagamento, valores brutos, descontos e link para a nota.
-   - **Modal de Confirmação de Exclusão**: Exclusão compacta com confirmação de segurança.
-3. **Validação & Build**:
-   - `npx tsc --noEmit` executado com **0 erros** de TypeScript.
-   - Build de produção compilado com sucesso (`npm run build`).
+
+1. **Ajustes Finais na Tela de Notificações (`AlertasView.tsx`)**:
+   - Atualização visual e estrutural fiel aos arquivos de referência do Stitch (`NOTIFICAÇÕES MOBILE.html`, `TABLET.html`, `COMPLETA.html`).
+   - Remoção do botão/filtro indevido "Cartões" da barra superior, mantendo os filtros oficiais (*Todas*, *Despesas*, *Diárias*).
+   - Ajuste de responsividade no mobile (cards com layout limpo, badges de vencimento, ações de marcar como lida e pagar).
+
+2. **Refinamento e Fidelidade em Despesas (`DespesasView.tsx`)**:
+   - Ajuste completo para compatibilidade exata com os protótipos Mobile, Tablet e Desktop.
+   - Ajustes em quebras de linha, botões de ação e modais de lançamento/edição.
+
+3. **Auditoria e Validação do Dashboard (`DashboardView.tsx`)**:
+   - Importação das telas oficiais para `src/assets/screens/dashboard/`:
+     - `DASBOARD MOBILE.html`
+     - `DASHBOARD TABLET.html`
+     - `DASHBOARD COMPLETA.html`
+   - Verificação seção a seção contra os arquivos HTML:
+     - **Hero Banner**: Início da obra, badge "Operante" e botões de atalho rápido (*Nova Despesa*, *Lançar Diária*, *Emitir Recibo*).
+     - **4 Core Executive KPIs**: Grid responsivo 2x2 no mobile (`grid-cols-2`) e 4 colunas no tablet/desktop (`md:grid-cols-4`).
+     - **Materiais Comprados (Seção Nobre)**: Paginação por setas (`<` e `>`), badge totalizador e grid de 2 itens no mobile e 4 no desktop.
+     - **Custo Total por Categoria & Gasto por Semana**: Barra multi-segmentada de progresso, paginação e modais "Ver mais" completos.
+     - **Cartões (Dívidas Futuras) & Produção no Canteiro**: Métricas de trilhos e placas de concreto.
+     - **Gasto por Fornecedor & Custo por m²**: Barras de progresso proporcionais, percentual de participação e comparativo com meta orçamentária (R$ 850,00/m²).
+     - **Custo por Etapa da Obra**: Status com badges e paginação.
+     - **Últimas Compras & Diárias Recentes**: Paginação individual por setas, badges de pagamento e atalhos com filtro.
+
+4. **Compilação e Versionamento**:
+   - `npx tsc --noEmit` executado com **0 erros**.
+   - `npm run build` gerou o bundle de produção e PWA sem falhas.
+   - Commits enviados para o GitHub `origin/main`:
+     - `cbcf52f` (Fixes em Despesas)
+     - `9898246` (Remoção de Cartões em Notificações)
+     - `64a5bf6` (Telas de referência do Dashboard)
 
 ---
 
 ## 2. Ponto de Retomada na Próxima Sessão:
-- **Substituição Visual dos Próximos Módulos a partir dos arquivos do Stitch**:
+
+- **Próximas Telas / Módulos para Auditar e Atualizar**:
   1. **Mão de Obra & Diárias** (`MaoDeObraView.tsx` + modais de Novo Trabalhador e Lançar Diária).
-  2. **Cartões** (`CartoesView.tsx` + modal de Parcelamento).
-  3. **Orçamentos / Comparador de Preços** (`OrcamentosView.tsx`).
-- Manter integração com AppContext e Supabase em tempo real.
+  2. **Cartões & Dívidas Futuras** (`CartoesView.tsx` + modal de Parcelamento / Faturas).
+  3. **Produção Própria** (`ProducaoView.tsx` — Trilhos e Placas de Concreto).
+  4. **Orçamentos / Comparador de Preços** (`OrcamentosView.tsx`).
+- Manter conexão em tempo real com `AppContext` e Supabase.
