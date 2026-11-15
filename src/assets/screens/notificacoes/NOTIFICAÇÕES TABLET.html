@@ -1,0 +1,685 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificações — Tablet — Gestor de Obras Libra</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0085DB',
+        'on-primary': '#191919',
+        'primary-hover': '#0071BA',
+        'secondary': '#707A82',
+        'on-secondary': '#0A0A0A',
+        'success': '#10BD9D',
+        'on-success': '#3D3D3D',
+        'warning': '#D9941A',
+        'on-warning': '#393939',
+        'error': '#D5745B',
+        'on-error': '#282828',
+        'indigo': '#8763DA',
+        'on-indigo': '#0B0B0B',
+        'light-background': '#F0F5F9',
+        'light-on-background': '#111C2D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#111C2D',
+        'light-surface-subtle': '#F6F9FC',
+        'light-border': '#E6ECF1',
+        'light-muted': '#707A82',
+        'dark-background': '#15263A',
+        'dark-on-background': '#FFFFFF',
+        'dark-surface': '#111C2D',
+        'dark-on-surface': '#FFFFFF',
+        'dark-surface-subtle': '#1A2535',
+        'dark-border': '#333F55',
+        'dark-muted': '#7C8FAC',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'card': '18px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '20px',
+        'gutter-2xl': '24px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '800' }],
+        'headline-xl': ['34px', { lineHeight: '42px', letterSpacing: '-0.6px', fontWeight: '800' }],
+        'headline-xl-mobile': ['26px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '800' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-lg-mobile': ['20px', { lineHeight: '28px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'title-sm': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '700' }],
+        'label-xs': ['10px', { lineHeight: '12px', letterSpacing: '0.6px', fontWeight: '700' }],
+      },
+      transitionDuration: {
+        'hover': '150ms',
+        'modal-enter': '200ms',
+        'toast': '250ms',
+      },
+      transitionDelay: {
+        'hover': '0ms',
+        'modal-enter': '0ms',
+        'toast': '0ms',
+      },
+      transitionTimingFunction: {
+        'hover': 'ease-in-out',
+        'modal-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-headline { font-family: 'Outfit', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#15263a] text-[#111c2d] dark:text-white min-h-[1024px] font-body antialiased flex flex-col pb-24 transition-colors" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Header Superior Tablet Idêntico ao Padrão do Sistema -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-16 px-6 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+        N
+      </div>
+      <div>
+        <span class="block text-xs font-bold leading-tight uppercase">NATANAEL</span>
+        <span class="block text-[10px] text-[#707a82] leading-none">Master</span>
+      </div>
+    </div>
+
+    <!-- Canteiro Ativo Centralizado -->
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]">
+      <div class="w-7 h-7 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-[16px]">apartment</span>
+      </div>
+      <div class="text-left">
+        <span class="block text-xs font-bold truncate uppercase">OBRA JUSCELINO MOLA</span>
+        <span class="block text-[9px] text-[#707a82] uppercase font-semibold">Canteiro Ativo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Área Principal Tablet Confortável (max-w-4xl) -->
+  <main class="p-6 space-y-6 flex-1 max-w-4xl mx-auto w-full">
+
+    <!-- Cabeçalho com Título & Indicador de Status -->
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-[#111c2d] dark:text-white">
+          Notificações
+        </h1>
+        <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+          Alertas e pendências de comprovantes, notas e pagamentos da obra.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span id="t-count-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-[#0085db]/10 text-[#0085db] border border-[#0085db]/20">
+          4 ativas
+        </span>
+      </div>
+    </div>
+
+    <!-- Banner Resumo Informativo Tablet -->
+    <div class="bg-[#0085db]/10 border border-[#0085db]/25 rounded-[18px] px-4 py-3 flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="material-symbols-outlined text-[20px] text-[#0085db] shrink-0">info</span>
+        <p class="text-[#111c2d] dark:text-white uppercase tracking-wider text-[11px] truncate">
+          <strong class="font-extrabold text-[#0085db]">PENDÊNCIAS OPERACIONAIS:</strong> NOTAS COM RATEIO PENDENTE E DIÁRIAS SEM COMPROVANTE
+        </p>
+      </div>
+      <span class="text-[11px] font-bold text-[#0085db] uppercase tracking-wider shrink-0 bg-white dark:bg-[#111c2d] px-2.5 py-1 rounded-lg border border-[#0085db]/20">
+        Atualizado
+      </span>
+    </div>
+
+    <!-- Barra de Filtros Tablet (Tabs Segmentadas + Busca) -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-2.5 shadow-xs">
+      
+      <!-- Segmented Tabs por Módulo -->
+      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+        <button type="button" id="t-tab-todos" onclick="setTabletFilterModulo(&#39;todos&#39;)" class="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl bg-[#0085db] text-white text-xs font-bold transition-all cursor-pointer shadow-xs shrink-0">
+          <span>Todos</span>
+          <span class="text-[10px] bg-white/20 px-1.5 py-0.2 rounded-full font-extrabold" id="t-tab-count-todos">4</span>
+        </button>
+
+        <button type="button" id="t-tab-despesas" onclick="setTabletFilterModulo(&#39;despesas&#39;)" class="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] text-xs font-semibold transition-all cursor-pointer shrink-0">
+          <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+          <span>Despesas</span>
+        </button>
+
+        <button type="button" id="t-tab-maodeobra" onclick="setTabletFilterModulo(&#39;maodeobra&#39;)" class="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] text-xs font-semibold transition-all cursor-pointer shrink-0">
+          <span class="material-symbols-outlined text-[16px]">group</span>
+          <span>Diárias</span>
+        </button>
+      </div>
+
+      <!-- Campo de Pesquisa Tablet -->
+      <div class="relative w-full sm:w-64">
+        <span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-[#707a82]">search</span>
+        <input type="text" id="t-search-input" oninput="filtrarNotificacoesTablet()" placeholder="Buscar pendência..." class="w-full h-9 pl-9 pr-3 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs text-[#111c2d] dark:text-white placeholder-[#707a82] focus:outline-hidden focus:border-[#0085db]">
+      </div>
+    </div>
+
+    <!-- Lista de Cards das Notificações em Formato Tablet Confortável -->
+    <div id="t-alertas-list" class="space-y-3">
+      <!-- Gerado via JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="t-empty-state" class="hidden bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[20px] p-12 text-center shadow-xs">
+      <div class="w-12 h-12 rounded-2xl bg-[#4bd08b]/15 text-[#4bd08b] flex items-center justify-center mx-auto mb-3">
+        <span class="material-symbols-outlined text-[24px]">check_circle</span>
+      </div>
+      <h2 class="text-base font-bold text-[#111c2d] dark:text-white">
+        Tudo em dia na Obra Juscelino Mola!
+      </h2>
+      <p class="text-xs text-[#707a82] dark:text-[#7c8fac] max-w-sm mx-auto mt-1">
+        Não há pendências de rateios, recibos ou faturas pendentes de resolução no momento.
+      </p>
+    </div>
+
+  </main>
+
+  <!-- Barra de Navegação Inferior Fixa Tablet (Idêntica a Despesas-Mobile e Diarias-Tablet) -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-t border-[#e6ecf1] dark:border-[#333f55] h-16 flex items-center justify-around px-8 z-40 max-w-4xl mx-auto md:border-x">
+    <a href="../dashboard/Dashboard.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">grid_view</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Dashboard</span>
+    </a>
+
+    <a href="../despesas/Despesas-Mobile.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">receipt</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Despesas</span>
+    </a>
+
+    <a href="../maodeobra/Diarias-Mobile.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">group</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Diárias</span>
+    </a>
+
+    <a href="../orcamentos/Orcamentos-Mobile.html" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-[24px]">balance</span>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Orçamentos</span>
+    </a>
+
+    <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.remove(&#39;hidden&#39;)" class="flex flex-col items-center justify-center flex-1 py-1 text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors relative cursor-pointer">
+      <div class="relative flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+        <span class="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#fb977d] border-2 border-white dark:border-[#111c2d]"></span>
+      </div>
+      <span class="text-[11px] font-medium tracking-tight mt-0.5">Mais</span>
+    </button>
+  </nav>
+
+  <!-- Bottom Sheet Menu Mais (Módulos do Sistema) Tablet Centralizado -->
+  <div id="bottom-sheet-menu-tablet" class="fixed inset-0 z-50 flex flex-col justify-end hidden">
+    <div onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+
+    <aside class="relative z-10 bg-white dark:bg-[#111c2d] rounded-t-[28px] border-t border-[#e6ecf1] dark:border-[#333f55] shadow-2xl p-6 pt-3 animate-in slide-in-from-bottom duration-200 max-w-xl mx-auto w-full">
+      <div class="w-12 h-1.5 rounded-full bg-[#dbe4ec] dark:bg-[#333f55] mx-auto mb-4"></div>
+
+      <div class="flex items-center justify-between pb-3 border-b border-[#f0f4f8] dark:border-[#223147] mb-4">
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#526b84] dark:text-[#8fa3ba]">
+          Módulos do Sistema
+        </h2>
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Grade com os 7 Módulos -->
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <a href="../recibos/Recibos.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">fact_check</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Recibos</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Materiais</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">build</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Produção</span>
+        </a>
+
+        <a href="../cartoes/Cartoes-Tablet.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">credit_card</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Cartões</span>
+        </a>
+
+        <!-- 5. Pendências (Ativo na tela atual) -->
+        <a href="#" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#0085db]/10 dark:bg-[#0085db]/20 border border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">warning</span>
+          </div>
+          <div class="min-w-0 flex items-center gap-1.5">
+            <span class="text-sm font-bold text-[#0085db] transition-colors truncate">Pendências</span>
+            <span id="t-menu-badge-pendencias" class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#f87171] text-white text-[10px] font-bold leading-none">
+              4
+            </span>
+          </div>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">description</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Relatórios</span>
+        </a>
+
+        <a href="../usuarios/Central-Permissoes.html" class="flex items-center gap-3 p-3.5 rounded-2xl bg-[#f8fbfe] dark:bg-[#16253b] border border-[#e3edf7] dark:border-[#273a54] hover:border-[#0085db] transition-all group active:scale-95">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-[#0085db]">
+            <span class="material-symbols-outlined text-[24px]">shield</span>
+          </div>
+          <span class="text-sm font-semibold text-[#111c2d] dark:text-white group-hover:text-[#0085db] transition-colors truncate">Permissões</span>
+        </a>
+      </div>
+
+      <div class="pt-3 border-t border-[#f0f4f8] dark:border-[#223147] flex items-center justify-between">
+        <button type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#fb977d] hover:text-[#fa7a58] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span>Sair</span>
+        </button>
+
+        <button type="button" onclick="document.getElementById(&#39;bottom-sheet-menu-tablet&#39;).classList.add(&#39;hidden&#39;)" class="h-10 px-7 inline-flex items-center justify-center rounded-full bg-[#0085db] hover:bg-[#0074bf] text-white text-sm font-bold shadow-sm transition-colors active:scale-95 cursor-pointer">
+          Fechar
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Modal Integrado Tablet: Resolver Pendência (Resumido e Centralizado) -->
+  <div id="t-modal-resolver" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="fecharModalResolverTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 space-y-3.5 animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2 text-[#0085db]">
+          <span class="material-symbols-outlined text-[20px]">open_in_new</span>
+          <h2 class="text-xs font-bold uppercase tracking-wider font-headline text-[#111c2d] dark:text-white">
+            Resolver Pendência
+          </h2>
+        </div>
+        <button type="button" onclick="fecharModalResolverTablet()" class="text-[#707a82] hover:text-[#111c2d] dark:hover:text-white p-0.5 rounded-lg transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-2 text-xs text-center">
+        <div class="p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-1 text-center">
+          <span id="t-modal-origem" class="block text-[10px] font-bold uppercase tracking-wider text-[#0085db]">
+            Despesas • Nota #desp-mat-04
+          </span>
+          <p id="t-modal-title" class="text-xs font-semibold text-[#111c2d] dark:text-white">
+            Diferença de rateio na nota fiscal
+          </p>
+          <p id="t-modal-desc" class="text-[11px] text-[#707a82] dark:text-[#7c8fac]">
+            R$ 120,52 não distribuído nos itens
+          </p>
+        </div>
+
+        <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] px-1 text-center">
+          Você será direcionado para o módulo de <strong id="t-modal-dest-nome" class="text-[#111c2d] dark:text-white">Despesas</strong> para resolver a pendência na entidade original.
+        </p>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="fecharModalResolverTablet()" class="h-8 px-3 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#1f2d40] active:scale-95 rounded-xl transition-all cursor-pointer shadow-xs">
+          Cancelar
+        </button>
+        <button type="button" onclick="irParaModuloTablet()" class="h-8 px-3.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-xs inline-flex items-center gap-1.5 transition-all cursor-pointer">
+          <span id="t-modal-dest-btn-txt">Ir para Despesas</span>
+          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Integrado Tablet: Dispensar Notificação (Resumido e Centralizado) -->
+  <div id="t-modal-dispensar" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div onclick="fecharModalDispensarTablet()" class="absolute inset-0 bg-[#111c2d]/60 backdrop-blur-xs transition-opacity cursor-pointer"></div>
+    <div class="relative z-50 w-full max-w-sm bg-white dark:bg-[#111c2d] rounded-2xl shadow-2xl border border-[#e6ecf1] dark:border-[#333f55] p-5 space-y-3.5 animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#e6ecf1] dark:border-[#333f55]">
+        <div class="flex items-center gap-2 text-amber-500">
+          <span class="material-symbols-outlined text-[20px]">notifications_off</span>
+          <h2 class="text-xs font-bold uppercase tracking-wider font-headline text-[#111c2d] dark:text-white">
+            Dispensar Alerta
+          </h2>
+        </div>
+        <button type="button" onclick="fecharModalDispensarTablet()" class="text-[#707a82] hover:text-[#111c2d] dark:hover:text-white p-0.5 rounded-lg transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-2 text-xs text-center">
+        <div class="p-3.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] space-y-1 text-center">
+          <span id="t-dispensar-origem" class="block text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+            Despesas • Nota #desp-mat-04
+          </span>
+          <p id="t-dispensar-title" class="text-xs font-semibold text-[#111c2d] dark:text-white">
+            Diferença de rateio na nota fiscal
+          </p>
+        </div>
+
+        <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] px-1 text-center">
+          Deseja dispensar este aviso da lista de notificações?
+        </p>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button type="button" onclick="fecharModalDispensarTablet()" class="h-8 px-3 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#1f2d40] active:scale-95 rounded-xl transition-all cursor-pointer shadow-xs">
+          Cancelar
+        </button>
+        <button type="button" onclick="confirmarDispensarTablet()" class="h-8 px-4 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 active:scale-95 rounded-xl shadow-xs inline-flex items-center justify-center transition-all cursor-pointer">
+          Dispensar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Feedback -->
+  <div id="t-toast-feedback" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 hidden bg-[#111c2d] text-white px-4 py-3 rounded-xl shadow-xl border border-[#333f55] flex items-center gap-2 text-xs font-semibold animate-in fade-in slide-in-from-bottom-2 duration-200">
+    <span class="material-symbols-outlined text-[18px] text-[#4bd08b]">check_circle</span>
+    <span id="t-toast-message">Notificação dispensada da lista.</span>
+  </div>
+
+  <!-- JavaScript Interativo Tablet -->
+  <script>
+    let notificacoesTablet = [
+      {
+        id: 'alerta-01',
+        tipo: 'diferenca_rateio',
+        titulo: 'Diferença de rateio na nota fiscal',
+        descricao: 'Nota #desp-mat-04 (Depósito Aliança) possui R$ 120,52 não distribuído nos itens.',
+        entidadeId: 'desp-mat-04',
+        moduloDestino: 'despesas',
+        dataFormatada: '15/10/2026'
+      },
+      {
+        id: 'alerta-02',
+        tipo: 'sem_cartao',
+        titulo: 'Forma de pagamento não especificada',
+        descricao: 'Despesa #desp-mat-04 salva sem cartão ou parcelas definidas.',
+        entidadeId: 'desp-mat-04',
+        moduloDestino: 'despesas',
+        dataFormatada: '15/10/2026'
+      },
+      {
+        id: 'alerta-03',
+        tipo: 'diaria_sem_recibo',
+        titulo: 'Pagamento de diária sem recibo',
+        descricao: '2 diárias registradas para Carlos Silva sem recibo anexado.',
+        entidadeId: 'diaria-sem-recibo',
+        moduloDestino: 'maodeobra',
+        dataFormatada: '03/11/2026'
+      },
+      {
+        id: 'alerta-04',
+        tipo: 'sem_comprovante',
+        titulo: 'Comprovante ausente',
+        descricao: 'Nota #desp-mat-04 ainda não possui link do OneDrive ou anexo registrado.',
+        entidadeId: 'desp-mat-04',
+        moduloDestino: 'despesas',
+        dataFormatada: '15/10/2026'
+      }
+    ];
+
+    let currentTabletAlertaId = null;
+    let currentTabletFiltroModulo = 'todos';
+
+    const moduloMapTablet = {
+      despesas: { label: 'Despesas', icon: 'receipt_long' },
+      cartoes: { label: 'Cartões', icon: 'credit_card' },
+      maodeobra: { label: 'Diárias', icon: 'group' },
+      orcamentos: { label: 'Orçamentos', icon: 'balance' },
+      recibos: { label: 'Recibos', icon: 'history_edu' }
+    };
+
+    function setTabletFilterModulo(mod) {
+      currentTabletFiltroModulo = mod;
+
+      const btnTodos = document.getElementById('t-tab-todos');
+      const btnDesp = document.getElementById('t-tab-despesas');
+      const btnMao = document.getElementById('t-tab-maodeobra');
+
+      [btnTodos, btnDesp, btnMao].forEach(btn => {
+        if (!btn) return;
+        btn.className = 'h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-[#707a82] dark:text-[#7c8fac] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] text-xs font-semibold transition-all cursor-pointer shrink-0';
+      });
+
+      if (mod === 'todos' && btnTodos) {
+        btnTodos.className = 'h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl bg-[#0085db] text-white text-xs font-bold transition-all cursor-pointer shadow-xs shrink-0';
+      } else if (mod === 'despesas' && btnDesp) {
+        btnDesp.className = 'h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl bg-[#0085db] text-white text-xs font-bold transition-all cursor-pointer shadow-xs shrink-0';
+      } else if (mod === 'maodeobra' && btnMao) {
+        btnMao.className = 'h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl bg-[#0085db] text-white text-xs font-bold transition-all cursor-pointer shadow-xs shrink-0';
+      }
+
+      filtrarNotificacoesTablet();
+    }
+
+    function filtrarNotificacoesTablet() {
+      const search = (document.getElementById('t-search-input')?.value || '').toLowerCase();
+      const container = document.getElementById('t-alertas-list');
+      const emptyState = document.getElementById('t-empty-state');
+      const countBadge = document.getElementById('t-count-badge');
+      const countTodosTab = document.getElementById('t-tab-count-todos');
+      const menuBadge = document.getElementById('t-menu-badge-pendencias');
+
+      if (!container || !emptyState) return;
+
+      const filtrados = notificacoesTablet.filter(item => {
+        const matchModulo = (currentTabletFiltroModulo === 'todos' || item.moduloDestino === currentTabletFiltroModulo);
+        const matchSearch = item.titulo.toLowerCase().includes(search) || item.descricao.toLowerCase().includes(search);
+        return matchModulo && matchSearch;
+      });
+
+      if (countBadge) countBadge.textContent = `${notificacoesTablet.length} ativas`;
+      if (countTodosTab) countTodosTab.textContent = notificacoesTablet.length;
+      if (menuBadge) {
+        menuBadge.textContent = notificacoesTablet.length;
+        if (notificacoesTablet.length === 0) menuBadge.classList.add('hidden');
+        else menuBadge.classList.remove('hidden');
+      }
+
+      container.innerHTML = '';
+
+      if (filtrados.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      filtrados.forEach(item => {
+        const moduloInfo = moduloMapTablet[item.moduloDestino] || { label: 'Sistema', icon: 'notifications' };
+
+        const card = document.createElement('div');
+        card.className = 'bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl p-4 shadow-xs transition-all hover:border-[#0085db]/40';
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3.5 min-w-0">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#0085db]/10 text-[#0085db]">
+                <span class="material-symbols-outlined text-[20px]">${moduloInfo.icon}</span>
+              </div>
+
+              <div class="min-w-0 space-y-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] text-[#0085db] border border-[#e6ecf1] dark:border-[#333f55]">
+                    ${moduloInfo.label}
+                  </span>
+                  <span class="text-xs text-[#707a82]">
+                    ${item.dataFormatada}
+                  </span>
+                </div>
+
+                <h2 class="text-sm font-bold text-[#111c2d] dark:text-white leading-snug">
+                  ${item.titulo}
+                </h2>
+                <p class="text-xs text-[#707a82] dark:text-[#7c8fac] leading-relaxed">
+                  ${item.descricao}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0 self-center">
+              <button
+                type="button"
+                onclick="abrirModalDispensarTablet('${item.id}')"
+                class="h-9 px-3.5 text-xs font-semibold text-[#111c2d] dark:text-white bg-white dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] hover:bg-[#f6f9fc] dark:hover:bg-[#1f2d40] active:scale-95 rounded-xl shadow-xs transition-all cursor-pointer"
+              >
+                Dispensar
+              </button>
+              <button
+                type="button"
+                onclick="abrirModalResolverTablet('${item.id}')"
+                class="h-9 px-4 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl shadow-xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
+              >
+                <span>Resolver no Módulo</span>
+                <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function abrirModalResolverTablet(id) {
+      const item = notificacoesTablet.find(i => i.id === id);
+      if (!item) return;
+      currentTabletAlertaId = id;
+
+      const moduloInfo = moduloMapTablet[item.moduloDestino] || { label: 'Despesas' };
+
+      document.getElementById('t-modal-origem').textContent = `${moduloInfo.label} • Identificador #${item.entidadeId}`;
+      document.getElementById('t-modal-title').textContent = item.titulo;
+      document.getElementById('t-modal-desc').textContent = item.descricao;
+      document.getElementById('t-modal-dest-nome').textContent = moduloInfo.label;
+      document.getElementById('t-modal-dest-btn-txt').textContent = `Ir para ${moduloInfo.label}`;
+
+      document.getElementById('t-modal-resolver')?.classList.remove('hidden');
+    }
+
+    function fecharModalResolverTablet() {
+      document.getElementById('t-modal-resolver')?.classList.add('hidden');
+      currentTabletAlertaId = null;
+    }
+
+    function irParaModuloTablet() {
+      const item = notificacoesTablet.find(i => i.id === currentTabletAlertaId);
+      fecharModalResolverTablet();
+      if (!item) return;
+
+      if (item.moduloDestino === 'despesas') {
+        window.location.href = '../despesas/Despesas-Tablet-Modelo.html';
+      } else if (item.moduloDestino === 'maodeobra') {
+        window.location.href = '../maodeobra/Diarias-Tablet.html';
+      } else if (item.moduloDestino === 'cartoes') {
+        window.location.href = '../cartoes/Cartoes-Tablet.html';
+      } else {
+        window.location.href = '../dashboard/Dashboard.html';
+      }
+    }
+
+    function abrirModalDispensarTablet(id) {
+      const item = notificacoesTablet.find(i => i.id === id);
+      if (!item) return;
+      currentTabletAlertaId = id;
+
+      const moduloInfo = moduloMapTablet[item.moduloDestino] || { label: 'Despesas' };
+      document.getElementById('t-dispensar-origem').textContent = `${moduloInfo.label} • #${item.entidadeId}`;
+      document.getElementById('t-dispensar-title').textContent = item.titulo;
+
+      document.getElementById('t-modal-dispensar')?.classList.remove('hidden');
+    }
+
+    function fecharModalDispensarTablet() {
+      document.getElementById('t-modal-dispensar')?.classList.add('hidden');
+      currentTabletAlertaId = null;
+    }
+
+    function confirmarDispensarTablet() {
+      if (!currentTabletAlertaId) return;
+
+      notificacoesTablet = notificacoesTablet.filter(i => i.id !== currentTabletAlertaId);
+      fecharModalDispensarTablet();
+      filtrarNotificacoesTablet();
+      exibirToastTablet('Notificação dispensada da lista com sucesso.');
+    }
+
+    function exibirToastTablet(msg) {
+      const toast = document.getElementById('t-toast-feedback');
+      const toastMsg = document.getElementById('t-toast-message');
+      if (!toast || !toastMsg) return;
+
+      toastMsg.textContent = msg;
+      toast.classList.remove('hidden');
+
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      filtrarNotificacoesTablet();
+    });
+  </script>
+
+
+</body></html>

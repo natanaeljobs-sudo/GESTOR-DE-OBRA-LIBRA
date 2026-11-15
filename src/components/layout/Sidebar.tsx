@@ -43,7 +43,7 @@ export const Sidebar: React.FC = () => {
 
   const navItems: NavItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'alertas', label: 'Pendências', icon: AlertTriangle, badge: alertas.length },
+    { id: 'alertas', label: 'Notificações', icon: AlertTriangle, badge: alertas.length },
     { id: 'despesas', label: 'Despesas', icon: Receipt },
     { id: 'orcamentos', label: 'Orçamentos', icon: Scale },
     { id: 'cartoes', label: 'Cartões', icon: CreditCard },

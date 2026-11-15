@@ -66,7 +66,7 @@ export const MobileNav: React.FC = () => {
     { id: 'materiais', label: 'Materiais', icon: Package },
     { id: 'producao', label: 'Produção', icon: Hammer },
     { id: 'cartoes', label: 'Cartões', icon: CreditCard },
-    { id: 'alertas', label: 'Pendências', icon: AlertTriangle, badge: alertas.length },
+    { id: 'alertas', label: 'Notificações', icon: AlertTriangle, badge: alertas.length },
     { id: 'relatorios', label: 'Relatórios', icon: FileSpreadsheet },
     { id: 'usuarios', label: 'Permissões', icon: ShieldCheck },
   ];
