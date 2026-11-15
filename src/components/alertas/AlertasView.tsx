@@ -154,19 +154,6 @@ export const AlertasView: React.FC = () => {
             <span className="material-symbols-outlined text-[15px] sm:text-[16px]">group</span>
             <span>Diárias</span>
           </button>
-
-          <button
-            type="button"
-            onClick={() => setCurrentFiltroModulo('cartoes')}
-            className={`px-2.5 py-1 sm:h-9 sm:px-3.5 inline-flex items-center gap-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all cursor-pointer shrink-0 ${
-              currentFiltroModulo === 'cartoes'
-                ? 'bg-[#0085db] text-white font-bold shadow-xs'
-                : 'text-[#707a82] dark:text-[#7c8fac] hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55]'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[15px] sm:text-[16px]">credit_card</span>
-            <span>Cartões</span>
-          </button>
         </div>
 
         {/* Input de Busca */}
