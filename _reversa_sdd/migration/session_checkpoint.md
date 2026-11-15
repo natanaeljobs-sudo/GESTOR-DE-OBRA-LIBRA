@@ -1,8 +1,8 @@
 # Checkpoint de Sessão — SISTEMA LIBRA - OBRAS
 
-> **Última Atualização**: 2026-11-14 18:53 (Horário de Brasília)
+> **Última Atualização**: 2026-11-14 23:40 (Horário de Brasília)
 > **Branch**: `main`
-> **Último Commit**: `22c9645` — `CHORE: INSTALA GOOGLE STITCH SDK PARA INTEGRACAO DE TELAS`
+> **Último Commit**: `5fdf8b3` — `FIX(DASHBOARD): CORRIGE PROPRIEDADES DE TIPOS DE ITENS, CARTOES E DIARIAS EVITANDO TELA BRANCA`
 > **Status Remoto**: Sincronizado com `origin/main` (GitHub)
 
 ---
@@ -14,36 +14,32 @@
 2. **Banco de Dados & Storage (Supabase / PostgreSQL)**:
    - Script SQL executado com 9 tabelas e políticas RLS.
    - Bucket `comprovantes` ativo para upload e armazenamento de notas fiscais e fotos de recibos.
-   - Tabelas alinhadas e com suporte a sincronização offline/online.
-3. **Módulos Migrados com Persistência em Tempo Real**:
-   - **Autenticação**: Login real Supabase Auth + persistência de sessão. Removido o bloco "Acesso Rápido para Teste" de `src/components/auth/LoginView.tsx`.
-   - **Obras**: Cadastro, listagem e seleção de obra ativa.
-   - **Despesas**: Cadastro com discriminador de itens, edição, exclusão e upload de comprovantes no Supabase Storage.
-   - **Mão de Obra e Recibos**: Gestão de trabalhadores, diárias, cálculo de frações, bônus, emissão de recibos e rastreabilidade com vinculação de `recibo_id`.
-   - **Materiais & Estoque**: CRUD sincronizado com `public.materiais`.
-   - **Produção de Trilhos/Placas**: Apontamento e controle de lotes conectados a `public.producao_apontamentos`.
-   - **Cartões & Contas Corporativas**: Cadastro, edição, remoção e listagem conectados a `public.cartoes` com reatividade no `AppContext`.
-   - **Orçamentos & Cotações**: Comparador de propostas, cadastro de cotações com múltiplos itens e conversão com persistência assíncrona automática em despesas reais no Supabase.
-   - **Relatórios & Fechamentos Gerenciais**: Consolidação dinâmica por centros de custo, filtros por intervalo e etapa, exportação e impressão estruturada em A4.
-   - **Usuários, Perfis e Permissões**: Integração do `UsuariosService` com `public.usuarios_perfis`, controle granular por nível de acesso (Master, Admin, Operador) e sincronização contínua.
-4. **Homologação de Paridade**:
-   - 100% dos cenários de paridade crítica (`PAR-01`, `PAR-02` e `PAR-03`) validados com sucesso e documentados em `_reversa_sdd/migration/relatorio_homologacao.md`.
-5. **Integração Google Stitch (MCP)**:
-   - `@google/stitch-sdk` instalado e autenticado com a API Key.
-   - Conexão estabelecida com o projeto oficial do Stitch (ID: `15694303215980426716`, contendo 50 telas mapeadas para Desktop, Tablet e Mobile).
-   - Teste de download de telas via MCP executado com sucesso.
-6. **Plan.md Atualizado**:
-   - `.reversa/plan.md` atualizado com todas as fases de Migração e Implementação registradas como concluídas.
-7. **Compilação e Deploy Git**:
-   - Build de produção verificado com sucesso pelo Vite (`npm run build`).
-   - Commits enviados para o repositório GitHub (`origin/main`).
+   - Persistência e sincronização de dados funcionando em tempo real.
+3. **Substituição Visual Oficial do Dashboard (Google Stitch)**:
+   - Extração e análise profunda das telas oficiais (`DASHBOARD COMPLETA.html`, `DASHBOARD TABLET.html` e `DASBOARD MOBILE.html`).
+   - `DashboardView.tsx` atualizado e substituído na íntegra com:
+     - **Seção Nobre de Materiais Comprados**: Paginação por setas (4 cards por página) com quantidade e valores totais consolidados.
+     - **Custo Total por Categoria & Gasto por Semana**: Barra proporcional, paginações independentes e abertura de modais em tela cheia (*Todas as Categorias* e *Todas as Semanas*).
+     - **Cartões (Dívidas Futuras) & Produção de Materiais**: Parcelamentos e custos unitários por metro de trilho e placa concretada.
+     - **Gasto por Fornecedor & Custo por m²**: Ranking de participação percentual e indicadores de custo por m² de obra.
+     - **Custo por Etapa da Obra**: Paginação de etapas construtivas com status de execução.
+     - **Últimas Compras & Diárias Recentes**: Paginação por setas e status de pagamento.
+     - **Ícones Oficiais**: `Material Symbols Outlined` integrado no `index.html`.
+4. **Resolução de Runtime & Typecheck**:
+   - Correção do mapeamento de propriedades (`materialNome`, `valorTotal`, `apelido`, `limite`, `trabalhadorNome`, `avatarColor`).
+   - `npx tsc --noEmit` executado com **0 erros** de TypeScript.
+   - Build de produção compilado com sucesso pelo Vite (`npm run build`).
+5. **Git & GitHub**:
+   - Commits `0a89ba3`, `469f409` e `5fdf8b3` enviados para o repositório GitHub (`origin/main`).
 
 ---
 
 ## 2. Ponto de Retomada na Próxima Sessão:
-- **Atualização de Telas com os designs do Stitch**:
-  - Iniciar a importação dos componentes visuais do projeto Stitch (`15694303215980426716`) para o código React:
-    1. `Dashboard — Oficial GitHub` (Desktop, Tablet e Mobile + Modais de Categorias e Semanas).
-    2. Telas de `Despesas`, `Mão de Obra`, `Cartões` e `Comparador`.
-  - Preservar todas as conexões já estabelecidas com o Supabase e com o `AppContext`.
-- **Go-Live / Cutover final** após a atualização visual.
+- **Substituição Visual das Demais Telas a partir dos arquivos do Stitch**:
+  - Próximos módulos para substituição com seus respectivos arquivos de design:
+    1. **Mão de Obra & Diárias** (`MaoDeObraView.tsx` + modais de Novo Trabalhador e Lançar Diária).
+    2. **Despesas** (`DespesasView.tsx` + modais de Lançar Despesa e Itens da Nota).
+    3. **Cartões** (`CartoesView.tsx` + modal de Parcelamento).
+    4. **Orçamentos / Comparador de Preços** (`OrcamentosView.tsx`).
+  - Preservar todas as conexões ativas com o Supabase e com o `AppContext`.
+- **Publicação / Go-Live** após a transposição das telas.
