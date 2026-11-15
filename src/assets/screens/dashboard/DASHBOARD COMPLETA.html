@@ -1,0 +1,1627 @@
+<!DOCTYPE html><html lang="pt-BR" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Geral da Obra — Gestor de Obras Libra</title>
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Outfit:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <!-- Tailwind Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: '#0085db',
+            'brand-dark': '#0071ba',
+            success: '#4bd08b',
+            warning: '#f8c076',
+            danger: '#fb977d',
+            purple: '#8763da',
+            cyan: '#46caeb',
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            headline: ['"Outfit"', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-[#f0f5f9] dark:bg-[#0b1320] text-[#111c2d] dark:text-[#f4f6f9] min-h-[1024px] flex flex-col antialiased transition-colors" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- ================= HEADER SUPERIOR OFICIAL IDÊNTICO AO SISTEMA ================= -->
+  <header class="sticky top-0 z-30 bg-white/95 dark:bg-[#111c2d]/95 backdrop-blur-md border-b border-[#e6ecf1] dark:border-[#333f55] h-16 shrink-0 flex items-center justify-between px-6">
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <div onclick="toggleUserDropdown()" class="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-transparent hover:border-[#e6ecf1] dark:hover:border-[#333f55] transition-all cursor-pointer">
+          <div class="w-8 h-8 rounded-full bg-[#0085db] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+            N
+          </div>
+          <div class="text-left">
+            <span class="block text-xs font-bold text-[#111c2d] dark:text-white leading-tight uppercase">NATANAEL</span>
+            <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac] leading-none">Master</span>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-[#707a82]">expand_more</span>
+        </div>
+
+        <!-- Dropdown do Usuário -->
+        <div id="dropdown-user-menu" class="hidden absolute left-0 mt-2 w-72 rounded-[20px] bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] shadow-2xl z-50 p-2.5 animate-in fade-in zoom-in-95 duration-100">
+          <div class="p-3 rounded-2xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] mb-2 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[#0085db] text-white font-black text-sm flex items-center justify-center shrink-0">
+              N
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <p class="text-sm font-bold text-[#111c2d] dark:text-white truncate">Natanael</p>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-amber-600 dark:text-amber-400 font-bold">Master</span>
+              </div>
+              <p class="text-[11px] text-[#707a82] dark:text-[#7c8fac] truncate">natanael@libra.com.br</p>
+            </div>
+          </div>
+          <div class="border-t border-[#e6ecf1] dark:border-[#333f55] my-1.5"></div>
+          <a href="../usuarios/Central-Permissoes.html" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-[#0085db] hover:bg-[#0085db]/10 flex items-center gap-2 transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">shield_person</span>
+            <span>Central de Permissões</span>
+          </a>
+        </div>
+      </div>
+
+      <button type="button" onclick="document.documentElement.classList.toggle(&#39;dark&#39;)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer ml-1" aria-label="Alternar tema">
+        <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+      </button>
+
+      <a href="../notificacoes/Notificacoes-Completa-Integrada.html" class="relative w-8 h-8 rounded-full flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-[#0085db]/10 transition-colors cursor-pointer" aria-label="Notificações">
+        <span class="material-symbols-outlined text-[18px]">notifications</span>
+        <span class="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#fb977d] text-white text-[9px] font-bold flex items-center justify-center">4</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ================= MAIN LAYOUT WITH SIDEBAR ================= -->
+  <div class="flex flex-1 min-h-[calc(1024px-4rem)]" data-stitch-vh="min-h-[calc(1024px-4rem)]===min-h-[calc(100vh-4rem)]">
+    
+    <!-- DESKTOP SIDEBAR -->
+    <aside class="hidden lg:flex flex-col w-[265px] shrink-0 bg-white dark:bg-[#111c2d] border-r border-[#e6ecf1] dark:border-[#333f55] p-4 justify-between h-[calc(1024px-4rem)] sticky top-16 overflow-y-auto print:hidden" data-stitch-vh="h-[calc(1024px-4rem)]===h-[calc(100vh-4rem)]">
+      <div class="space-y-4">
+
+        <!-- Obra Selector Button no topo da aside (Idêntico às outras páginas) -->
+        <div class="relative pb-3 border-b border-[#e6ecf1] dark:border-[#333f55]">
+          <button type="button" class="w-full flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#f6f9fc] hover:bg-[#e6ecf1] dark:bg-[#1a2535] dark:hover:bg-[#1f2d40] text-[#111c2d] dark:text-white transition-colors border border-[#e6ecf1] dark:border-[#333f55] cursor-pointer" title="Obra Ativa">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">apartment</span>
+              </div>
+              <div class="text-left min-w-0">
+                <span class="block text-xs font-bold text-[#111c2d] dark:text-white truncate uppercase">
+                  OBRA JUSCELINO MOLA
+                </span>
+                <span class="block text-[10px] text-[#707a82] dark:text-[#7c8fac] uppercase font-semibold tracking-wider">
+                  OBRA ATIVA
+                </span>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-[16px] text-[#707a82] shrink-0">expand_more</span>
+          </button>
+        </div>
+
+        <!-- Navigation Links (Apenas o Dashboard conforme solicitado) -->
+        <nav class="space-y-1">
+          <a href="#" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] font-bold bg-[#0085db] text-white shadow-sm shadow-[#0085db]/25 cursor-pointer">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-[18px]">dashboard</span>
+              <span>Dashboard</span>
+            </div>
+          </a>
+        </nav>
+      </div>
+
+      <!-- SIDEBAR FOOTER: Sair -->
+      <div class="pt-4 border-t border-[#e6ecf1] dark:border-[#333f55]">
+        <button onclick="alert(&#39;Sessão encerrada com sucesso.&#39;);" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] font-semibold text-[#fb977d] hover:bg-[#fb977d]/15 transition-all cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[18px] text-[#fb977d]">logout</span>
+            <span class="truncate">Sair</span>
+          </div>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN CONTENT VIEW ================= -->
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 space-y-6 overflow-y-auto">
+
+      <!-- WELCOME HERO BANNER (Idêntico ao GitHub e image-3e825f.png) -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-semibold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider">INÍCIO 01/09/2026 ·</span>
+            <span class="text-[#4bd08b] font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-full bg-[#4bd08b]"></span>
+              <span>Operante</span>
+            </span>
+          </div>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#111c2d] dark:text-white mt-2">
+            PAINEL GERAL DA OBRA
+          </h1>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap shrink-0">
+          <a href="../despesas/Modal-Lancar-Despesa.html" class="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0071ba] active:scale-95 rounded-xl transition-all shadow-sm shadow-[#0085db]/25 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">add_circle</span>
+            <span>Nova Despesa</span>
+          </a>
+          <a href="../maodeobra/Diarias-Completa-Integrada.html" class="flex items-center gap-2 px-3.5 py-2.5 text-xs font-semibold text-[#111c2d] dark:text-white bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#e6ecf1] dark:hover:bg-[#202f43] border border-[#e6ecf1] dark:border-[#333f55] active:scale-95 rounded-xl transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px] text-[#0085db]">group</span>
+            <span>Lançar Diária</span>
+          </a>
+          <a href="../recibos/Recibos.html" class="flex items-center gap-2 px-3.5 py-2.5 text-xs font-semibold text-[#111c2d] dark:text-white bg-[#f6f9fc] dark:bg-[#1a2535] hover:bg-[#e6ecf1] dark:hover:bg-[#202f43] border border-[#e6ecf1] dark:border-[#333f55] active:scale-95 rounded-xl transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[18px] text-[#4bd08b]">assignment_turned_in</span>
+            <span>Emitir Recibo</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= 4 CORE EXECUTIVES KPIS (LIMPOS E EQUILIBRADOS) ================= -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+        
+        <!-- KPI 1: Custo Total Executado -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none hover:border-[#0085db] transition-all flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-black text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider truncate">
+                TOTAL GASTO NA OBRA
+              </span>
+              <div class="w-8 h-8 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+              </div>
+            </div>
+            <div class="text-2xl sm:text-[26px] font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight">
+              R$ 30.138,00
+            </div>
+            <p class="text-[11px] font-semibold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wide mt-1.5 truncate">
+              ACUMULADO EM NOTAS E INSUMOS
+            </p>
+          </div>
+        </div>
+
+        <!-- KPI 2: Mão de Obra Contrato vs Pago -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none hover:border-[#4bd08b] transition-all flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-black text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider truncate">
+                MÃO DE OBRA CONTRATADA
+              </span>
+              <div class="w-8 h-8 rounded-xl bg-[#4bd08b]/15 text-[#4bd08b] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">engineering</span>
+              </div>
+            </div>
+            <div class="text-2xl sm:text-[26px] font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight">
+              R$ 8.800,00
+            </div>
+            <p class="text-[11px] font-semibold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wide mt-1.5 truncate">
+              CONTRATO TOTAL R$ 32.000,00
+            </p>
+          </div>
+        </div>
+
+        <!-- KPI 3: Cartões e Dívida Futura -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none hover:border-[#fb977d] transition-all flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-black text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider truncate">
+                CARTÕES &amp; PARCELAS
+              </span>
+              <div class="w-8 h-8 rounded-xl bg-[#fb977d]/15 text-[#fb977d] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">credit_card</span>
+              </div>
+            </div>
+            <div class="text-2xl sm:text-[26px] font-black text-[#fb977d] tabular-nums tracking-tight">
+              R$ 15.420,00
+            </div>
+            <p class="text-[11px] font-semibold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wide mt-1.5 truncate">
+              DÍVIDA EM 6X E 12X
+            </p>
+          </div>
+        </div>
+
+        <!-- KPI 4: Tempo Atual da Obra (Calculado da 1ª à última diária paga) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-5 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none hover:border-[#0085db] transition-all flex flex-col justify-between h-full text-center">
+          <div class="flex flex-col items-center">
+            <div class="flex items-center justify-center gap-2 mb-3">
+              <span class="text-xs font-black text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider truncate">
+                TEMPO ATUAL DA OBRA
+              </span>
+              <div class="w-8 h-8 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">timer</span>
+              </div>
+            </div>
+            <div id="kpi-tempo-obra-display" class="text-2xl sm:text-[26px] font-black text-[#0085db] tabular-nums tracking-tight text-center">
+              72 DIAS
+            </div>
+            <p id="kpi-tempo-obra-sub" class="text-[11px] font-semibold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wide mt-1.5 truncate text-center">
+              DE 01/09/2026 ATÉ 12/11/2026
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= SEÇÃO NOBRE: QUANTIDADE TOTAL E VALOR TOTAL POR MATERIAL (COM PAGINAÇÃO ATÉ 4 CARDS) ================= -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e6ecf1] dark:border-[#333f55] pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[22px] text-[#0085db]">inventory_2</span>
+              <h2 class="text-base font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                MATERIAIS COMPRADOS
+              </h2>
+            </div>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mt-1">
+              Consolidado dos materiais lançados em despesas com quantidade acumulada e valor total.
+            </p>
+          </div>
+          
+          <!-- Controles de Paginação Direita/Esquerda -->
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-black px-3 py-1.5 rounded-xl bg-[#0085db]/10 text-[#0085db] border border-[#0085db]/20 tabular-nums">
+              TOTAL: R$ 23.645,50
+            </span>
+
+            <div class="flex items-center gap-1.5 bg-[#f6f9fc] dark:bg-[#1a2535] p-1 rounded-xl border border-[#e6ecf1] dark:border-[#333f55]">
+              <span id="materiais-pag-info" class="text-xs font-bold text-[#707a82] dark:text-[#7c8fac] px-2 tabular-nums">
+                1 de 2
+              </span>
+              <button type="button" id="btn-mat-prev" onclick="changeMateriaisPage(-1)" disabled title="Página Anterior" class="w-7 h-7 flex items-center justify-center rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] dark:text-[#7c8fac] hover:bg-white dark:hover:bg-[#111c2d] disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+              </button>
+              <button type="button" id="btn-mat-next" onclick="changeMateriaisPage(1)" title="Próxima Página" class="w-7 h-7 flex items-center justify-center rounded-lg border border-[#e6ecf1] dark:border-[#333f55] text-[#111c2d] dark:text-white hover:bg-white dark:hover:bg-[#111c2d] disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grade Dinâmica: Renderiza até 4 Cards por Página sem Preço Médio -->
+        <div id="materiais-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+          <!-- Renderizado via JavaScript renderMateriaisCards() -->
+        </div>
+      </div>
+
+      <!-- ================= LINHA 2: CUSTO TOTAL POR CATEGORIA & GASTO POR SEMANA ================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Coluna Esquerda: Custo Total e Por Categoria (R$ 30,1k) -->
+        <div class="lg:col-span-2 bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                  CUSTO TOTAL E POR CATEGORIA
+                </h3>
+                <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+                  Distribuição percentual dos gastos por grupo de despesa da obra.
+                </p>
+              </div>
+
+              <!-- Ações: Botão Ver Mais (Modal) e Paginação com setinhas -->
+              <div class="flex items-center gap-2">
+                <!-- Botão Ver Mais Mais Largo com texto lado a lado -->
+                <button type="button" onclick="abrirModalCategorias()" class="inline-flex items-center justify-center gap-2 px-4 py-1.5 text-xs font-bold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db]/20 border border-[#0085db]/25 rounded-xl transition-all whitespace-nowrap shrink-0 cursor-pointer shadow-2xs" title="Ver todas as categorias no modal">
+                  <span class="material-symbols-outlined text-[16px] shrink-0">open_in_new</span>
+                  <span class="whitespace-nowrap">Ver mais</span>
+                </button>
+
+                <!-- Paginação com Setinhas para a direita/esquerda em linha horizontal única -->
+                <div class="flex items-center flex-nowrap gap-1.5 bg-[#f6f9fc] dark:bg-[#1a2535] px-2 py-1 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] shrink-0 whitespace-nowrap">
+                  <span id="cat-pag-info" class="text-xs font-bold text-[#707a82] dark:text-[#7c8fac] px-1 tabular-nums whitespace-nowrap shrink-0">
+                    1 de 2
+                  </span>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" id="btn-cat-prev" onclick="changeCategoriasPage(-1)" class="w-6 h-6 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-white dark:hover:bg-[#111c2d] disabled:opacity-30 disabled:pointer-events-none transition-colors shrink-0" title="Página anterior" disabled>
+                      <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+                    </button>
+                    <button type="button" id="btn-cat-next" onclick="changeCategoriasPage(1)" class="w-6 h-6 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-white dark:hover:bg-[#111c2d] disabled:opacity-30 disabled:pointer-events-none transition-colors shrink-0" title="Próximas categorias (mover para a direita)">
+                      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Proportional Multi-Segment Progress Bar -->
+            <div class="h-3 w-full bg-[#f6f9fc] dark:bg-[#1a2535] rounded-full overflow-hidden flex gap-0.5 mb-6">
+              <div class="bg-[#0085db] h-full transition-all" style="width: 63.7%" title="Materiais: R$ 19,2 mil (63.7%)"></div>
+              <div class="bg-[#4bd08b] h-full transition-all" style="width: 29.2%" title="Mão de Obra: R$ 8,8 mil (29.2%)"></div>
+              <div class="bg-[#8763da] h-full transition-all" style="width: 5.6%" title="Trilhos Próprios: R$ 1,7 mil (5.6%)"></div>
+              <div class="bg-[#46caeb] h-full transition-all" style="width: 1.5%" title="Abastecimento: R$ 433,00 (1.5%)"></div>
+            </div>
+
+            <!-- Categorias com Paginação (até 4 por página) -->
+            <div id="categorias-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Renderizado dinamicamente via renderCategoriasCards() -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Gasto por Semana (Ritmo da Obra) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+            <!-- Título e Descrição em Cima -->
+            <div class="mb-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">date_range</span>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                  GASTO POR SEMANA
+                </h3>
+              </div>
+              <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mt-1">
+                Evolução dos gastos por semana da obra.
+              </p>
+            </div>
+
+            <!-- Botões em Baixo (Ver mais e Paginação) -->
+            <div class="flex items-center justify-between gap-2 pb-3 mb-4 border-b border-[#e6ecf1] dark:border-[#333f55]">
+              <button type="button" onclick="abrirModalSemanas()" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#0085db] bg-[#0085db]/10 hover:bg-[#0085db]/20 border border-[#0085db]/25 rounded-xl transition-all whitespace-nowrap shrink-0 cursor-pointer shadow-2xs" title="Ver todas as semanas no modal">
+                <span class="material-symbols-outlined text-[15px] shrink-0">open_in_new</span>
+                <span class="whitespace-nowrap">Ver mais</span>
+              </button>
+
+              <!-- Paginação com Setinhas para a direita/esquerda -->
+              <div class="flex items-center flex-nowrap gap-1.5 bg-[#f6f9fc] dark:bg-[#1a2535] px-2.5 py-1 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] shrink-0 whitespace-nowrap">
+                <span id="sem-pag-info" class="text-xs font-bold text-[#707a82] dark:text-[#7c8fac] px-1 tabular-nums whitespace-nowrap shrink-0">
+                  1 de 2
+                </span>
+                <div class="flex items-center gap-0.5 shrink-0">
+                  <button type="button" id="btn-sem-prev" onclick="changeSemanasPage(-1)" class="w-6 h-6 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-white dark:hover:bg-[#111c2d] disabled:opacity-30 disabled:pointer-events-none transition-colors shrink-0" title="Página anterior" disabled>
+                    <span class="material-symbols-outlined text-[15px]">chevron_left</span>
+                  </button>
+                  <button type="button" id="btn-sem-next" onclick="changeSemanasPage(1)" class="w-6 h-6 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#0085db] hover:bg-white dark:hover:bg-[#111c2d] disabled:opacity-30 disabled:pointer-events-none transition-colors shrink-0" title="Próximas semanas (mover para a direita)">
+                    <span class="material-symbols-outlined text-[15px]">chevron_right</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Semanas com Paginação (até 4 por página) -->
+            <div id="semanas-cards-container" class="space-y-3">
+              <!-- Renderizado dinamicamente via renderSemanasCards() -->
+            </div>
+        </div>
+
+      </div>
+
+      <!-- ================= LINHA 3: PARCELAS & CARTÕES + PRODUÇÃO DE TRILHOS ================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Bloco 1: Parcelas e Cartões (Dívida Futura) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#fb977d]">credit_card</span>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                  CARTÕES (DÍVIDAS FUTURAS)
+                </h3>
+              </div>
+              <span class="text-xs font-black text-[#fb977d] tabular-nums uppercase">
+                TOTAL: R$ 15.420,00
+              </span>
+            </div>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mb-4">
+              Parcelamentos em aberto e compromissos futuros da obra por cartão.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              
+              <!-- Cartão 1: Banco do Brasil -->
+              <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535]">
+                <div class="flex items-center justify-between text-xs font-bold">
+                  <span class="text-[#111c2d] dark:text-white uppercase tracking-tight">BB OUROCARD VISA</span>
+                  <span class="text-[#0085db]">6x</span>
+                </div>
+                <div class="mt-2 text-lg font-black text-[#111c2d] dark:text-white tabular-nums text-center">
+                  R$ 5.840,00
+                </div>
+              </div>
+
+              <!-- Cartão 2: Porto Bank -->
+              <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535]">
+                <div class="flex items-center justify-between text-xs font-bold">
+                  <span class="text-[#111c2d] dark:text-white uppercase tracking-tight">PORTO SEGURO MASTER</span>
+                  <span class="text-[#0085db]">10x</span>
+                </div>
+                <div class="mt-2 text-lg font-black text-[#111c2d] dark:text-white tabular-nums text-center">
+                  R$ 4.250,00
+                </div>
+              </div>
+
+              <!-- Cartão 3: Elo Empresarial -->
+              <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535]">
+                <div class="flex items-center justify-between text-xs font-bold">
+                  <span class="text-[#111c2d] dark:text-white uppercase tracking-tight">ELO GRAFITE</span>
+                  <span class="text-[#0085db]">12x</span>
+                </div>
+                <div class="mt-2 text-lg font-black text-[#111c2d] dark:text-white tabular-nums text-center">
+                  R$ 3.650,00
+                </div>
+              </div>
+
+              <!-- Cartão 4: Visa 8941 -->
+              <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535]">
+                <div class="flex items-center justify-between text-xs font-bold">
+                  <span class="text-[#111c2d] dark:text-white uppercase tracking-tight">VISA FINAL 8941</span>
+                  <span class="text-[#0085db]">3x</span>
+                </div>
+                <div class="mt-2 text-lg font-black text-[#111c2d] dark:text-white tabular-nums text-center">
+                  R$ 1.680,00
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 2: Produção Própria de Trilhos & Placas (Custo Unitário) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#8763da]">construction</span>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                  PRODUÇÃO DE MATERIAIS
+                </h3>
+              </div>
+            </div>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mb-4">
+              Volume fabricado no canteiro e custo unitário por item produzido.
+            </p>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <!-- Trilhos 6m -->
+              <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-center">
+                <div class="flex items-center justify-between text-xs font-bold mb-1">
+                  <span class="text-[#0085db] uppercase tracking-tight text-[11px] font-bold">TRILHOS</span>
+                  <span class="text-[#0085db] text-xs font-bold uppercase">132 M</span>
+                </div>
+                <div class="mt-1 text-lg font-black text-[#111c2d] dark:text-white tabular-nums text-center">
+                  R$ 8,73
+                </div>
+                <div class="text-[10px] text-[#707a82] font-semibold mt-0.5 text-center uppercase tracking-wide">
+                  POR METRO PRODUZIDO
+                </div>
+              </div>
+
+              <!-- Placas de Cimento -->
+              <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] text-center">
+                <div class="flex items-center justify-between text-xs font-bold mb-1">
+                  <span class="text-[#0085db] uppercase tracking-tight text-[11px] font-bold">PLACAS DE CIMENTO</span>
+                  <span class="text-[#0085db] text-xs font-bold uppercase">20 UND</span>
+                </div>
+                <div class="mt-1 text-lg font-black text-[#111c2d] dark:text-white tabular-nums text-center">
+                  R$ 26,19
+                </div>
+                <div class="text-[10px] text-[#707a82] font-semibold mt-0.5 text-center uppercase tracking-wide">
+                  POR UND PRODUZIDA
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-xs flex items-center justify-between">
+              <span class="flex items-center gap-1.5 font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                <span class="material-symbols-outlined text-[16px] text-[#0085db]">inventory_2</span>
+                TOTAL EM VALOR DA PRODUÇÃO:
+              </span>
+              <strong class="tabular-nums font-black text-sm text-[#0085db]">R$ 1.676,26</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= LINHA 4: GASTO POR FORNECEDOR & QUEM COMPROU (PRESTAÇÃO DE CONTAS) ================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Gasto por Fornecedor (Concentração de Compras) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">storefront</span>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                  GASTO POR FORNECEDOR
+                </h3>
+              </div>
+              <span class="text-xs text-[#707a82] font-semibold uppercase tracking-wider">BASE PARA NEGOCIAÇÃO</span>
+            </div>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mb-4">
+              Concentração de compras e volume financeiro por parceiro da obra.
+            </p>
+
+            <div class="space-y-2.5">
+              <!-- Fornecedor 1 -->
+              <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate mb-1.5">MARTINS FERRAGENS</p>
+                  <div class="w-full bg-[#e6ecf1] dark:bg-[#253246] h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#0085db] h-full rounded-full" style="width: 43.8%;"></div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 8.420,00</span>
+                  <span class="block text-[10px] text-[#0085db] font-bold">43,8%</span>
+                </div>
+              </div>
+
+              <!-- Fornecedor 2 -->
+              <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate mb-1.5">3 IRMÃOS MATERIAIS DE CONSTRUÇÃO</p>
+                  <div class="w-full bg-[#e6ecf1] dark:bg-[#253246] h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#0085db] h-full rounded-full" style="width: 32%;"></div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 6.150,00</span>
+                  <span class="block text-[10px] text-[#0085db] font-bold">32,0%</span>
+                </div>
+              </div>
+
+              <!-- Fornecedor 3 -->
+              <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate mb-1.5">DEPÓSITO ALIANÇA HIDRO-ELÉTRICA</p>
+                  <div class="w-full bg-[#e6ecf1] dark:bg-[#253246] h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#0085db] h-full rounded-full" style="width: 14.9%;"></div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 2.870,52</span>
+                  <span class="block text-[10px] text-[#0085db] font-bold">14,9%</span>
+                </div>
+              </div>
+
+              <!-- Fornecedor 4 -->
+              <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate mb-1.5">POSTO PETROBRAS UNIVERSITÁRIO</p>
+                  <div class="w-full bg-[#e6ecf1] dark:bg-[#253246] h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#0085db] h-full rounded-full" style="width: 2.3%;"></div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 433,00</span>
+                  <span class="block text-[10px] text-[#0085db] font-bold">2,3%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custo por Metro Quadrado (R$/m²) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">square_foot</span>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                  CUSTO POR METRO QUADRADO
+                </h3>
+              </div>
+              <span class="text-xs text-[#707a82] font-semibold uppercase tracking-wider">ÁREA TOTAL: 180 M²</span>
+            </div>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac] mb-4">
+              Evolução do custo acumulado por m² construído em relação ao orçamento planejado.
+            </p>
+
+            <div class="space-y-2.5">
+              <!-- Item 1: Custo Acumulado Atual -->
+              <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">CUSTO ATUAL / M²</p>
+                    <span class="text-[10px] text-[#0085db] font-bold">24,1% DA META</span>
+                  </div>
+                  <div class="w-full bg-[#e6ecf1] dark:bg-[#253246] h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#0085db] h-full rounded-full" style="width: 24.1%;"></div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 204,50</span>
+                  <span class="block text-[10px] text-[#707a82] font-semibold">/ M² EXECUTADO</span>
+                </div>
+              </div>
+
+              <!-- Item 2: Materiais por m² -->
+              <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">MATERIAIS / M²</p>
+                    <span class="text-[10px] text-[#0085db] font-bold">66,2% DO GASTO</span>
+                  </div>
+                  <div class="w-full bg-[#e6ecf1] dark:bg-[#253246] h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#0085db] h-full rounded-full" style="width: 66.2%;"></div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 135,38</span>
+                  <span class="block text-[10px] text-[#707a82] font-semibold">/ M² MATERIAIS</span>
+                </div>
+              </div>
+
+              <!-- Item 3: Mão de Obra por m² -->
+              <div class="p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">MÃO DE OBRA / M²</p>
+                    <span class="text-[10px] text-[#0085db] font-bold">33,8% DO GASTO</span>
+                  </div>
+                  <div class="w-full bg-[#e6ecf1] dark:bg-[#253246] h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#0085db] h-full rounded-full" style="width: 33.8%;"></div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-black text-[#111c2d] dark:text-white tabular-nums">R$ 69,12</span>
+                  <span class="block text-[10px] text-[#707a82] font-semibold">/ M² DIÁRIAS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rodapé com Meta Orçada -->
+          <div class="mt-4 p-2.5 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex items-center justify-between text-xs">
+            <span class="text-[#707a82] font-semibold uppercase tracking-wider text-[11px]">META PREVISTA NO ORÇAMENTO:</span>
+            <span class="font-black text-[#0085db] tabular-nums">R$ 850,00 / M²</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= LINHA 5: CUSTO POR ETAPA CONSTRUTIVA ================= -->
+      <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+              CUSTO POR ETAPA DA OBRA
+            </h3>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+              Distribuição dos gastos acumulados e previsão orçamentária por fase da construção.
+            </p>
+          </div>
+          <div class="flex items-center gap-3 self-end sm:self-center">
+            <span class="text-xs font-bold text-[#0085db] uppercase tracking-wider">ETAPA 2 EM EXECUÇÃO</span>
+            <!-- Paginação com Setinhas -->
+            <div class="flex items-center gap-1.5 pl-2 border-l border-[#e6ecf1] dark:border-[#333f55]">
+              <button type="button" aria-label="Etapa anterior" class="w-7 h-7 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] hover:border-[#0085db] flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none" disabled>
+                <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+              </button>
+              <span class="text-xs font-bold text-[#111c2d] dark:text-white tabular-nums px-1">1 / 2</span>
+              <button type="button" aria-label="Próxima etapa" class="w-7 h-7 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] hover:border-[#0085db] flex items-center justify-center transition-colors">
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- Etapa 1: Antes de Iniciar -->
+          <div class="p-4 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px] text-[#0085db]">check_circle</span>
+                  1. ANTES DE INICIAR
+                </span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db] uppercase">CONCLUÍDA</span>
+              </div>
+              <div class="text-lg font-black text-[#111c2d] dark:text-white tabular-nums my-1">
+                R$ 3.850,00
+              </div>
+              <p class="text-[11px] text-[#707a82]">
+                Topografia, terraplanagem, aterro e cercamento
+              </p>
+            </div>
+          </div>
+
+          <!-- Etapa 2: Sapata & Fundação -->
+          <div class="p-4 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px] text-[#0085db]">check_circle</span>
+                  2. SAPATA &amp; FUNDAÇÃO
+                </span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db] uppercase">CONCLUÍDA</span>
+              </div>
+              <div class="text-lg font-black text-[#111c2d] dark:text-white tabular-nums my-1">
+                R$ 12.440,00
+              </div>
+              <p class="text-[11px] text-[#707a82]">
+                Escavação, vigas baldrame, concreto e ferragens
+              </p>
+            </div>
+          </div>
+
+          <!-- Etapa 3: Alvenaria (Atual) -->
+          <div class="p-4 rounded-xl bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px] text-[#0085db]">hourglass_top</span>
+                  3. ALVENARIA
+                </span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0085db]/10 text-[#0085db] uppercase">EM EXECUÇÃO</span>
+              </div>
+              <div class="text-lg font-black text-[#111c2d] dark:text-white tabular-nums my-1">
+                R$ 13.848,00 <span class="text-xs font-normal text-[#707a82]">/ R$ 18.000 PREV.</span>
+              </div>
+              <p class="text-[11px] text-[#707a82]">
+                Paredes, tijolos, vergas e cintas de amarração
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= RECENT ACTIVITY: ÚLTIMAS COMPRAS & DIÁRIAS ================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Latest Expense (Últimas Compras com Paginação) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">receipt_long</span>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                  ÚLTIMAS COMPRAS
+                </h3>
+              </div>
+              <div class="flex items-center gap-3">
+                <a href="../despesas/Despesas-GitHub.html" class="text-xs font-semibold text-[#0085db] hover:underline cursor-pointer uppercase tracking-wider text-[11px]">
+                  VER TODAS (6)
+                </a>
+                <!-- Paginação com Setinhas -->
+                <div class="flex items-center gap-1.5 pl-2 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                  <button type="button" aria-label="Página anterior de compras" class="w-7 h-7 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] hover:border-[#0085db] flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none" disabled>
+                    <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+                  </button>
+                  <span class="text-xs font-bold text-[#111c2d] dark:text-white tabular-nums px-1">1 / 2</span>
+                  <button type="button" aria-label="Próxima página de compras" class="w-7 h-7 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] hover:border-[#0085db] flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2.5">
+              <!-- Compra 1 -->
+              <a href="../despesas/Despesas-GitHub.html" class="p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex items-center justify-between gap-3 block">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">receipt</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">
+                      ARGAMASSAS E TUBULAÇÕES DE ESGOTO INICIAL
+                    </p>
+                    <div class="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                      <span class="truncate font-medium">Depósito Aliança</span>
+                      <span>·</span>
+                      <span>15/10/2026</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 2.870,52
+                  </span>
+                  <span class="block text-[10px] text-[#707a82] font-semibold uppercase">Não informado</span>
+                </div>
+              </a>
+
+              <!-- Compra 2 -->
+              <a href="../despesas/Despesas-GitHub.html" class="p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex items-center justify-between gap-3 block">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">receipt</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">
+                      MILHEIRO DE TIJOLOS E TÁBUAS PARA CAIXARIA
+                    </p>
+                    <div class="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                      <span class="truncate font-medium">3 Irmãos Materiais</span>
+                      <span>·</span>
+                      <span>22/09/2026</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 6.150,00
+                  </span>
+                  <span class="block text-[10px] text-[#707a82] font-semibold uppercase">Pix</span>
+                </div>
+              </a>
+
+              <!-- Compra 3 -->
+              <a href="../despesas/Despesas-GitHub.html" class="p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex items-center justify-between gap-3 block">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">receipt</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">
+                      PERFIS U, TUBOS GALVANIZADOS E CANTONEIRAS
+                    </p>
+                    <div class="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                      <span class="truncate font-medium">Martins Ferragens</span>
+                      <span>·</span>
+                      <span>18/09/2026</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 8.420,00
+                  </span>
+                  <span class="block text-[10px] text-[#707a82] font-semibold uppercase">Cartão</span>
+                </div>
+              </a>
+
+              <!-- Compra 4 -->
+              <a href="../despesas/Despesas-GitHub.html" class="p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex items-center justify-between gap-3 block">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">receipt</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">
+                      ABASTECIMENTO FRETE CAÇAMBA DE AREIA
+                    </p>
+                    <div class="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                      <span class="truncate font-medium">Posto Petrobras</span>
+                      <span>·</span>
+                      <span>12/09/2026</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 433,00
+                  </span>
+                  <span class="block text-[10px] text-[#707a82] font-semibold uppercase">Débito</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latest Diárias (Mesmo layout de Últimas Compras) -->
+        <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-[18px] p-6 shadow-[0px_2px_6px_rgba(37,83,185,0.06)] dark:shadow-none flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#0085db]">group</span>
+                <h3 class="text-sm font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+                  DIÁRIAS RECENTES
+                </h3>
+              </div>
+              <div class="flex items-center gap-3">
+                <a href="../maodeobra/Diarias-Completa-Integrada.html" class="text-xs font-semibold text-[#0085db] hover:underline cursor-pointer uppercase tracking-wider text-[11px]">
+                  VER TODAS (12)
+                </a>
+                <!-- Paginação com Setinhas -->
+                <div class="flex items-center gap-1.5 pl-2 border-l border-[#e6ecf1] dark:border-[#333f55]">
+                  <button type="button" aria-label="Página anterior de diárias" class="w-7 h-7 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] hover:border-[#0085db] flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none" disabled>
+                    <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+                  </button>
+                  <span class="text-xs font-bold text-[#111c2d] dark:text-white tabular-nums px-1">1 / 3</span>
+                  <button type="button" aria-label="Próxima página de diárias" class="w-7 h-7 rounded-lg bg-[#f6f9fc] dark:bg-[#1a2535] border border-[#e6ecf1] dark:border-[#333f55] text-[#707a82] hover:text-[#0085db] hover:border-[#0085db] flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2.5">
+              <!-- Diária 1 -->
+              <a href="../maodeobra/Diarias-Completa-Integrada.html" class="p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex items-center justify-between gap-3 block">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">person</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">
+                      MANOEL DA SILVA
+                    </p>
+                    <div class="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                      <span class="truncate font-medium">Pedreiro</span>
+                      <span>·</span>
+                      <span>23/10/2026 · Integral</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 180,00
+                  </span>
+                  <span class="block text-[10px] text-[#0085db] font-bold uppercase">Pago</span>
+                </div>
+              </a>
+
+              <!-- Diária 2 -->
+              <a href="../maodeobra/Diarias-Completa-Integrada.html" class="p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex items-center justify-between gap-3 block">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">person</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">
+                      CARLOS SILVA
+                    </p>
+                    <div class="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                      <span class="truncate font-medium">Ajudante</span>
+                      <span>·</span>
+                      <span>24/10/2026 · 2 Diárias</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 360,00
+                  </span>
+                  <span class="block text-[10px] text-[#fb977d] font-bold uppercase">A Pagar</span>
+                </div>
+              </a>
+
+              <!-- Diária 3 -->
+              <a href="../maodeobra/Diarias-Completa-Integrada.html" class="p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex items-center justify-between gap-3 block">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">person</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">
+                      ANTONIO FERREIRA
+                    </p>
+                    <div class="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                      <span class="truncate font-medium">Armador</span>
+                      <span>·</span>
+                      <span>22/10/2026 · Integral</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 200,00
+                  </span>
+                  <span class="block text-[10px] text-[#0085db] font-bold uppercase">Pago</span>
+                </div>
+              </a>
+
+              <!-- Diária 4 -->
+              <a href="../maodeobra/Diarias-Completa-Integrada.html" class="p-2.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex items-center justify-between gap-3 block">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 rounded-lg bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">person</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-tight truncate">
+                      JOSÉ MARIANO
+                    </p>
+                    <div class="flex items-center gap-2 text-[11px] text-[#707a82] dark:text-[#7c8fac] mt-0.5">
+                      <span class="truncate font-medium">Carpinteiro</span>
+                      <span>·</span>
+                      <span>21/10/2026 · Meia Diária</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs sm:text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+                    R$ 100,00
+                  </span>
+                  <span class="block text-[10px] text-[#0085db] font-bold uppercase">Pago</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ================= MODAL: TODAS AS CATEGORIAS DE CUSTO ================= -->
+  <div id="modal-todas-categorias" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden transition-opacity">
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[921px] flex flex-col" data-stitch-vh="max-h-[921px]===max-h-[90vh]">
+      <!-- Cabeçalho do Modal -->
+      <div class="flex items-center justify-between border-b border-[#e6ecf1] dark:border-[#333f55] pb-4 shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">category</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+              TODAS AS CATEGORIAS DE CUSTO
+            </h3>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+              Visão completa de todos os investimentos agrupados por categoria
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalCategorias()" class="w-8 h-8 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Lista de Categorias no Modal -->
+      <div id="modal-categorias-lista" class="py-4 overflow-y-auto space-y-3 flex-1">
+        <!-- Preenchido via JavaScript -->
+      </div>
+
+      <!-- Rodapé do Modal com Resumo Total -->
+      <div class="border-t border-[#e6ecf1] dark:border-[#333f55] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+        <span class="text-xs font-semibold text-[#707a82] dark:text-[#7c8fac]">
+          Total de categorias ativas: <strong id="modal-cat-count" class="text-[#111c2d] dark:text-white">6</strong>
+        </span>
+        <button type="button" onclick="fecharModalCategorias()" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074be] rounded-xl transition-colors cursor-pointer w-full sm:w-auto">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: TODAS AS SEMANAS DE GASTO ================= -->
+  <div id="modal-todas-semanas" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden transition-opacity">
+    <div class="bg-white dark:bg-[#111c2d] border border-[#e6ecf1] dark:border-[#333f55] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[921px] flex flex-col" data-stitch-vh="max-h-[921px]===max-h-[90vh]">
+      <!-- Cabeçalho do Modal -->
+      <div class="flex items-center justify-between border-b border-[#e6ecf1] dark:border-[#333f55] pb-4 shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-[#0085db]/10 text-[#0085db] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">date_range</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-[#111c2d] dark:text-white uppercase tracking-tight">
+              TODAS AS SEMANAS DA OBRA
+            </h3>
+            <p class="text-xs text-[#707a82] dark:text-[#7c8fac]">
+              Histórico completo de gastos e ritmo de desembolso semanal
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalSemanas()" class="w-8 h-8 rounded-lg flex items-center justify-center text-[#707a82] hover:text-[#111c2d] dark:hover:text-white hover:bg-[#f6f9fc] dark:hover:bg-[#1a2535] transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Lista de Semanas no Modal -->
+      <div id="modal-semanas-lista" class="py-4 overflow-y-auto space-y-3 flex-1">
+        <!-- Preenchido via JavaScript -->
+      </div>
+
+      <!-- Rodapé do Modal com Resumo Total e Média Semanal -->
+      <div class="border-t border-[#e6ecf1] dark:border-[#333f55] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center gap-4 text-xs font-semibold text-[#707a82] dark:text-[#7c8fac]">
+          <span>Total de semanas: <strong id="modal-sem-count" class="text-[#111c2d] dark:text-white">6</strong></span>
+          <span class="text-[#e6ecf1] dark:text-[#333f55]">|</span>
+          <span class="uppercase tracking-wider">Média Semanal: <strong class="text-[#0085db]">R$ 7.534,50</strong></span>
+        </div>
+        <button type="button" onclick="fecharModalSemanas()" class="px-4 py-2 text-xs font-bold text-white bg-[#0085db] hover:bg-[#0074be] rounded-xl transition-colors cursor-pointer w-full sm:w-auto">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client-side Interactive Script -->
+  <script>
+    // Dataset Consolidado de todos os materiais comprados em despesas
+    const todosMateriaisComprados = [
+      {
+        nome: "Cimento CP II",
+        categoria: "Insumo Base",
+        cor: "#0085db",
+        badge: "3 Compras",
+        badgeBg: "bg-[#0085db]/15 text-[#0085db]",
+        quantidadeTexto: "200 sacos",
+        valorTotal: "R$ 6.800,00"
+      },
+      {
+        nome: "Tijolo 8 Furos",
+        categoria: "Alvenaria",
+        cor: "#ea580c",
+        badge: "Alvenaria",
+        badgeBg: "bg-orange-100 dark:bg-orange-950/60 text-orange-600",
+        quantidadeTexto: "5.000 unid.",
+        valorTotal: "R$ 4.860,00"
+      },
+      {
+        nome: "Areia Média Lavada",
+        categoria: "Agregado",
+        cor: "#f59e0b",
+        badge: "Agregado",
+        badgeBg: "bg-amber-100 dark:bg-amber-950/60 text-amber-600",
+        quantidadeTexto: "18 m³",
+        valorTotal: "R$ 1.980,00"
+      },
+      {
+        nome: "Ferro CA-50 / CA-60",
+        categoria: "Estrutura",
+        cor: "#06b6d4",
+        badge: "Estrutura",
+        badgeBg: "bg-cyan-100 dark:bg-cyan-950/60 text-cyan-600",
+        quantidadeTexto: "100 barras",
+        valorTotal: "R$ 5.320,00"
+      },
+      {
+        nome: "Brita 1 Graduada",
+        categoria: "Agregado",
+        cor: "#64748b",
+        badge: "Agregado",
+        badgeBg: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300",
+        quantidadeTexto: "7 m³",
+        valorTotal: "R$ 665,50"
+      },
+      {
+        nome: "Argamassa AC-II",
+        categoria: "Acabamento",
+        cor: "#10b981",
+        badge: "Acabamento",
+        badgeBg: "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600",
+        quantidadeTexto: "66 sacos",
+        valorTotal: "R$ 1.980,00"
+      },
+      {
+        nome: "Tubos PVC 25mm",
+        categoria: "Hidráulica",
+        cor: "#8763da",
+        badge: "Hidráulica",
+        badgeBg: "bg-purple-100 dark:bg-purple-950/60 text-[#8763da]",
+        quantidadeTexto: "22 barras",
+        valorTotal: "R$ 770,00"
+      },
+      {
+        nome: "Tábuas de Pinho 30cm",
+        categoria: "Caixaria",
+        cor: "#b45309",
+        badge: "Caixaria",
+        badgeBg: "bg-amber-100 dark:bg-amber-950/60 text-amber-800",
+        quantidadeTexto: "4 dúzias",
+        valorTotal: "R$ 1.290,00"
+      }
+    ];
+
+    let paginaAtualMateriais = 1;
+    const itensPorPaginaMateriais = 4;
+
+    function renderMateriaisCards() {
+      const grid = document.getElementById('materiais-cards-grid');
+      const pagInfo = document.getElementById('materiais-pag-info');
+      const btnPrev = document.getElementById('btn-mat-prev');
+      const btnNext = document.getElementById('btn-mat-next');
+      if (!grid) return;
+
+      const totalPaginas = Math.ceil(todosMateriaisComprados.length / itensPorPaginaMateriais);
+      if (paginaAtualMateriais > totalPaginas) paginaAtualMateriais = totalPaginas;
+      if (paginaAtualMateriais < 1) paginaAtualMateriais = 1;
+
+      const inicio = (paginaAtualMateriais - 1) * itensPorPaginaMateriais;
+      const fim = inicio + itensPorPaginaMateriais;
+      const itensExibidos = todosMateriaisComprados.slice(inicio, fim);
+
+      grid.innerHTML = itensExibidos.map(item => `
+        <div class="p-5 rounded-2xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex flex-col justify-between h-full min-h-[175px] shadow-xs">
+          <div class="text-center">
+            <!-- Cabeçalho Centralizado com Nome do Material -->
+            <div class="flex items-center justify-center gap-2 mb-3">
+              <span class="w-2.5 h-2.5 rounded-md shrink-0" style="background-color: ${item.cor}"></span>
+              <span class="text-xs font-black text-[#111c2d] dark:text-white uppercase tracking-wide truncate max-w-full">
+                ${item.nome}
+              </span>
+            </div>
+
+            <!-- Quantidade Centralizada em Caixa Alta -->
+            <div class="mt-2 text-center">
+              <span class="text-[10px] font-bold text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider block text-center">
+                QUANTIDADE TOTAL COMPRADA:
+              </span>
+              <div class="text-xl sm:text-2xl font-black text-[#111c2d] dark:text-white tabular-nums tracking-tight mt-1 text-center uppercase">
+                ${item.quantidadeTexto}
+              </div>
+            </div>
+          </div>
+
+          <!-- Rodapé com VALOR TOTAL em cima, em negrito e caixa alta sem quebras -->
+          <div class="mt-4 pt-3 border-t border-[#e6ecf1] dark:border-[#333f55] text-center">
+            <span class="block text-[11px] font-black text-[#707a82] dark:text-[#7c8fac] uppercase tracking-wider mb-1">
+              VALOR TOTAL
+            </span>
+            <div class="font-black text-[#0085db] tabular-nums text-lg sm:text-xl tracking-tight whitespace-nowrap">
+              ${item.valorTotal}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      if (pagInfo) {
+        pagInfo.textContent = `${paginaAtualMateriais} de ${totalPaginas}`;
+      }
+      if (btnPrev) {
+        btnPrev.disabled = paginaAtualMateriais <= 1;
+      }
+      if (btnNext) {
+        btnNext.disabled = paginaAtualMateriais >= totalPaginas;
+      }
+    }
+
+    function changeMateriaisPage(delta) {
+      paginaAtualMateriais += delta;
+      renderMateriaisCards();
+    }
+
+    // Cálculo automático do tempo de obra com base nas diárias
+    function calcularTempoObraDiarias() {
+      // Primeira diária registrada no início dos trabalhos
+      const dataInicio = new Date('2026-09-01T07:00:00');
+      // Data e hora atual do sistema
+      const dataAtual = new Date();
+
+      const diffMs = dataAtual - dataInicio;
+      const diffDias = Math.max(1, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+      const meses = Math.floor(diffDias / 30);
+      const diasRestantes = diffDias % 30;
+
+      const displayElem = document.getElementById('kpi-tempo-obra-display');
+      const subElem = document.getElementById('kpi-tempo-obra-sub');
+
+      if (displayElem) {
+        displayElem.textContent = `${diffDias} DIAS`;
+      }
+
+      if (subElem) {
+        const diaAtualFormatado = String(dataAtual.getDate()).padStart(2, '0');
+        const mesAtualFormatado = String(dataAtual.getMonth() + 1).padStart(2, '0');
+        const anoAtualFormatado = dataAtual.getFullYear();
+        subElem.textContent = `DE 01/09/2026 ATÉ ${diaAtualFormatado}/${mesAtualFormatado}/${anoAtualFormatado}`;
+      }
+    }
+
+    // Dataset de Categorias de Custo
+    const todasCategoriasCusto = [
+      {
+        nome: "MATERIAIS DA OBRA",
+        cor: "#0085db",
+        percentual: "63,7%",
+        valor: "R$ 19.200,00"
+      },
+      {
+        nome: "MÃO DE OBRA",
+        cor: "#4bd08b",
+        percentual: "29,2%",
+        valor: "R$ 8.800,00"
+      },
+      {
+        nome: "PRODUÇÃO DE TRILHOS",
+        cor: "#8763da",
+        percentual: "5,6%",
+        valor: "R$ 1.676,26"
+      },
+      {
+        nome: "ABASTECIMENTO",
+        cor: "#46caeb",
+        percentual: "1,5%",
+        valor: "R$ 433,00"
+      },
+      {
+        nome: "FERRAMENTAS & EQUIPAMENTOS",
+        cor: "#f59e0b",
+        percentual: "0,8%",
+        valor: "R$ 240,00"
+      },
+      {
+        nome: "FRETES & LOGÍSTICA",
+        cor: "#ec4899",
+        percentual: "0,5%",
+        valor: "R$ 150,00"
+      }
+    ];
+
+    let paginaAtualCategorias = 1;
+    const itensPorPaginaCategorias = 4;
+
+    function renderCategoriasCards() {
+      const grid = document.getElementById('categorias-cards-grid');
+      const pagInfo = document.getElementById('cat-pag-info');
+      const btnPrev = document.getElementById('btn-cat-prev');
+      const btnNext = document.getElementById('btn-cat-next');
+      if (!grid) return;
+
+      const totalPaginas = Math.ceil(todasCategoriasCusto.length / itensPorPaginaCategorias);
+      if (paginaAtualCategorias > totalPaginas) paginaAtualCategorias = totalPaginas;
+      if (paginaAtualCategorias < 1) paginaAtualCategorias = 1;
+
+      const inicio = (paginaAtualCategorias - 1) * itensPorPaginaCategorias;
+      const fim = inicio + itensPorPaginaCategorias;
+      const itensExibidos = todasCategoriasCusto.slice(inicio, fim);
+
+      grid.innerHTML = itensExibidos.map(item => `
+        <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] hover:border-[#0085db] transition-all flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${item.cor}"></span>
+              <span class="text-xs font-bold text-[#111c2d] dark:text-white uppercase tracking-wider">${item.nome}</span>
+            </div>
+            <span class="text-xs font-bold tabular-nums" style="color: ${item.cor}">${item.percentual}</span>
+          </div>
+          <div class="mt-2 text-lg font-black text-[#111c2d] dark:text-white tabular-nums text-center">
+            ${item.valor}
+          </div>
+        </div>
+      `).join('');
+
+      if (pagInfo) {
+        pagInfo.textContent = `${paginaAtualCategorias} de ${totalPaginas}`;
+      }
+      if (btnPrev) {
+        btnPrev.disabled = paginaAtualCategorias <= 1;
+      }
+      if (btnNext) {
+        btnNext.disabled = paginaAtualCategorias >= totalPaginas;
+      }
+    }
+
+    function changeCategoriasPage(delta) {
+      paginaAtualCategorias += delta;
+      renderCategoriasCards();
+    }
+
+    function abrirModalCategorias() {
+      const modal = document.getElementById('modal-todas-categorias');
+      const lista = document.getElementById('modal-categorias-lista');
+      const count = document.getElementById('modal-cat-count');
+      if (!modal || !lista) return;
+
+      if (count) {
+        count.textContent = todasCategoriasCusto.length;
+      }
+
+      lista.innerHTML = todasCategoriasCusto.map((item, idx) => `
+        <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 font-black text-xs text-white bg-[#0085db]">
+              ${idx + 1}
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-black text-[#111c2d] dark:text-white uppercase tracking-wider truncate">
+                ${item.nome}
+              </p>
+              <p class="text-[11px] font-semibold text-[#707a82] dark:text-[#7c8fac] mb-1.5">
+                Participação de <strong class="text-[#0085db]">${item.percentual}</strong> no orçamento realizado
+              </p>
+              <div class="w-full bg-[#e6ecf1] dark:bg-[#253246] h-1.5 rounded-full overflow-hidden">
+                <div class="bg-[#0085db] h-full rounded-full" style="width: ${item.percentual.replace(',', '.')};"></div>
+              </div>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-sm font-black text-[#111c2d] dark:text-white tabular-nums">
+              ${item.valor}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      modal.classList.remove('hidden');
+    }
+
+    function fecharModalCategorias() {
+      const modal = document.getElementById('modal-todas-categorias');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    // Dataset de Semanas de Gasto da Obra
+    const todasSemanasObra = [
+      {
+        titulo: "Semana 1 (Início & Sapata)",
+        valor: "R$ 8.920,00",
+        porcentagem: "82%",
+        cor: "#0085db",
+        descricao: "Marcação da obra, escavação de sapatas e concretagem inicial."
+      },
+      {
+        titulo: "Semana 2 (Fundações)",
+        valor: "R$ 6.450,00",
+        porcentagem: "59%",
+        cor: "#0085db",
+        descricao: "Vigas baldrame, impermeabilização e alvenaria de embasamento."
+      },
+      {
+        titulo: "Semana 3 (Pico Alvenaria)",
+        valor: "R$ 10.840,00",
+        porcentagem: "100%",
+        cor: "#fb977d",
+        descricao: "Levantamento de paredes, pilares e amarração estrutural."
+      },
+      {
+        titulo: "Semana 4 (Em andamento)",
+        valor: "R$ 3.928,00",
+        porcentagem: "36%",
+        cor: "#4bd08b",
+        descricao: "Montagem de formas, trilhos e concretagem da laje."
+      },
+      {
+        titulo: "Semana 5 (Instalações Previstas)",
+        valor: "R$ 4.200,00",
+        porcentagem: "39%",
+        cor: "#8763da",
+        descricao: "Tubulações de esgoto, água fria e conduítes elétricos."
+      },
+      {
+        titulo: "Semana 6 (Reboco & Acabamentos)",
+        valor: "R$ 5.150,00",
+        porcentagem: "48%",
+        cor: "#06b6d4",
+        descricao: "Chapisco, emboço e contrapiso dos cômodos."
+      }
+    ];
+
+    let paginaAtualSemanas = 1;
+    const itensPorPaginaSemanas = 4;
+
+    function renderSemanasCards() {
+      const container = document.getElementById('semanas-cards-container');
+      const pagInfo = document.getElementById('sem-pag-info');
+      const btnPrev = document.getElementById('btn-sem-prev');
+      const btnNext = document.getElementById('btn-sem-next');
+      if (!container) return;
+
+      const totalPaginas = Math.ceil(todasSemanasObra.length / itensPorPaginaSemanas);
+      if (paginaAtualSemanas > totalPaginas) paginaAtualSemanas = totalPaginas;
+      if (paginaAtualSemanas < 1) paginaAtualSemanas = 1;
+
+      const inicio = (paginaAtualSemanas - 1) * itensPorPaginaSemanas;
+      const fim = inicio + itensPorPaginaSemanas;
+      const itensExibidos = todasSemanasObra.slice(inicio, fim);
+
+      container.innerHTML = itensExibidos.map(item => `
+        <div>
+          <div class="flex justify-between text-xs font-bold mb-1">
+            <span class="text-[#111c2d] dark:text-white">${item.titulo}</span>
+            <span class="tabular-nums" style="color: ${item.cor}">${item.valor}</span>
+          </div>
+          <div class="w-full bg-[#f6f9fc] dark:bg-[#1a2535] h-2 rounded-full overflow-hidden">
+            <div class="h-full transition-all" style="width: ${item.porcentagem}; background-color: ${item.cor}"></div>
+          </div>
+        </div>
+      `).join('');
+
+      if (pagInfo) {
+        pagInfo.textContent = `${paginaAtualSemanas} de ${totalPaginas}`;
+      }
+      if (btnPrev) {
+        btnPrev.disabled = paginaAtualSemanas <= 1;
+      }
+      if (btnNext) {
+        btnNext.disabled = paginaAtualSemanas >= totalPaginas;
+      }
+    }
+
+    function changeSemanasPage(delta) {
+      paginaAtualSemanas += delta;
+      renderSemanasCards();
+    }
+
+    function abrirModalSemanas() {
+      const modal = document.getElementById('modal-todas-semanas');
+      const lista = document.getElementById('modal-semanas-lista');
+      const count = document.getElementById('modal-sem-count');
+      if (!modal || !lista) return;
+
+      if (count) {
+        count.textContent = todasSemanasObra.length;
+      }
+
+      lista.innerHTML = todasSemanasObra.map((item, idx) => `
+        <div class="p-3.5 rounded-xl border border-[#e6ecf1] dark:border-[#333f55] bg-[#f6f9fc] dark:bg-[#1a2535] flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 font-black text-xs text-white bg-[#0085db]">
+              ${idx + 1}
+            </div>
+            <div class="min-w-0">
+              <p class="text-xs font-black text-[#111c2d] dark:text-white uppercase tracking-wider truncate">
+                ${item.titulo}
+              </p>
+              <p class="text-[11px] font-semibold text-[#707a82] dark:text-[#7c8fac]">
+                ${item.descricao}
+              </p>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-sm font-black text-[#0085db] tabular-nums">
+              ${item.valor}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      modal.classList.remove('hidden');
+    }
+
+    function fecharModalSemanas() {
+      const modal = document.getElementById('modal-todas-semanas');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    // Fecha os modais ao clicar fora deles
+    document.addEventListener('click', (e) => {
+      const modalCat = document.getElementById('modal-todas-categorias');
+      if (modalCat && !modalCat.classList.contains('hidden') && e.target === modalCat) {
+        fecharModalCategorias();
+      }
+      const modalSem = document.getElementById('modal-todas-semanas');
+      if (modalSem && !modalSem.classList.contains('hidden') && e.target === modalSem) {
+        fecharModalSemanas();
+      }
+    });
+
+    // Inicializa os cards de materiais, categorias, semanas e tempo de obra ao carregar
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMateriaisCards();
+      renderCategoriasCards();
+      renderSemanasCards();
+      calcularTempoObraDiarias();
+    });
+    // Executa também de imediato caso já tenha carregado o DOM
+    renderMateriaisCards();
+    renderCategoriasCards();
+    renderSemanasCards();
+    calcularTempoObraDiarias();
+
+    function toggleUserDropdown() {
+      const dropdown = document.getElementById('dropdown-user-menu');
+      if (dropdown) {
+        dropdown.classList.toggle('hidden');
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('dropdown-user-menu');
+      if (dropdown && !dropdown.contains(e.target) && !e.target.closest('[onclick="toggleUserDropdown()"]')) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  </script>
+
+
+</body></html>
